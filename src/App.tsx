@@ -71,7 +71,6 @@ export default function App() {
 
         {result && (
           <div className="mt-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Headlines Section */}
             <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 border-l-4 border-l-[#004182]">
               <h3 className="text-lg font-bold text-[#004182] mb-4 flex items-center gap-2">
                 🎯 Optimized Headlines
@@ -91,7 +90,6 @@ export default function App() {
               </div>
             </section>
 
-            {/* About Versions Section */}
             <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-bold mb-6">📝 About Section Versions</h3>
               <div className="space-y-4">
@@ -117,7 +115,6 @@ export default function App() {
               </div>
             </section>
 
-            {/* Post Ideas Section */}
             <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-bold mb-4">💡 Content Pillars for You</h3>
               <ul className="space-y-3">
@@ -130,7 +127,6 @@ export default function App() {
               </ul>
             </section>
 
-            {/* CTA Waitlist */}
             <section className="bg-gradient-to-br from-[#004182] to-[#0073b1] rounded-2xl p-8 text-center text-white shadow-xl">
               <h3 className="text-xl font-bold mb-2">Want a full Resume AI Audit?</h3>
               <p className="text-blue-100 text-sm mb-6 opacity-90">We're launching a Pro version with ATS optimization soon.</p>
