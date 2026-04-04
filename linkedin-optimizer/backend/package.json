@@ -1,0 +1,8 @@
+{
+  "name": "linkedin-optimizer-worker",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240101.0",
+    "wrangler": "^3.22.1"
+  }
+}
