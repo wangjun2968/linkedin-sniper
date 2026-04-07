@@ -3,7 +3,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { 
   Target, Search, Zap, CheckCircle2, Copy, History as HistoryIcon, 
   User, LogOut, ArrowRight, ShieldCheck, Lock, CreditCard, 
-  Settings, Crown, ChevronDown, Activity
+  Settings, Crown, ChevronDown, Activity, Sparkles, X
 } from 'lucide-react';
 import HistoryManager from './HistoryManager.tsx';
 
@@ -19,9 +19,9 @@ function App() {
   const [fullProfile, setFullProfile] = useState<any>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('gh_token'));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // 1. JWT 解析基础信息
   useEffect(() => {
     if (token) {
       try {
@@ -34,7 +34,6 @@ function App() {
     }
   }, [token]);
 
-  // 2. 从后端 D1 获取完整的用户体系数据 (Plan/Credits)
   const fetchFullProfile = async (jwt: string) => {
     try {
       const response = await fetch(`${API_URL}/user/me`, {
@@ -49,7 +48,6 @@ function App() {
     }
   };
 
-  // 监听点击外部关闭菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -77,9 +75,8 @@ function App() {
   const handleOptimize = async () => {
     if (!profileData) return;
     
-    const isProPlan = fullProfile?.plan === 'pro' || fullProfile?.plan === 'lifetime';
     if (!token && style !== 'Story (故事导向)') {
-      alert("🔒 该模式为精英狙击手专属，请先登录解锁！");
+      setShowPricing(true);
       return;
     }
 
@@ -107,7 +104,6 @@ function App() {
       }
       
       setResult(formattedData);
-      // 优化完刷新下个人数据（可能扣了点数）
       if (token) fetchFullProfile(token);
     } catch (e) {
       alert("优化请求失败，请检查后端配置。");
@@ -123,32 +119,108 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
+      <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 relative">
+        
+        {/* Pricing Modal */}
+        {showPricing && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowPricing(false)}></div>
+            <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 fade-in duration-300">
+              <button onClick={() => setShowPricing(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400"><X className="w-5 h-5"/></button>
+              
+              <div className="p-8 md:p-12">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-black text-slate-900 mb-4">解锁顶级职场生产力</h2>
+                  <p className="text-slate-500 max-w-lg mx-auto font-medium">加入 2,000+ 精英求职者，使用 LinkedIn Sniper 占据招聘搜索的首屏位置。</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Starter Plan */}
+                  <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col hover:border-slate-300 transition-all">
+                    <div className="mb-6">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">单次体验</span>
+                      <h3 className="text-2xl font-bold text-slate-800 mt-1">$0.99</h3>
+                      <p className="text-xs text-slate-400 mt-2 font-medium">约合 ￥7.1</p>
+                    </div>
+                    <ul className="space-y-4 mb-8 flex-1">
+                      <li className="flex items-start gap-3 text-xs font-bold text-slate-600"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 1 次深度 SEO 狙击</li>
+                      <li className="flex items-start gap-3 text-xs font-bold text-slate-600"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 5 种风格全开</li>
+                      <li className="flex items-start gap-3 text-xs font-bold text-slate-600"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 全量关键词报告</li>
+                    </ul>
+                    <button className="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-2xl text-sm font-black hover:bg-slate-100 transition-colors">立即单购</button>
+                  </div>
+
+                  {/* Elite Plan - Popular */}
+                  <div className="p-8 rounded-3xl bg-indigo-600 border-4 border-indigo-100 flex flex-col shadow-xl shadow-indigo-100 relative md:-translate-y-4">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-amber-900 text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 border-2 border-white">
+                      <Crown className="w-3 h-3 fill-current"/> POPULAR
+                    </div>
+                    <div className="mb-6 text-white">
+                      <span className="text-[10px] font-black uppercase tracking-widest opacity-70">精英月度</span>
+                      <h3 className="text-3xl font-black mt-1">$4.9<span className="text-sm opacity-60">/mo</span></h3>
+                      <p className="text-xs opacity-70 mt-2 font-medium">性价比之王</p>
+                    </div>
+                    <ul className="space-y-4 mb-8 flex-1">
+                      <li className="flex items-start gap-3 text-xs font-bold text-white"><CheckCircle2 className="w-4 h-4 text-indigo-300 shrink-0"/> 无限次 SEO 优化</li>
+                      <li className="flex items-start gap-3 text-xs font-bold text-white"><CheckCircle2 className="w-4 h-4 text-indigo-300 shrink-0"/> D1 数据库永久存证</li>
+                      <li className="flex items-start gap-3 text-xs font-bold text-white"><CheckCircle2 className="w-4 h-4 text-indigo-300 shrink-0"/> 优先获得新模型优化</li>
+                    </ul>
+                    <button className="w-full py-4 px-4 bg-white text-indigo-600 rounded-2xl text-sm font-black shadow-xl hover:scale-[1.02] active:scale-95 transition-all">开启订阅</button>
+                  </div>
+
+                  {/* Lifetime Plan */}
+                  <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col hover:border-slate-700 transition-all">
+                    <div className="mb-6 text-white">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">终极买断</span>
+                      <h3 className="text-2xl font-bold mt-1">$19.9</h3>
+                      <p className="text-xs text-slate-500 mt-2 font-medium">终身免订阅</p>
+                    </div>
+                    <ul className="space-y-4 mb-8 flex-1 text-white">
+                      <li className="flex items-start gap-3 text-xs font-bold opacity-80"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 永久尊贵会员身份</li>
+                      <li className="flex items-start gap-3 text-xs font-bold opacity-80"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 包含所有 Pro 权益</li>
+                      <li className="flex items-start gap-3 text-xs font-bold opacity-80"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/> 获取未来所有模块</li>
+                    </ul>
+                    <button className="w-full py-3 px-4 bg-white/10 text-white border border-white/20 rounded-2xl text-sm font-black hover:bg-white/20 transition-colors">永久买断</button>
+                  </div>
+                </div>
+                
+                <p className="text-center mt-10 text-[10px] font-medium text-slate-400">所有支付由 Stripe 担保，30天内无理由退款</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm shadow-slate-100">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.reload()}>
               <div className="bg-indigo-600 p-1.5 rounded-lg shadow-sm shadow-indigo-200">
                 <Target className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-lg tracking-tight text-slate-900">
                 LinkedIn <span className="text-indigo-600">Sniper</span>
-                <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-full font-bold uppercase">Pro Beta</span>
+                <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-full font-bold uppercase tracking-wider">Pro Beta</span>
               </span>
             </div>
 
             <div className="flex items-center gap-4 relative" ref={menuRef}>
+              <button 
+                onClick={() => setShowPricing(true)}
+                className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 hover:bg-amber-100 transition-colors mr-2"
+              >
+                <Crown className="w-3.5 h-3.5 fill-current"/> Pricing
+              </button>
+              
               {user ? (
                 <>
                   <button 
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-1 pr-3 rounded-full border border-slate-200 transition-all active:scale-95"
                   >
-                    <img src={user.picture} className="w-8 h-8 rounded-full border border-white" alt={user.name} />
+                    <img src={user.picture} className="w-8 h-8 rounded-full border border-white shadow-sm" alt={user.name} />
                     <span className="text-xs font-bold text-slate-700 hidden sm:inline">{user.name.split(' ')[0]}</span>
                     <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* 个人中心下拉面板 */}
                   {isMenuOpen && (
                     <div className="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 animate-in fade-in zoom-in-95 duration-200 origin-top-right z-50">
                       <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
@@ -169,7 +241,6 @@ function App() {
                             {fullProfile?.plan || 'Free'}
                           </span>
                         </div>
-
                         <div className="flex justify-between items-center px-2">
                           <div className="flex items-center gap-2 text-slate-500">
                             <Activity className="w-4 h-4" />
@@ -180,20 +251,17 @@ function App() {
                       </div>
 
                       <div className="px-2 py-2 border-t border-slate-100">
-                        <button className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">
-                          <Settings className="w-4 h-4" /> 账户设置
+                        <button onClick={() => { setIsMenuOpen(false); setShowPricing(true); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">
+                          <CreditCard className="w-4 h-4" /> 订阅方案
                         </button>
-                        <button 
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                        >
+                        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                           <LogOut className="w-4 h-4" /> 退出登录
                         </button>
                       </div>
                       
                       {fullProfile?.plan === 'free' && (
                         <div className="px-3 pb-2">
-                          <button className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2.5 rounded-xl text-xs font-black shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                          <button onClick={() => { setIsMenuOpen(false); setShowPricing(true); }} className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2.5 rounded-xl text-xs font-black shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
                             <Zap className="w-3 h-3 fill-current" />
                             升级精英方案 ($4.9)
                           </button>
@@ -210,7 +278,7 @@ function App() {
         </header>
 
         {!user && (
-          <div className="bg-indigo-600 text-white text-center py-2 px-4 text-xs font-bold tracking-wide flex items-center justify-center gap-2 animate-pulse">
+          <div className="bg-indigo-600 text-white text-center py-2 px-4 text-xs font-bold tracking-wide flex items-center justify-center gap-2">
             <Zap className="w-3 h-3 fill-current" />
             限时福利：立即登录，免费解锁 [成果导向] 模式与全量 SEO 报告！
           </div>
@@ -280,7 +348,7 @@ function App() {
           <div className="lg:col-span-5 space-y-6">
             <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
             {result ? (
-              <div className="space-y-6">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                   <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">优化 Headline</h3>
                   <div className="space-y-3">
@@ -301,7 +369,7 @@ function App() {
                         <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-medium">{v}</div>
                       </div>
                     ))}
-                    {!user && <div className="p-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-center"><Lock className="w-6 h-6 text-slate-200 mb-2" /><p className="text-xs text-slate-400 font-bold">还有 4 个版本已锁定</p></div>}
+                    {!user && <div className="p-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}><Lock className="w-6 h-6 text-slate-200 mb-2" /><p className="text-xs text-slate-400 font-bold">还有 4 个版本已锁定</p><p className="text-[10px] text-slate-300 mt-1">立即升级精英版解锁全部风格</p></div>}
                   </div>
                 </section>
               </div>
