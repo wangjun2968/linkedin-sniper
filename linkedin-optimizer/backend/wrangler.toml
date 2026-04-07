@@ -2,5 +2,10 @@ name = "linkedin-api"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "linkedin-db"
+database_id = "c6470afb-c257-4b59-96e7-02ade98e252d"
+
 [vars]
 # OPENAI_API_KEY 应在 Cloudflare Dashboard 设置为 Secret
