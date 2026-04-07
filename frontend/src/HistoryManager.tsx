@@ -24,7 +24,7 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
     setLoading(true);
     try {
       // 这里的 API 地址根据后端实际部署调整
-      const response = await fetch('https://linkedin-api.wangjun2968.workers.dev/history', {
+      const response = await fetch('https://linkedin-api.soundxy9.workers.dev/history', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();

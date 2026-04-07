@@ -5,7 +5,7 @@ import HistoryManager from './HistoryManager.tsx';
 
 // 祥哥，此处需要你填写你的 Google OAuth Client ID
 const GOOGLE_CLIENT_ID = "717774353715-hup70oee1bvvq0c5g69c327vggro9qp2.apps.googleusercontent.com";
-const API_URL = "https://linkedin-api.wangjun2968.workers.dev";
+const API_URL = "https://linkedin-api.soundxy9.workers.dev";
 
 function App() {
   const [profileData, setProfileData] = useState('');
