@@ -342,8 +342,8 @@ function App() {
               <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Sniper</span></span>
             </div>
             <div className="flex items-center gap-4 relative" ref={menuRef}>
-              <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 hover:bg-amber-100 transition-colors">Pricing</button>
-              <button onClick={scrollToTool} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 hover:bg-indigo-100 transition-colors">Get Free Audit</button>
+              <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 bg-amber-100 px-4 py-2 rounded-full border border-amber-200 hover:bg-amber-200 transition-colors shadow-sm">View Pricing</button>
+              <button onClick={scrollToTool} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-white bg-indigo-600 px-4 py-2 rounded-full border border-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">Get Free Audit</button>
               {user ? (
                 <>
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-1 pr-3 rounded-full border border-slate-200 transition-all active:scale-95">
@@ -388,37 +388,33 @@ function App() {
                   Turn Your LinkedIn Profile Into a <span className="text-indigo-600">Client-Generating Asset</span>
                 </h1>
                 <p className="mt-5 text-lg text-slate-600 max-w-xl leading-relaxed">
-                  Get a profile audit, stronger positioning, better CTA, and DM scripts that help turn profile views into real client conversations.
+                  Get a profile audit, sharper positioning, better CTA, and DM scripts that help turn profile views into client conversations.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors">
-                    Get Free Profile Audit <ArrowRight className="w-4 h-4" />
+                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                    Get Free Audit <ArrowRight className="w-4 h-4" />
                   </button>
                   <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                    See Pricing
+                    View Pricing
                   </button>
                 </div>
                 <p className="mt-5 text-sm text-slate-500 max-w-xl">
                   Built for founders, freelancers, consultants, and service operators who want LinkedIn to bring opportunities — not just impressions.
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-4 max-w-md lg:ml-auto">
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
                       <div className="text-xs font-bold text-slate-400 mb-1">Audit</div>
-                      <div className="text-sm font-semibold text-slate-800">See what kills profile-to-message conversion</div>
-                    </div>
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                      <div className="text-xs font-bold text-slate-400 mb-1">Fix First</div>
-                      <div className="text-sm font-semibold text-slate-800">Know exactly what to fix first</div>
+                      <div className="text-sm font-semibold text-slate-800">See what hurts conversion</div>
                     </div>
                     <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
                       <div className="text-xs font-bold text-slate-400 mb-1">Positioning</div>
-                      <div className="text-sm font-semibold text-slate-800">Turn vague skills into a clear offer</div>
+                      <div className="text-sm font-semibold text-slate-800">Clarify who you help</div>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 sm:col-span-2">
                       <div className="text-xs font-bold text-slate-400 mb-1">DM Kit</div>
                       <div className="text-sm font-semibold text-slate-800">Start better conversations without sounding robotic</div>
                     </div>
@@ -535,11 +531,11 @@ function App() {
                 <h2 className="text-3xl font-black leading-tight">Your LinkedIn profile should bring clients — not just look polished</h2>
                 <p className="mt-4 text-white/70 text-lg leading-relaxed">Start with a free audit and see what is stopping your profile from turning views into conversations.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors">
-                    Get Free Profile Audit <ArrowRight className="w-4 h-4" />
+                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors shadow-lg shadow-slate-950/10">
+                    Get Free Audit <ArrowRight className="w-4 h-4" />
                   </button>
                   <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10 transition-colors">
-                    See Pricing
+                    View Pricing
                   </button>
                 </div>
               </div>
@@ -550,7 +546,7 @@ function App() {
             <div className="mb-8">
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Audit Tool</div>
               <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client audit</h2>
-              <p className="mt-3 text-slate-600 max-w-2xl">Paste your current LinkedIn profile, generate the audit, and see exactly what is blocking profile views from turning into client conversations.</p>
+              <p className="mt-3 text-slate-600 max-w-2xl">Run the audit below and see what is blocking your profile from turning views into conversations.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
