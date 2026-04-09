@@ -3,7 +3,8 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {
   Target, Zap, CheckCircle2, Copy,
   User, LogOut, Lock, CreditCard,
-  Crown, ChevronDown, X, Radar, Users, MessageSquare, ListTodo, Flag
+  Crown, ChevronDown, X, Radar, Users, MessageSquare, ListTodo, Flag,
+  ArrowRight, Search, ShieldCheck
 } from 'lucide-react';
 import HistoryManager from './HistoryManager.tsx';
 
@@ -28,6 +29,7 @@ function App() {
   const [showPricing, setShowPricing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('pro');
   const menuRef = useRef<HTMLDivElement>(null);
+  const toolRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (token) {
@@ -102,6 +104,8 @@ function App() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const scrollToTool = () => toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const handleLoginSuccess = (credentialResponse: any) => {
     const jwt = credentialResponse.credential;
@@ -228,6 +232,14 @@ function App() {
     </div>
   );
 
+  const featureCard = (icon: React.ReactNode, title: string, desc: string) => (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-3 inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600">{icon}</div>
+      <h4 className="text-base font-bold text-slate-900 mb-2">{title}</h4>
+      <p className="text-sm leading-relaxed text-slate-600">{desc}</p>
+    </div>
+  );
+
   const planCard = (plan: PlanType, title: string, price: string, sub: string, items: string[], theme: 'light' | 'blue' | 'dark') => {
     const cardClass = theme === 'blue'
       ? 'p-8 rounded-3xl bg-indigo-600 border-4 border-indigo-100 flex flex-col shadow-xl shadow-indigo-100 relative md:-translate-y-4'
@@ -277,8 +289,8 @@ function App() {
               <button onClick={() => setShowPricing(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 z-10"><X className="w-5 h-5"/></button>
               <div className="p-8 md:p-12">
                 <div className="text-center mb-10">
-                  <h2 className="text-3xl font-black text-slate-900 mb-4">解锁顶级职场生产力</h2>
-                  <p className="text-slate-500 max-w-lg mx-auto font-medium">加入 2,000+ 精英求职者，使用 LinkedIn Sniper 占据招聘搜索的首屏位置。</p>
+                  <h2 className="text-3xl font-black text-slate-900 mb-4">Start free. Upgrade when you’re ready.</h2>
+                  <p className="text-slate-500 max-w-lg mx-auto font-medium">Pick the level that matches how serious you are about turning LinkedIn profile views into conversations.</p>
                 </div>
 
                 {!user ? (
@@ -294,9 +306,9 @@ function App() {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  {planCard('starter', '单次体验', '$0.99', '约合 ￥7.1', ['1 次深度 SEO 狙击', '5 种风格全开', '全量关键词报告'], 'light')}
-                  {planCard('pro', '精英月度', '$4.9/mo', '性价比之王', ['无限次 SEO 优化', 'D1 数据库永久存证', '优先获得新模型优化'], 'blue')}
-                  {planCard('ultra', '终极买断', '$19.9', '终身免订阅', ['永久尊贵会员身份', '包含所有 Pro 权益', '获取未来所有模块'], 'dark')}
+                  {planCard('starter', 'Free Profile Audit', '$0.99', 'Quick preview access', ['Basic profile audit', 'Missing keyword detection', '1 CTA suggestion', '1 DM preview'], 'light')}
+                  {planCard('pro', 'Client Acquisition Report', '$19', 'Main conversion offer', ['Full profile audit', 'Priority fixes', 'Action plan', 'Full CTA suggestions', 'Full DM Conversion Kit'], 'blue')}
+                  {planCard('ultra', 'Done-for-You Upgrade', '$149+', 'Hands-on support', ['Manual profile rewrite', 'Custom positioning', 'Personalized DM scripts', 'Conversion-focused optimization'], 'dark')}
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -318,21 +330,20 @@ function App() {
                     <div className="h-10 rounded-full bg-white border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center">登录后可跳转 PayPal</div>
                   )}
                 </div>
-
-                <p className="text-center mt-8 text-[10px] font-medium text-slate-400">所有支付由 PayPal 担保</p>
               </div>
             </div>
           </div>
         )}
 
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm shadow-slate-100">
-          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.reload()}>
+          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <div className="bg-indigo-600 p-1.5 rounded-lg shadow-sm shadow-indigo-200"><Target className="w-5 h-5 text-white" /></div>
-              <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Sniper</span><span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-full font-bold uppercase tracking-wider">Pro Beta</span></span>
+              <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Sniper</span></span>
             </div>
             <div className="flex items-center gap-4 relative" ref={menuRef}>
-              <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 hover:bg-amber-100 transition-colors mr-2"><Crown className="w-3.5 h-3.5 fill-current"/> Pricing</button>
+              <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100 hover:bg-amber-100 transition-colors">Pricing</button>
+              <button onClick={scrollToTool} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 hover:bg-indigo-100 transition-colors">Get Free Audit</button>
               {user ? (
                 <>
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-1 pr-3 rounded-full border border-slate-200 transition-all active:scale-95">
@@ -366,232 +377,380 @@ function App() {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-6 space-y-5">
-            <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><User className="w-5 h-5" /></div>
-                <div><h2 className="text-lg font-bold text-slate-900">数据注入</h2><p className="text-xs text-slate-500">粘贴你的 LinkedIn 个人主页内容</p></div>
+        <main>
+          <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
+                  <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Optimization
+                </div>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                  Turn Your LinkedIn Profile Into a <span className="text-indigo-600">Client-Generating Asset</span>
+                </h1>
+                <p className="mt-5 text-lg text-slate-600 max-w-xl leading-relaxed">
+                  Get a profile audit, stronger positioning, better CTA, and DM scripts that help turn profile views into real client conversations.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors">
+                    Get Free Profile Audit <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                    See Pricing
+                  </button>
+                </div>
+                <p className="mt-5 text-sm text-slate-500 max-w-xl">
+                  Built for founders, freelancers, consultants, and service operators who want LinkedIn to bring opportunities — not just impressions.
+                </p>
               </div>
-              <textarea className="w-full h-64 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none placeholder:text-slate-400 font-medium" placeholder="Ctrl+A 全选并复制你的 LinkedIn 主页，粘贴到这里..." value={profileData} onChange={(e) => setProfileData(e.target.value)} />
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="min-w-[200px] relative">
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">策略模式</label>
-                  <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
-                    <option>Story (故事导向)</option>
-                    <option value="Sniper (成果导向)">Sniper (成果导向) 🔒</option>
-                    <option value="Tech (技能导向)">Tech (技能导向) 🔒</option>
-                    <option value="Values (价值观导向)">Values (价值观导向) 🔒</option>
-                    <option value="Future (未来导向)">Future (未来导向) 🔒</option>
-                  </select>
-                  <div className="absolute right-4 bottom-3 pointer-events-none text-slate-400"><Lock className="w-4 h-4" /></div>
-                </div>
-                <div className="min-w-[200px]">
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Optimization Goal</label>
-                  <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={mode} onChange={(e) => setMode(e.target.value as OptimizationMode)}>
-                    <option value="client">Get Clients</option>
-                    <option value="job">Job Hunt</option>
-                  </select>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                      <div className="text-xs font-bold text-slate-400 mb-1">Audit</div>
+                      <div className="text-sm font-semibold text-slate-800">See what kills profile-to-message conversion</div>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                      <div className="text-xs font-bold text-slate-400 mb-1">Fix First</div>
+                      <div className="text-sm font-semibold text-slate-800">Know exactly what to fix first</div>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                      <div className="text-xs font-bold text-slate-400 mb-1">Positioning</div>
+                      <div className="text-sm font-semibold text-slate-800">Turn vague skills into a clear offer</div>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                      <div className="text-xs font-bold text-slate-400 mb-1">DM Kit</div>
+                      <div className="text-sm font-semibold text-slate-800">Start better conversations without sounding robotic</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              {mode === 'client' && (
-                <div className="mt-4">
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Target Client Type</label>
-                  <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={targetClientType} onChange={(e) => setTargetClientType(e.target.value)}>
-                    <option>SaaS Founder</option>
-                    <option>Freelancer / Consultant</option>
-                    <option>Agency / Service Provider</option>
-                  </select>
-                </div>
-              )}
-              <div className="mt-5 flex flex-wrap items-center gap-4">
-                <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
-                  {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? '开始获客优化' : '开始求职优化'}</span></>}
-                </button>
+            </div>
+          </section>
+
+          <section className="max-w-7xl mx-auto px-4 py-20">
+            <div className="max-w-3xl mb-10">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pain + Solution</div>
+              <h2 className="text-3xl font-black text-slate-900">Why your LinkedIn profile isn’t bringing clients — and how to fix it</h2>
+              <p className="mt-4 text-slate-600 text-lg">LinkedIn-Sniper helps you audit your profile, fix your positioning, improve your CTA, and generate message scripts that feel human.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {featureCard(<Search className="w-5 h-5" />, 'You look skilled, but not buyable', 'Your profile says what you do, but not why someone should message you.')}
+              {featureCard(<Users className="w-5 h-5" />, 'Your positioning is too vague', 'People visit your profile and still can’t tell who you help or what problem you solve.')}
+              {featureCard(<MessageSquare className="w-5 h-5" />, 'Views don’t turn into conversations', 'No CTA, no trust signals, no messaging flow — so profile traffic dies on the page.')}
+            </div>
+          </section>
+
+          <section className="bg-white border-y border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 py-20">
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">How it works</div>
+                <h2 className="text-3xl font-black text-slate-900">Three steps from profile copy to client conversations</h2>
               </div>
-            </section>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {featureCard(<Copy className="w-5 h-5" />, 'Paste your LinkedIn profile', 'Drop in your current profile content.')}
+                {featureCard(<Radar className="w-5 h-5" />, 'Get your client acquisition audit', 'See conversion issues, missing trust signals, and priority fixes.')}
+                {featureCard(<ArrowRight className="w-5 h-5" />, 'Upgrade your profile and conversations', 'Use optimized copy and DM scripts to turn more views into opportunities.')}
+              </div>
+            </div>
+          </section>
 
-            {result && (
-              <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
-                    <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
+          <section className="max-w-7xl mx-auto px-4 py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Output Preview</div>
+                <h2 className="text-3xl font-black text-slate-900">What you’ll get</h2>
+                <div className="mt-6 space-y-4">
+                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Profile Audit</div><p className="mt-2 text-sm text-slate-600">See what is hurting your profile-to-message conversion.</p></div>
+                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Priority Fixes</div><p className="mt-2 text-sm text-slate-600">Know exactly what to fix first.</p></div>
+                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Positioning + CTA</div><p className="mt-2 text-sm text-slate-600">Turn vague skills into a clear, client-facing offer.</p></div>
+                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">DM Conversion Kit</div><p className="mt-2 text-sm text-slate-600">Get connection requests, replies, and follow-ups that sound natural.</p></div>
+                </div>
+                <p className="mt-6 text-slate-600">This is not just profile polishing. It is built to help move people from profile views to conversations.</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why it’s different</div>
+                <h3 className="text-2xl font-black text-slate-900 leading-tight">Most LinkedIn tools help you write better. LinkedIn-Sniper helps you get messaged.</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                    <div className="text-sm font-bold text-slate-900 mb-3">Most LinkedIn tools</div>
+                    <ul className="space-y-2 text-sm text-slate-600">
+                      <li>• Rewrite your headline</li>
+                      <li>• Rewrite your about section</li>
+                      <li>• Suggest keywords</li>
+                    </ul>
                   </div>
-                  <div className="text-right">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
-                    <div className="text-xl font-black text-emerald-500">{user ? '+42.8%' : '+12.5%'}</div>
+                  <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-4">
+                    <div className="text-sm font-bold text-indigo-900 mb-3">LinkedIn-Sniper</div>
+                    <ul className="space-y-2 text-sm text-indigo-800">
+                      <li>• Audit why your profile doesn’t convert</li>
+                      <li>• Sharpen your positioning</li>
+                      <li>• Improve CTA</li>
+                      <li>• Generate DM scripts</li>
+                      <li>• Move views into conversations</li>
+                    </ul>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {result.seoKeywords?.map((k: string, i: number) => (<span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>))}
-                  {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white border-y border-slate-200">
+            <div className="max-w-7xl mx-auto px-4 py-20">
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pricing</div>
+                <h2 className="text-3xl font-black text-slate-900">Start free. Upgrade when you’re ready.</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {planCard('starter', 'Free Profile Audit', '$0.99', 'Quick preview access', ['Basic profile audit', 'Missing keyword detection', '1 CTA suggestion', '1 DM preview'], 'light')}
+                {planCard('pro', 'Client Acquisition Report', '$19', 'Main conversion offer', ['Full profile audit', 'Priority fixes', 'Action plan', 'Full CTA suggestions', 'Full DM Conversion Kit'], 'blue')}
+                {planCard('ultra', 'Done-for-You Upgrade', '$149+', 'Hands-on support', ['Manual profile rewrite', 'Custom positioning', 'Personalized DM scripts', 'Conversion-focused optimization'], 'dark')}
+              </div>
+            </div>
+          </section>
+
+          <section className="max-w-7xl mx-auto px-4 py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">FAQ</div>
+                <h2 className="text-3xl font-black text-slate-900">Questions before you try it?</h2>
+                <div className="mt-8 space-y-4">
+                  {[
+                    ['Is this for job seekers or client acquisition?', 'It supports both, but it is optimized for client acquisition, positioning, and inbound conversations.'],
+                    ['Do I need LinkedIn Premium?', 'No. This focuses on profile positioning, conversion copy, CTA, and message flow.'],
+                    ['Is this another AI writing tool?', 'No. It helps diagnose why your profile doesn’t convert, improve positioning, and generate message scripts for better client conversations.'],
+                    ['Can I try it for free?', 'Yes. Start with a free audit and upgrade only if you want the full report and message kit.']
+                  ].map(([q, a], i) => (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <div className="font-bold text-slate-900">{q}</div>
+                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">{a}</p>
+                    </div>
+                  ))}
                 </div>
-              </section>
-            )}
-          </div>
+              </div>
+              <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+                <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 mb-4">
+                  Final CTA
+                </div>
+                <h2 className="text-3xl font-black leading-tight">Your LinkedIn profile should bring clients — not just look polished</h2>
+                <p className="mt-4 text-white/70 text-lg leading-relaxed">Start with a free audit and see what is stopping your profile from turning views into conversations.</p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors">
+                    Get Free Profile Audit <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10 transition-colors">
+                    See Pricing
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
 
-          <div className="lg:col-span-6 space-y-5">
-            <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
-            {result ? (
-              <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <section ref={toolRef} className="max-w-7xl mx-auto px-4 pb-16">
+            <div className="mb-8">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Audit Tool</div>
+              <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client audit</h2>
+              <p className="mt-3 text-slate-600 max-w-2xl">Paste your current LinkedIn profile, generate the audit, and see exactly what is blocking profile views from turning into client conversations.</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-6 space-y-5">
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
-                  <div className="mb-5 grid grid-cols-2 gap-3">
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
-                      <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><User className="w-5 h-5" /></div>
+                    <div><h2 className="text-lg font-bold text-slate-900">Data Input</h2><p className="text-xs text-slate-500">Paste your LinkedIn profile content</p></div>
+                  </div>
+                  <textarea className="w-full h-64 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none placeholder:text-slate-400 font-medium" placeholder="Copy your LinkedIn profile and paste it here..." value={profileData} onChange={(e) => setProfileData(e.target.value)} />
+                  <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="min-w-[200px] relative">
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Tone</label>
+                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
+                        <option>Story (故事导向)</option>
+                        <option value="Sniper (成果导向)">Sniper (成果导向) 🔒</option>
+                        <option value="Tech (技能导向)">Tech (技能导向) 🔒</option>
+                        <option value="Values (价值观导向)">Values (价值观导向) 🔒</option>
+                        <option value="Future (未来导向)">Future (未来导向) 🔒</option>
+                      </select>
+                      <div className="absolute right-4 bottom-3 pointer-events-none text-slate-400"><Lock className="w-4 h-4" /></div>
                     </div>
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
-                      <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
+                    <div className="min-w-[200px]">
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Optimization Goal</label>
+                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={mode} onChange={(e) => setMode(e.target.value as OptimizationMode)}>
+                        <option value="client">Get Clients</option>
+                        <option value="job">Job Hunt</option>
+                      </select>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Missing Keywords</div>
-                      <div className="flex flex-wrap gap-2">
-                        {result.missingKeywords?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">{item}</span>)}
-                      </div>
+                  {mode === 'client' && (
+                    <div className="mt-4">
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Target Client Type</label>
+                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={targetClientType} onChange={(e) => setTargetClientType(e.target.value)}>
+                        <option>SaaS Founder</option>
+                        <option>Freelancer / Consultant</option>
+                        <option>Agency / Service Provider</option>
+                      </select>
                     </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Conversion Issues</div>
-                      <div className="space-y-2">
-                        {result.conversionIssues?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
-                      </div>
-                    </div>
-                    {!user && (
-                      <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
-                        <p className="text-xs text-slate-500 font-bold">解锁完整 Audit 与 Conversion Strategy</p>
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
-                  <div className="space-y-3">
-                    {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
-                  </div>
-                </section>
-
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('Do Next', 'Action plan', <ListTodo className="w-3.5 h-3.5" />)}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
-                      <div className="space-y-2">
-                        {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
-                      </div>
-                    </div>
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
-                      <div className="space-y-2">
-                        {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
-                  <div className="space-y-4">
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
-                      <p className="text-sm font-medium text-slate-700 leading-relaxed">{result.positioningStatement || '暂未生成定位建议'}</p>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Target Audience</div>
-                      <div className="flex flex-wrap gap-2">
-                        {result.targetAudience?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">{item}</span>)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        CTA Suggestions
-                      </div>
-                      <div className="space-y-2">
-                        {result.ctaSuggestions?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
-                      </div>
-                    </div>
+                  )}
+                  <div className="mt-5 flex flex-wrap items-center gap-4">
+                    <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
+                      {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Audit' : 'Start Job Optimization'}</span></>}
+                    </button>
                   </div>
                 </section>
 
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
-                  <div className="space-y-5">
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
-                      <div className="space-y-3">
-                        {result.connectionRequests?.map((item: string, i: number) => (
-                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                          </div>
-                        ))}
+                {result && (
+                  <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
+                        <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
+                        <div className="text-xl font-black text-emerald-500">{user ? '+42.8%' : '+12.5%'}</div>
                       </div>
                     </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Inbound Replies</div>
-                      <div className="space-y-3">
-                        {result.inboundReplies?.map((item: string, i: number) => (
-                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                          </div>
-                        ))}
-                      </div>
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {result.seoKeywords?.map((k: string, i: number) => (<span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>))}
+                      {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
                     </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Follow-up Messages</div>
-                      <div className="space-y-3">
-                        {result.followUpMessages?.map((item: string, i: number) => (
-                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </section>
+                  </section>
+                )}
+              </div>
 
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  {sectionTitle('Copy Assets', 'Headline and about output', <Target className="w-3.5 h-3.5" />)}
-                  <div className="space-y-5">
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Headlines</div>
-                      <div className="space-y-3">
-                        {result.headlines?.map((h: string, i: number) => (
-                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(h)}>
-                            <p className="text-sm font-semibold leading-relaxed text-slate-800 pr-8">{h}</p>
-                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                          </div>
-                        ))}
+              <div className="lg:col-span-6 space-y-5">
+                <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
+                {result ? (
+                  <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
+                      <div className="mb-5 grid grid-cols-2 gap-3">
+                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
+                          <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
+                        </div>
+                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
+                          <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center">About Versions {!user && <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1 rounded">1 / 5</span>}</div>
                       <div className="space-y-4">
-                        {result.aboutVersions?.map((v: string, i: number) => (
-                          <div key={i} className="space-y-2">
-                            <div className="flex items-center justify-between px-1"><span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Version {i + 1}</span><button onClick={() => copyToClipboard(v)} className="text-xs text-indigo-600 font-bold hover:underline">复制</button></div>
-                            <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-medium">{v}</div>
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Missing Keywords</div>
+                          <div className="flex flex-wrap gap-2">
+                            {result.missingKeywords?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">{item}</span>)}
                           </div>
-                        ))}
-                        {!user && <div className="p-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}><Lock className="w-6 h-6 text-slate-200 mb-2" /><p className="text-xs text-slate-400 font-bold">还有更多策略版本已锁定</p><p className="text-[10px] text-slate-300 mt-1">立即升级精英版解锁完整获客优化</p></div>}
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Conversion Issues</div>
+                          <div className="space-y-2">
+                            {result.conversionIssues?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                          </div>
+                        </div>
+                        {!user && (
+                          <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
+                            <p className="text-xs text-slate-500 font-bold">Unlock full audit and conversion strategy</p>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    </section>
+
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
+                      <div className="space-y-3">
+                        {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
+                      </div>
+                    </section>
+
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      {sectionTitle('Do Next', 'Action plan', <ListTodo className="w-3.5 h-3.5" />)}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
+                          <div className="space-y-2">
+                            {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
+                          <div className="space-y-2">
+                            {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
+                      <div className="space-y-4">
+                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
+                          <p className="text-sm font-medium text-slate-700 leading-relaxed">{result.positioningStatement || 'No positioning generated yet.'}</p>
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Target Audience</div>
+                          <div className="flex flex-wrap gap-2">
+                            {result.targetAudience?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">{item}</span>)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            <MessageSquare className="w-3.5 h-3.5" /> CTA Suggestions
+                          </div>
+                          <div className="space-y-2">
+                            {result.ctaSuggestions?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
+                      <div className="space-y-5">
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
+                          <div className="space-y-3">
+                            {result.connectionRequests?.map((item: string, i: number) => (
+                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Inbound Replies</div>
+                          <div className="space-y-3">
+                            {result.inboundReplies?.map((item: string, i: number) => (
+                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Follow-up Messages</div>
+                          <div className="space-y-3">
+                            {result.followUpMessages?.map((item: string, i: number) => (
+                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
-                </section>
+                ) : (
+                  <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-white/50 border border-dashed border-slate-300 rounded-3xl">
+                    <ShieldCheck className="w-8 h-8 text-slate-300 mb-4" /><h3 className="text-lg font-bold text-slate-400">Run your first audit to see results here</h3>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-white/50 border border-dashed border-slate-300 rounded-3xl">
-                <Zap className="w-8 h-8 text-slate-300 mb-4" /><h3 className="text-lg font-bold text-slate-400">待命状态</h3>
-              </div>
-            )}
-          </div>
+            </div>
+          </section>
         </main>
       </div>
     </GoogleOAuthProvider>
