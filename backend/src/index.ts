@@ -127,7 +127,8 @@ export default {
 - 找出为什么客户看完不会发消息
 - 找出缺少哪些信任信号、结果表达、服务对象表达、行动召唤
 - 设计更像真实 LinkedIn 场景的私信模板，而不是垃圾销售话术
-- 所有建议必须具体、直接、可执行，不能写正确但没用的废话`
+- 所有建议必须具体、直接、可执行，不能写正确但没用的废话
+- 私信文案必须像真人发的，不要像机器人、模板销售或客服脚本`
           : `你是一名资深的 LinkedIn 求职优化顾问，擅长帮助求职者提升 LinkedIn 搜索曝光、岗位匹配度和招聘吸引力。你的建议要具体、明确、可执行，避免空泛套话。`;
 
         const userPrompt = `请基于以下 LinkedIn 资料进行深度优化与审计。
@@ -165,6 +166,17 @@ ${profileData}
 - inboundReplies 必须像别人主动来问时的真实回复，不要太长
 - followUpMessages 必须能推进下一步，但不能油腻或骚扰
 
+私信文案额外硬规则：
+- 不准写“Hope you're doing well”这类废话开场
+- 不准写太长的段落，优先 1-3 句
+- 不准一上来强卖或强约 call
+- 要像 LinkedIn 上正常人会发的话
+- 每条文案都要有明确场景感
+- 至少体现 soft / normal / direct 的强度差异
+- follow-up 要体现两种场景：没回复、已表示兴趣
+- inbound reply 要体现两种场景：对方只是好奇、对方已经有潜在需求
+- connection request 要像精准连接，不像 spam outreach
+
 如果是 job 模式：
 - 重点围绕“被招聘方搜索到、资料更适合岗位匹配、表达更专业可信”
 
@@ -183,9 +195,9 @@ ${profileData}
 12. ctaSuggestions: 3 个 CTA 建议（字符串数组）
 13. priorityFixes: 3 个最高优先级修复动作（字符串数组）
 14. actionPlan: { today: string[], thisWeek: string[] }
-15. connectionRequests: 3 个连接请求模板（字符串数组）
-16. inboundReplies: 3 个别人主动来问时的回复模板（字符串数组）
-17. followUpMessages: 3 个跟进消息模板（字符串数组）
+15. connectionRequests: 3 个连接请求模板（字符串数组，分别偏 soft / normal / direct）
+16. inboundReplies: 3 个别人主动来问时的回复模板（字符串数组，分别覆盖好奇 / 潜在需求 / 高意向）
+17. followUpMessages: 3 个跟进消息模板（字符串数组，分别覆盖无回复 / 轻兴趣 / 推进下一步）
 
 额外输出质量要求：
 - headlines 要短、狠、清晰，尽量避免正确的废话
