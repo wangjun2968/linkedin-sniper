@@ -23,7 +23,7 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
     if (!token) return;
     setLoading(true);
     try {
-      // 这里的 API 地址根据后端实际部署调整
+      // Update this API URL if the backend deployment changes
       const response = await fetch('https://linkedin-api.soundxy9.workers.dev/history', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -42,7 +42,7 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
 
   if (!token) return (
     <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-500 border border-dashed border-gray-300">
-      登录后即可查看历史保存的版本
+      Sign in to view your saved history
     </div>
   );
 
@@ -51,16 +51,16 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
       <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
         <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
           <History className="w-4 h-4 text-indigo-600" />
-          历史版本库 (D1)
+          Saved History (D1)
         </h3>
-        <button onClick={fetchHistory} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">刷新</button>
+        <button onClick={fetchHistory} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">Refresh</button>
       </div>
       
       <div className="max-h-[300px] overflow-y-auto divide-y divide-slate-100">
         {loading ? (
-          <div className="p-8 text-center text-slate-400 text-xs">同步中...</div>
+          <div className="p-8 text-center text-slate-400 text-xs">Syncing...</div>
         ) : histories.length === 0 ? (
-          <div className="p-8 text-center text-slate-400 text-xs">暂无历史记录</div>
+          <div className="p-8 text-center text-slate-400 text-xs">No history yet</div>
         ) : (
           histories.map((h) => (
             <div 
@@ -77,7 +77,7 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
                 </span>
               </div>
               <p className="text-xs text-slate-600 line-clamp-2 pr-4">
-                {JSON.parse(h.result).headlines?.[0] || '无标题版本'}
+                {JSON.parse(h.result).headlines?.[0] || 'Untitled version'}
               </p>
             </div>
           ))

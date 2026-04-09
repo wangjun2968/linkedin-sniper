@@ -16,7 +16,7 @@ type OptimizationMode = 'job' | 'client';
 
 function App() {
   const [profileData, setProfileData] = useState('');
-  const [style, setStyle] = useState('Story (故事导向)');
+  const [style, setStyle] = useState('Story');
   const [mode, setMode] = useState<OptimizationMode>('client');
   const [targetClientType, setTargetClientType] = useState('SaaS Founder');
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ function App() {
     const orderID = params.get('token');
 
     if (paypal === 'cancel') {
-      alert('PayPal 支付已取消');
+      alert('PayPal payment was cancelled');
       window.history.replaceState({}, '', '/');
       return;
     }
@@ -67,13 +67,13 @@ function App() {
           });
           const data = await res.json();
           if (data.status === 'success') {
-            alert(`支付成功！您已升级为 ${data.plan} 会员`);
+            alert(`Payment successful! Your plan has been upgraded to ${data.plan}`);
             await fetchFullProfile(token);
           } else {
-            alert(data.error || '支付核销失败');
+            alert(data.error || 'Payment capture failed');
           }
         } catch (e: any) {
-          alert(e.message || '支付核销失败');
+          alert(e.message || 'Payment capture failed');
         } finally {
           window.history.replaceState({}, '', '/');
         }
@@ -123,7 +123,7 @@ function App() {
 
   const startPayPalCheckout = async () => {
     if (!token) {
-      alert('请先登录 Google');
+      alert('Please sign in with Google first');
       return;
     }
     try {
@@ -134,10 +134,10 @@ function App() {
         body: JSON.stringify({ planType: selectedPlan, token })
       });
       const data = await res.json();
-      if (!data.approveUrl) throw new Error(data.error || '无法创建 PayPal 订单');
+      if (!data.approveUrl) throw new Error(data.error || 'Unable to create PayPal order');
       window.location.href = data.approveUrl;
     } catch (e: any) {
-      alert(e.message || '无法跳转 PayPal');
+      alert(e.message || 'Unable to redirect to PayPal');
     } finally {
       setPaying(false);
     }
@@ -145,7 +145,7 @@ function App() {
 
   const handleOptimize = async () => {
     if (!profileData) return;
-    if (!token && style !== 'Story (故事导向)') {
+    if (!token && style !== 'Story') {
       setShowPricing(true);
       return;
     }
@@ -204,7 +204,7 @@ function App() {
       setResult(formattedData);
       if (token) fetchFullProfile(token);
     } catch {
-      alert('优化请求失败，请检查后端配置。');
+      alert('Optimization request failed. Please check the backend configuration.');
     } finally {
       setLoading(false);
     }
@@ -219,7 +219,7 @@ function App() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('已复制到剪贴板！');
+    alert('Copied to clipboard!');
   };
 
   const sectionTitle = (eyebrow: string, title: string, icon: React.ReactNode) => (
@@ -273,7 +273,7 @@ function App() {
           ))}
         </ul>
         <button onClick={() => setSelectedPlan(plan)} className={`mt-4 h-10 rounded-full text-xs font-bold transition-all ${btnClass}`}>
-          {selectedPlan === plan ? '当前已选' : '选择此方案'}
+          {selectedPlan === plan ? 'Selected' : 'Choose Plan'}
         </button>
       </div>
     );
@@ -295,13 +295,13 @@ function App() {
 
                 {!user ? (
                   <div className="mb-8 flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                    <div className="text-xs font-bold text-slate-500">先登录，再付款</div>
+                    <div className="text-xs font-bold text-slate-500">Sign in first, then pay</div>
                     <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="large" width="260" />
                   </div>
                 ) : (
                   <div className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-center">
-                    <div className="text-sm font-bold text-emerald-700">已登录：{user.email}</div>
-                    <div className="text-xs text-emerald-600 mt-1">支付将直接跳转 PayPal，不再走弹窗</div>
+                    <div className="text-sm font-bold text-emerald-700">Signed in: {user.email}</div>
+                    <div className="text-xs text-emerald-600 mt-1">Payment will redirect directly to PayPal</div>
                   </div>
                 )}
 
@@ -314,8 +314,8 @@ function App() {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <div className="text-sm font-bold text-slate-900">支付区</div>
-                      <div className="text-xs text-slate-500">当前方案：{selectedPlan}</div>
+                      <div className="text-sm font-bold text-slate-900">Checkout</div>
+                      <div className="text-xs text-slate-500">Current plan: {selectedPlan}</div>
                     </div>
                   </div>
                   {user ? (
@@ -324,10 +324,10 @@ function App() {
                       disabled={paying}
                       className="w-full h-11 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-sm font-bold transition-all disabled:opacity-60"
                     >
-                      {paying ? '跳转 PayPal 中...' : '前往 PayPal 付款'}
+                      {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
                     </button>
                   ) : (
-                    <div className="h-10 rounded-full bg-white border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center">登录后可跳转 PayPal</div>
+                    <div className="h-10 rounded-full bg-white border border-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center">Sign in to continue to PayPal</div>
                   )}
                 </div>
               </div>
@@ -359,13 +359,13 @@ function App() {
                       </div>
                       <div className="px-4 py-3 space-y-3">
                         <div className="flex justify-between items-center bg-indigo-50/50 p-2 rounded-xl border border-indigo-100/50">
-                          <div className="flex items-center gap-2"><Crown className={`w-4 h-4 ${fullProfile?.plan !== 'free' ? 'text-amber-500' : 'text-slate-300'}`} /><span className="text-xs font-bold text-slate-600">当前方案</span></div>
+                          <div className="flex items-center gap-2"><Crown className={`w-4 h-4 ${fullProfile?.plan !== 'free' ? 'text-amber-500' : 'text-slate-300'}`} /><span className="text-xs font-bold text-slate-600">Current Plan</span></div>
                           <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${fullProfile?.plan !== 'free' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-500'}`}>{fullProfile?.plan || 'Free'}</span>
                         </div>
                       </div>
                       <div className="px-2 py-2 border-t border-slate-100">
-                        <button onClick={() => { setIsMenuOpen(false); setShowPricing(true); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> 订阅方案</button>
-                        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> 退出登录</button>
+                        <button onClick={() => { setIsMenuOpen(false); setShowPricing(true); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Pricing</button>
+                        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> Sign Out</button>
                       </div>
                     </div>
                   )}
@@ -561,11 +561,11 @@ function App() {
                     <div className="min-w-[200px] relative">
                       <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Tone</label>
                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
-                        <option>Story (故事导向)</option>
-                        <option value="Sniper (成果导向)">Sniper (成果导向) 🔒</option>
-                        <option value="Tech (技能导向)">Tech (技能导向) 🔒</option>
-                        <option value="Values (价值观导向)">Values (价值观导向) 🔒</option>
-                        <option value="Future (未来导向)">Future (未来导向) 🔒</option>
+                        <option>Story</option>
+                        <option value="Sniper">Sniper 🔒</option>
+                        <option value="Tech">Tech 🔒</option>
+                        <option value="Values">Values 🔒</option>
+                        <option value="Future">Future 🔒</option>
                       </select>
                       <div className="absolute right-4 bottom-3 pointer-events-none text-slate-400"><Lock className="w-4 h-4" /></div>
                     </div>
