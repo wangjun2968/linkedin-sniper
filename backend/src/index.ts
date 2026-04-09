@@ -128,14 +128,7 @@ export default {
 - 找出缺少哪些信任信号、结果表达、服务对象表达、行动召唤
 - 所有建议必须具体、直接、可执行，不能写正确但没用的废话
 - 严禁空泛词汇堆砌，如 passionate, innovative, results-driven, dynamic, hard-working 这类无差异表达，除非有具体结果支撑
-- 输出必须更像客户获取策略，不像传统求职优化
-
-在 client 模式下，优先考虑以下问题：
-1. 是否明确写出服务对象
-2. 是否明确写出解决的问题
-3. 是否明确写出业务结果/收益
-4. 是否有能让人立即私信的 CTA
-5. 是否有足够的信任证明（案例、结果、系统、方法、项目、业务影响）`
+- 输出必须更像客户获取策略，不像传统求职优化`
           : `你是一名资深的 LinkedIn 求职优化顾问，擅长帮助求职者提升 LinkedIn 搜索曝光、岗位匹配度和招聘吸引力。你的建议要具体、明确、可执行，避免空泛套话。`;
 
         const userPrompt = `请基于以下 LinkedIn 资料进行深度优化与审计。
@@ -166,15 +159,12 @@ ${profileData}
 - targetAudience 必须是潜在客户/买家，而不是泛泛同行
 - missingKeywords 必须围绕客户搜索、服务标签、业务问题、解决方案表达
 - trustGaps 必须指出缺失的案例、结果、证明、流程、方法论等信任元素
+- priorityFixes 必须是优先级最高、最影响获客效果的 3 个动作
+- actionPlan.today 必须是今天就能改的动作
+- actionPlan.thisWeek 必须是这周内能完成的动作
 
 如果是 job 模式：
 - 重点围绕“被招聘方搜索到、资料更适合岗位匹配、表达更专业可信”
-
-client 模式下请特别注意：
-- 避免使用 broad / generic 的身份表达
-- 避免只写技能，不写业务价值
-- 避免只写兴趣，不写结果
-- 避免像个人简介，必须像可转化的服务定位
 
 【必须返回以下字段】
 1. aboutVersions: 5 个不同版本的 About（字符串数组）
@@ -189,13 +179,17 @@ client 模式下请特别注意：
 10. targetAudience: 3 个最适合吸引的人群（字符串数组）
 11. positioningStatement: 1 句定位陈述（字符串）
 12. ctaSuggestions: 3 个 CTA 建议（字符串数组）
+13. priorityFixes: 3 个最高优先级修复动作（字符串数组）
+14. actionPlan: { today: string[], thisWeek: string[] }
 
 额外输出质量要求：
 - headlines 要短、狠、清晰，尽量避免正确的废话
 - positioningStatement 要像一句能直接放进 Profile 的定位句
 - conversionIssues 要像增长顾问做的诊断，不像老师写评语
 - quickFixes 要像能立刻照着改资料的动作清单
-- ctaSuggestions 要能直接复制到 About 或 Featured 里使用`;
+- ctaSuggestions 要能直接复制到 About 或 Featured 里使用
+- priorityFixes 必须告诉用户先改哪 3 个最值钱
+- actionPlan 要有执行顺序，不要泛泛而谈`;
 
         const aiResponse = await fetch("https://api.xty.app/v1/chat/completions", {
           method: "POST",
@@ -227,6 +221,10 @@ client 模式下请特别注意：
         content.targetAudience = Array.isArray(content.targetAudience) ? content.targetAudience : [];
         content.positioningStatement = typeof content.positioningStatement === 'string' ? content.positioningStatement : '';
         content.ctaSuggestions = Array.isArray(content.ctaSuggestions) ? content.ctaSuggestions : [];
+        content.priorityFixes = Array.isArray(content.priorityFixes) ? content.priorityFixes : [];
+        content.actionPlan = typeof content.actionPlan === 'object' && content.actionPlan ? content.actionPlan : {};
+        content.actionPlan.today = Array.isArray(content.actionPlan.today) ? content.actionPlan.today : [];
+        content.actionPlan.thisWeek = Array.isArray(content.actionPlan.thisWeek) ? content.actionPlan.thisWeek : [];
 
         if (userEmail) {
           try {

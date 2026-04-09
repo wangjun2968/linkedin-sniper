@@ -3,7 +3,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {
   Target, Search, Zap, CheckCircle2, Copy,
   User, LogOut, Lock, CreditCard,
-  Crown, ChevronDown, X, Radar, Users, MessageSquare
+  Crown, ChevronDown, X, Radar, Users, MessageSquare, ListTodo, Flag
 } from 'lucide-react';
 import HistoryManager from './HistoryManager.tsx';
 
@@ -172,8 +172,13 @@ function App() {
         quickFixes: Array.isArray(data.quickFixes) ? data.quickFixes : [],
         targetAudience: Array.isArray(data.targetAudience) ? data.targetAudience : [],
         positioningStatement: typeof data.positioningStatement === 'string' ? data.positioningStatement : '',
-        ctaSuggestions: Array.isArray(data.ctaSuggestions) ? data.ctaSuggestions : []
+        ctaSuggestions: Array.isArray(data.ctaSuggestions) ? data.ctaSuggestions : [],
+        priorityFixes: Array.isArray(data.priorityFixes) ? data.priorityFixes : [],
+        actionPlan: typeof data.actionPlan === 'object' && data.actionPlan ? data.actionPlan : { today: [], thisWeek: [] }
       };
+      formattedData.actionPlan.today = Array.isArray(formattedData.actionPlan.today) ? formattedData.actionPlan.today : [];
+      formattedData.actionPlan.thisWeek = Array.isArray(formattedData.actionPlan.thisWeek) ? formattedData.actionPlan.thisWeek : [];
+
       if (!token) {
         formattedData.aboutVersions = formattedData.aboutVersions.slice(0, 1);
         formattedData.seoKeywords = formattedData.seoKeywords.slice(0, 2);
@@ -182,6 +187,9 @@ function App() {
         formattedData.trustGaps = formattedData.trustGaps.slice(0, 1);
         formattedData.quickFixes = formattedData.quickFixes.slice(0, 1);
         formattedData.ctaSuggestions = formattedData.ctaSuggestions.slice(0, 1);
+        formattedData.priorityFixes = formattedData.priorityFixes.slice(0, 1);
+        formattedData.actionPlan.today = formattedData.actionPlan.today.slice(0, 1);
+        formattedData.actionPlan.thisWeek = formattedData.actionPlan.thisWeek.slice(0, 1);
       }
       setResult(formattedData);
       if (token) fetchFullProfile(token);
@@ -452,6 +460,37 @@ function App() {
                         <p className="text-xs text-slate-500 font-bold">解锁完整 Audit 与 Conversion Strategy</p>
                       </div>
                     )}
+                  </div>
+                </section>
+
+                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                  <div className="flex items-center gap-2 mb-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
+                    <Flag className="w-4 h-4" />
+                    Priority Fixes
+                  </div>
+                  <div className="space-y-2">
+                    {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
+                  </div>
+                </section>
+
+                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                  <div className="flex items-center gap-2 mb-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
+                    <ListTodo className="w-4 h-4" />
+                    Action Plan
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
+                      <div className="space-y-2">
+                        {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
+                      <div className="space-y-2">
+                        {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                      </div>
+                    </div>
                   </div>
                 </section>
 
