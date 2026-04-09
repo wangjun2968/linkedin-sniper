@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {
-  Target, Search, Zap, CheckCircle2, Copy,
+  Target, Zap, CheckCircle2, Copy,
   User, LogOut, Lock, CreditCard,
   Crown, ChevronDown, X, Radar, Users, MessageSquare, ListTodo, Flag
 } from 'lucide-react';
@@ -212,6 +212,16 @@ function App() {
     alert('已复制到剪贴板！');
   };
 
+  const sectionTitle = (eyebrow: string, title: string, icon: React.ReactNode) => (
+    <div className="mb-4">
+      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">
+        {icon}
+        {eyebrow}
+      </div>
+      <h3 className="text-base font-bold text-slate-900">{title}</h3>
+    </div>
+  );
+
   const planCard = (plan: PlanType, title: string, price: string, sub: string, items: string[], theme: 'light' | 'blue' | 'dark') => {
     const cardClass = theme === 'blue'
       ? 'p-8 rounded-3xl bg-indigo-600 border-4 border-indigo-100 flex flex-col shadow-xl shadow-indigo-100 relative md:-translate-y-4'
@@ -350,15 +360,15 @@ function App() {
           </div>
         </header>
 
-        <main className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7 space-y-6">
+        <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-6 space-y-5">
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-5">
                 <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><User className="w-5 h-5" /></div>
                 <div><h2 className="text-lg font-bold text-slate-900">数据注入</h2><p className="text-xs text-slate-500">粘贴你的 LinkedIn 个人主页内容</p></div>
               </div>
               <textarea className="w-full h-64 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none placeholder:text-slate-400 font-medium" placeholder="Ctrl+A 全选并复制你的 LinkedIn 主页，粘贴到这里..." value={profileData} onChange={(e) => setProfileData(e.target.value)} />
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="min-w-[200px] relative">
                   <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">策略模式</label>
                   <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
@@ -388,7 +398,7 @@ function App() {
                   </select>
                 </div>
               )}
-              <div className="mt-6 flex flex-wrap items-center gap-4">
+              <div className="mt-5 flex flex-wrap items-center gap-4">
                 <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
                   {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? '开始获客优化' : '开始求职优化'}</span></>}
                 </button>
@@ -396,39 +406,40 @@ function App() {
             </section>
 
             {result && (
-              <section className="bg-indigo-900 p-6 rounded-2xl shadow-xl text-white relative overflow-hidden group animate-in zoom-in-95 duration-300">
-                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700"><Search className="w-24 h-24" /></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-4 text-indigo-300"><Target className="w-4 h-4" /><span className="text-[10px] font-bold uppercase tracking-widest">SEO Sniper Report</span></div>
-                  <h3 className="text-xl font-bold mb-2">已完成核心关键词埋伏</h3>
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {result.seoKeywords?.map((k: string, i: number) => (<span key={i} className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-lg text-xs font-semibold border border-white/20">#{k}</span>))}
-                    {!user && <span className="px-3 py-1 bg-indigo-500/30 backdrop-blur-md rounded-lg text-xs font-bold border border-dashed border-white/30 text-indigo-200">更多关键词已锁定 🔒</span>}
+              <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
+                    <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
                   </div>
-                  <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center">
-                    <div className="flex items-center gap-2 text-indigo-300"><Zap className="w-4 h-4" /><span className="text-xs">预计被搜索权重提升</span></div>
-                    <span className="text-2xl font-black text-emerald-400 font-mono tracking-tighter">{user ? '+42.8%' : '+12.5%'}</span>
+                  <div className="text-right">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
+                    <div className="text-xl font-black text-emerald-500">{user ? '+42.8%' : '+12.5%'}</div>
                   </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {result.seoKeywords?.map((k: string, i: number) => (<span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>))}
+                  {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
                 </div>
               </section>
             )}
           </div>
 
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-6 space-y-5">
             <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
             {result ? (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Profile Audit</h3>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      <Radar className="w-3.5 h-3.5" />
-                      {mode === 'client' ? 'Client Mode' : 'Job Mode'}
+                  {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
+                  <div className="mb-5 grid grid-cols-2 gap-3">
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
+                      <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
                     </div>
-                  </div>
-                  <div className="mb-5 p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
-                    <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
+                      <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
+                    </div>
                   </div>
                   <div className="space-y-4">
                     <div>
@@ -443,18 +454,6 @@ function App() {
                         {result.conversionIssues?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
                       </div>
                     </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Trust Gaps</div>
-                      <div className="space-y-2">
-                        {result.trustGaps?.length ? result.trustGaps.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>) : <div className="text-xs text-slate-400">暂无额外信任缺口建议</div>}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Quick Fixes</div>
-                      <div className="space-y-2">
-                        {result.quickFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">{item}</div>)}
-                      </div>
-                    </div>
                     {!user && (
                       <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
                         <p className="text-xs text-slate-500 font-bold">解锁完整 Audit 与 Conversion Strategy</p>
@@ -464,41 +463,32 @@ function App() {
                 </section>
 
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <div className="flex items-center gap-2 mb-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
-                    <Flag className="w-4 h-4" />
-                    Priority Fixes
-                  </div>
-                  <div className="space-y-2">
+                  {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
+                  <div className="space-y-3">
                     {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
                   </div>
                 </section>
 
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <div className="flex items-center gap-2 mb-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
-                    <ListTodo className="w-4 h-4" />
-                    Action Plan
-                  </div>
-                  <div className="space-y-4">
-                    <div>
+                  {sectionTitle('Do Next', 'Action plan', <ListTodo className="w-3.5 h-3.5" />)}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
                       <div className="space-y-2">
-                        {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                        {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
                       </div>
                     </div>
-                    <div>
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
                       <div className="space-y-2">
-                        {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                        {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
                       </div>
                     </div>
                   </div>
                 </section>
 
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <div className="flex items-center gap-2 mb-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
-                    <Users className="w-4 h-4" />
-                    Positioning Snapshot
-                  </div>
+                  {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
                   <div className="space-y-4">
                     <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
@@ -523,27 +513,31 @@ function App() {
                 </section>
 
                 <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">优化 Headline</h3>
-                  <div className="space-y-3">
-                    {result.headlines?.map((h: string, i: number) => (
-                      <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(h)}>
-                        <p className="text-sm font-semibold leading-relaxed text-slate-800 pr-8">{h}</p>
-                        <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                  {sectionTitle('Copy Assets', 'Headline and about output', <Target className="w-3.5 h-3.5" />)}
+                  <div className="space-y-5">
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Headlines</div>
+                      <div className="space-y-3">
+                        {result.headlines?.map((h: string, i: number) => (
+                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(h)}>
+                            <p className="text-sm font-semibold leading-relaxed text-slate-800 pr-8">{h}</p>
+                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex justify-between items-center">About 板块 {!user && <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1 rounded">1 / 5 Versions</span>}</h3>
-                  <div className="space-y-6">
-                    {result.aboutVersions?.map((v: string, i: number) => (
-                      <div key={i} className="space-y-2">
-                        <div className="flex items-center justify-between px-1"><span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Version {i + 1}</span><button onClick={() => copyToClipboard(v)} className="text-xs text-indigo-600 font-bold hover:underline">复制</button></div>
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-medium">{v}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center">About Versions {!user && <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-1 rounded">1 / 5</span>}</div>
+                      <div className="space-y-4">
+                        {result.aboutVersions?.map((v: string, i: number) => (
+                          <div key={i} className="space-y-2">
+                            <div className="flex items-center justify-between px-1"><span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Version {i + 1}</span><button onClick={() => copyToClipboard(v)} className="text-xs text-indigo-600 font-bold hover:underline">复制</button></div>
+                            <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-medium">{v}</div>
+                          </div>
+                        ))}
+                        {!user && <div className="p-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}><Lock className="w-6 h-6 text-slate-200 mb-2" /><p className="text-xs text-slate-400 font-bold">还有更多策略版本已锁定</p><p className="text-[10px] text-slate-300 mt-1">立即升级精英版解锁完整获客优化</p></div>}
                       </div>
-                    ))}
-                    {!user && <div className="p-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}><Lock className="w-6 h-6 text-slate-200 mb-2" /><p className="text-xs text-slate-400 font-bold">还有更多策略版本已锁定</p><p className="text-[10px] text-slate-300 mt-1">立即升级精英版解锁完整获客优化</p></div>}
+                    </div>
                   </div>
                 </section>
               </div>
