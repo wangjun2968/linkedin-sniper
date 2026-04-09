@@ -120,15 +120,14 @@ export default {
         if (!profileData) throw new Error("No data provided");
 
         const systemPrompt = mode === 'client'
-          ? `你是一名顶级的 LinkedIn 客户获取顾问和转化诊断师。你的任务不是润色简历，而是把一个人的 LinkedIn 资料改造成“更容易被目标客户发现、信任并主动私信”的客户获取资产。
+          ? `你是一名顶级的 LinkedIn 客户获取顾问、转化诊断师和私信转化策略顾问。你的任务不是润色简历，而是把一个人的 LinkedIn 资料和后续对话，改造成“更容易被目标客户发现、信任、私信并推进成交”的客户获取系统。
 
 你必须像一个狠但专业的增长顾问思考：
 - 优先判断这个资料是否像“在卖服务/解决方案”，而不是像普通求职自我介绍
 - 找出为什么客户看完不会发消息
 - 找出缺少哪些信任信号、结果表达、服务对象表达、行动召唤
-- 所有建议必须具体、直接、可执行，不能写正确但没用的废话
-- 严禁空泛词汇堆砌，如 passionate, innovative, results-driven, dynamic, hard-working 这类无差异表达，除非有具体结果支撑
-- 输出必须更像客户获取策略，不像传统求职优化`
+- 设计更像真实 LinkedIn 场景的私信模板，而不是垃圾销售话术
+- 所有建议必须具体、直接、可执行，不能写正确但没用的废话`
           : `你是一名资深的 LinkedIn 求职优化顾问，擅长帮助求职者提升 LinkedIn 搜索曝光、岗位匹配度和招聘吸引力。你的建议要具体、明确、可执行，避免空泛套话。`;
 
         const userPrompt = `请基于以下 LinkedIn 资料进行深度优化与审计。
@@ -162,6 +161,9 @@ ${profileData}
 - priorityFixes 必须是优先级最高、最影响获客效果的 3 个动作
 - actionPlan.today 必须是今天就能改的动作
 - actionPlan.thisWeek 必须是这周内能完成的动作
+- connectionRequests 必须短、自然、像真人，不像群发垃圾消息
+- inboundReplies 必须像别人主动来问时的真实回复，不要太长
+- followUpMessages 必须能推进下一步，但不能油腻或骚扰
 
 如果是 job 模式：
 - 重点围绕“被招聘方搜索到、资料更适合岗位匹配、表达更专业可信”
@@ -181,6 +183,9 @@ ${profileData}
 12. ctaSuggestions: 3 个 CTA 建议（字符串数组）
 13. priorityFixes: 3 个最高优先级修复动作（字符串数组）
 14. actionPlan: { today: string[], thisWeek: string[] }
+15. connectionRequests: 3 个连接请求模板（字符串数组）
+16. inboundReplies: 3 个别人主动来问时的回复模板（字符串数组）
+17. followUpMessages: 3 个跟进消息模板（字符串数组）
 
 额外输出质量要求：
 - headlines 要短、狠、清晰，尽量避免正确的废话
@@ -189,7 +194,8 @@ ${profileData}
 - quickFixes 要像能立刻照着改资料的动作清单
 - ctaSuggestions 要能直接复制到 About 或 Featured 里使用
 - priorityFixes 必须告诉用户先改哪 3 个最值钱
-- actionPlan 要有执行顺序，不要泛泛而谈`;
+- actionPlan 要有执行顺序，不要泛泛而谈
+- connectionRequests / inboundReplies / followUpMessages 都必须像真实 LinkedIn 对话，不要像机器人或 sales spam`;
 
         const aiResponse = await fetch("https://api.xty.app/v1/chat/completions", {
           method: "POST",
@@ -225,6 +231,9 @@ ${profileData}
         content.actionPlan = typeof content.actionPlan === 'object' && content.actionPlan ? content.actionPlan : {};
         content.actionPlan.today = Array.isArray(content.actionPlan.today) ? content.actionPlan.today : [];
         content.actionPlan.thisWeek = Array.isArray(content.actionPlan.thisWeek) ? content.actionPlan.thisWeek : [];
+        content.connectionRequests = Array.isArray(content.connectionRequests) ? content.connectionRequests : [];
+        content.inboundReplies = Array.isArray(content.inboundReplies) ? content.inboundReplies : [];
+        content.followUpMessages = Array.isArray(content.followUpMessages) ? content.followUpMessages : [];
 
         if (userEmail) {
           try {

@@ -174,7 +174,10 @@ function App() {
         positioningStatement: typeof data.positioningStatement === 'string' ? data.positioningStatement : '',
         ctaSuggestions: Array.isArray(data.ctaSuggestions) ? data.ctaSuggestions : [],
         priorityFixes: Array.isArray(data.priorityFixes) ? data.priorityFixes : [],
-        actionPlan: typeof data.actionPlan === 'object' && data.actionPlan ? data.actionPlan : { today: [], thisWeek: [] }
+        actionPlan: typeof data.actionPlan === 'object' && data.actionPlan ? data.actionPlan : { today: [], thisWeek: [] },
+        connectionRequests: Array.isArray(data.connectionRequests) ? data.connectionRequests : [],
+        inboundReplies: Array.isArray(data.inboundReplies) ? data.inboundReplies : [],
+        followUpMessages: Array.isArray(data.followUpMessages) ? data.followUpMessages : []
       };
       formattedData.actionPlan.today = Array.isArray(formattedData.actionPlan.today) ? formattedData.actionPlan.today : [];
       formattedData.actionPlan.thisWeek = Array.isArray(formattedData.actionPlan.thisWeek) ? formattedData.actionPlan.thisWeek : [];
@@ -190,6 +193,9 @@ function App() {
         formattedData.priorityFixes = formattedData.priorityFixes.slice(0, 1);
         formattedData.actionPlan.today = formattedData.actionPlan.today.slice(0, 1);
         formattedData.actionPlan.thisWeek = formattedData.actionPlan.thisWeek.slice(0, 1);
+        formattedData.connectionRequests = formattedData.connectionRequests.slice(0, 1);
+        formattedData.inboundReplies = formattedData.inboundReplies.slice(0, 1);
+        formattedData.followUpMessages = formattedData.followUpMessages.slice(0, 1);
       }
       setResult(formattedData);
       if (token) fetchFullProfile(token);
@@ -507,6 +513,45 @@ function App() {
                       </div>
                       <div className="space-y-2">
                         {result.ctaSuggestions?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                  {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
+                  <div className="space-y-5">
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
+                      <div className="space-y-3">
+                        {result.connectionRequests?.map((item: string, i: number) => (
+                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Inbound Replies</div>
+                      <div className="space-y-3">
+                        {result.inboundReplies?.map((item: string, i: number) => (
+                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Follow-up Messages</div>
+                      <div className="space-y-3">
+                        {result.followUpMessages?.map((item: string, i: number) => (
+                          <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                            <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                            <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
