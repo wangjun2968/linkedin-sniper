@@ -29,3 +29,14 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at INTEGER,
   FOREIGN KEY(user_email) REFERENCES users(email)
 );
+
+
+CREATE TABLE IF NOT EXISTS usage_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_email TEXT,
+  access_plan TEXT,
+  mode TEXT,
+  period_key TEXT,
+  created_at INTEGER,
+  FOREIGN KEY(user_email) REFERENCES users(email)
+);

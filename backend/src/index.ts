@@ -43,11 +43,21 @@ export default {
     };
 
     const getPlanRank = (plan) => ({ free: 0, starter: 1, pro: 2, ultra: 3 }[String(plan || 'free').toLowerCase()] || 0);
+    const getCurrentPeriodKey = () => {
+      const now = new Date();
+      return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+    };
 
-    const getHistoryCount = async (email) => {
+    const getUsageCount = async (email, accessPlan, periodKey = null) => {
+      if (periodKey) {
+        const row = await env.DB.prepare(`
+          SELECT COUNT(*) AS count FROM usage_events WHERE user_email = ? AND access_plan = ? AND period_key = ?
+        `).bind(email, accessPlan, periodKey).first();
+        return Number(row?.count || 0);
+      }
       const row = await env.DB.prepare(`
-        SELECT COUNT(*) AS count FROM history WHERE user_email = ?
-      `).bind(email).first();
+        SELECT COUNT(*) AS count FROM usage_events WHERE user_email = ? AND access_plan = ?
+      `).bind(email, accessPlan).first();
       return Number(row?.count || 0);
     };
 
@@ -58,25 +68,78 @@ export default {
       return Number(row?.count || 0);
     };
 
+    const getEffectiveStoredPlan = (profile) => {
+      const storedPlan = String(profile?.plan || 'free').toLowerCase();
+      const expiresAt = Number(profile?.expires_at || 0);
+      if ((storedPlan === 'pro' || storedPlan === 'ultra') && expiresAt && expiresAt < Date.now()) {
+        return 'free';
+      }
+      return storedPlan;
+    };
+
     const getAccessSummary = async (email) => {
       const profile = await getUserProfile(email);
-      const currentPlan = String(profile?.plan || 'free').toLowerCase();
-      const historyCount = await getHistoryCount(email);
+      const storedPlan = String(profile?.plan || 'free').toLowerCase();
+      const effectiveStoredPlan = getEffectiveStoredPlan(profile);
+      const periodKey = getCurrentPeriodKey();
+      const freeUsed = await getUsageCount(email, 'free');
       const starterPurchases = await getCompletedPaymentsCount(email, 'starter');
-      const hasUnlimitedAccess = currentPlan === 'pro' || currentPlan === 'ultra';
-      const totalAllowedGenerations = hasUnlimitedAccess ? null : 1 + starterPurchases;
-      const generationsRemaining = hasUnlimitedAccess ? null : Math.max(totalAllowedGenerations - historyCount, 0);
+      const starterUsed = await getUsageCount(email, 'starter');
+      const starterCreditsRemaining = Math.max(starterPurchases - starterUsed, 0);
+      const proUsedThisPeriod = await getUsageCount(email, 'pro', periodKey);
+      const ultraUsedThisPeriod = await getUsageCount(email, 'ultra', periodKey);
+
+      let currentPlan = 'free';
+      let generationLimit = 1;
+      let generationsUsed = freeUsed;
+      let generationsRemaining = Math.max(1 - freeUsed, 0);
+      let quotaPeriod = 'lifetime';
+
+      if (effectiveStoredPlan === 'ultra') {
+        currentPlan = 'ultra';
+        generationLimit = 200;
+        generationsUsed = ultraUsedThisPeriod;
+        generationsRemaining = Math.max(200 - ultraUsedThisPeriod, 0);
+        quotaPeriod = '30d';
+      } else if (effectiveStoredPlan === 'pro') {
+        currentPlan = 'pro';
+        generationLimit = 30;
+        generationsUsed = proUsedThisPeriod;
+        generationsRemaining = Math.max(30 - proUsedThisPeriod, 0);
+        quotaPeriod = '30d';
+      } else if (starterCreditsRemaining > 0) {
+        currentPlan = 'starter';
+        generationLimit = starterPurchases;
+        generationsUsed = starterUsed;
+        generationsRemaining = starterCreditsRemaining;
+        quotaPeriod = 'credit';
+      }
+
       return {
+        storedPlan,
         currentPlan,
-        historyCount,
-        starterPurchases,
-        hasUnlimitedAccess,
-        totalAllowedGenerations,
+        expiresAt: Number(profile?.expires_at || 0) || null,
+        periodKey,
+        quotaPeriod,
+        generationLimit,
+        generationsUsed,
         generationsRemaining,
-        canUse: hasUnlimitedAccess || generationsRemaining > 0,
+        freeUsed,
+        starterPurchases,
+        starterUsed,
+        starterCreditsRemaining,
+        canUse: generationsRemaining > 0,
         includeDmAssets: currentPlan === 'ultra',
         includeFullRewrite: currentPlan === 'pro' || currentPlan === 'ultra',
+        monthlyLimit: currentPlan === 'pro' ? 30 : currentPlan === 'ultra' ? 200 : null,
       };
+    };
+
+    const recordUsageEvent = async (email, accessPlan, mode) => {
+      await env.DB.prepare(`
+        INSERT INTO usage_events (user_email, access_plan, mode, period_key, created_at)
+        VALUES (?, ?, ?, ?, ?)
+      `).bind(email, accessPlan, mode, getCurrentPeriodKey(), Date.now()).run();
     };
 
     const getPayPalAccessToken = async () => {
@@ -197,11 +260,11 @@ export default {
           }
 
           const currentProfile = await getUserProfile(userEmail);
-          const currentPlan = String(currentProfile?.plan || 'free').toLowerCase();
+          const currentPlan = getEffectiveStoredPlan(currentProfile);
           const effectivePlan = getPlanRank(plan) >= getPlanRank(currentPlan) ? plan : currentPlan;
-          const expiry = effectivePlan === "ultra"
-            ? 4070908800000
-            : Date.now() + 30 * 24 * 60 * 60 * 1000;
+          const expiry = effectivePlan === "pro" || effectivePlan === "ultra"
+            ? Date.now() + 30 * 24 * 60 * 60 * 1000
+            : null;
 
           await env.DB.prepare("UPDATE users SET plan = ?, expires_at = ?, last_login = ? WHERE email = ?")
             .bind(effectivePlan, expiry, Date.now(), userEmail)
@@ -241,6 +304,7 @@ export default {
         const access = await getAccessSummary(payload.email);
         return new Response(JSON.stringify({
           ...(profile || { email: payload.email, name: payload.name, picture: payload.picture, plan: 'free' }),
+          plan: access.currentPlan,
           access,
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -482,9 +546,11 @@ ${profileData}
           await env.DB.prepare("INSERT INTO history (user_email, style, input, result, created_at) VALUES (?, ?, ?, ?, ?)")
             .bind(userEmail, `${style || "story"}|${mode}`, profileData, JSON.stringify(content), Date.now())
             .run();
+          await recordUsageEvent(userEmail, access.currentPlan, mode);
         } catch (dbErr) {}
 
-        return new Response(JSON.stringify({ ...content, access }), {
+        const refreshedAccess = await getAccessSummary(userEmail);
+        return new Response(JSON.stringify({ ...content, access: refreshedAccess }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }

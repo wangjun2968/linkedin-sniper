@@ -508,7 +508,7 @@ function App() {
 
   const unlockedFeatures = [
     access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
-    access?.hasUnlimitedAccess ? 'Generations: unlimited' : `Generations left: ${access?.generationsRemaining ?? 0}`,
+    access ? `Usage: ${access.generationsUsed ?? 0}/${access.generationLimit ?? 0} (${access.quotaPeriod || 'lifetime'})` : 'Usage: sign in required',
     access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
     access?.includeDmAssets ? 'DM / follow-up assets unlocked' : 'DM / follow-up assets locked',
   ];
@@ -676,7 +676,7 @@ function App() {
             )}
             {token && access && !access.hasUnlimitedAccess && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining generations: <span className="font-bold">{access.generationsRemaining}</span>
+                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining quota: <span className="font-bold">{access.generationsRemaining} / {access.generationLimit}</span> / {access.generationLimit} ({access.quotaPeriod})
               </div>
             )}
           </section>
@@ -1565,7 +1565,7 @@ function App() {
                         </div>
                         {access && !access.hasUnlimitedAccess && (
                           <div className="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
-                            <div className="text-xs font-bold text-slate-600">Remaining generations</div>
+                            <div className="text-xs font-bold text-slate-600">Remaining quota</div>
                             <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">{access.generationsRemaining}</span>
                           </div>
                         )}
