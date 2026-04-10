@@ -234,29 +234,6 @@ const trustProofItems = [
   },
 ];
 
-const portalCards = [
-  {
-    title: 'Free LinkedIn Audit',
-    desc: 'Run the tool and see what is hurting visibility, trust, and conversion.',
-    path: '/audit' as RoutePath,
-  },
-  {
-    title: 'Sample Report',
-    desc: 'See the kind of structured output, rewrites, and fixes users can unlock.',
-    path: '/sample-report' as RoutePath,
-  },
-  {
-    title: 'Pricing',
-    desc: 'Compare free audit, profile upgrade, and client acquisition upgrade.',
-    path: '/pricing' as RoutePath,
-  },
-  {
-    title: 'How It Works',
-    desc: 'Understand the flow from diagnosis to deeper rewrites and scripts.',
-    path: '/how-it-works' as RoutePath,
-  },
-];
-
 const howItWorksSteps = [
   {
     title: 'Paste your LinkedIn profile details',
@@ -849,20 +826,20 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
-              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Platform
+              <Target className="w-3.5 h-3.5" /> LinkedIn SEO Portal + Conversion Tools
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-              LinkedIn tools and reports built for <span className="text-indigo-600">visibility, trust, and client acquisition</span>
+              LinkedIn tools for <span className="text-indigo-600">visibility, trust, and client acquisition</span>
             </h1>
             <p className="mt-5 text-lg text-slate-600 max-w-3xl leading-relaxed">
-              Explore the free LinkedIn audit, sample report, pricing, and feature pages to find the right starting point for improving profile performance and long-term client acquisition.
+              Start with the free audit, explore the sample report, and choose the right page for profile optimization, pricing, and conversion support.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Go to Free Audit <ArrowRight className="w-4 h-4" />
+                Start Free Audit <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                Explore Sample Report
+                See Sample Report
               </button>
             </div>
           </div>
@@ -871,20 +848,38 @@ function App() {
 
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="max-w-3xl mb-10">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Start here</div>
-          <h2 className="text-3xl font-black text-slate-900">Choose the page that matches what you need</h2>
-          <p className="mt-4 text-slate-600 text-lg">Homepage now acts as a routing layer: discover the right tool, report, or decision page first, then go deeper.</p>
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Popular paths</div>
+          <h2 className="text-3xl font-black text-slate-900">Pick the page that matches your intent</h2>
+          <p className="mt-4 text-slate-600 text-lg">Use the homepage as a routing layer. Go to the tool page for instant diagnosis, the sample report page for proof, or the pricing page to compare plans.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {portalCards.map((item) => (
-            <button key={item.title} onClick={() => navigateTo(item.path)} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-              <div className="font-black text-slate-900 text-xl">{item.title}</div>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
-              <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">
-                Open page <ArrowRight className="w-4 h-4" />
-              </div>
-            </button>
-          ))}
+          <button onClick={() => navigateTo('/audit')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for quick diagnosis</div>
+            <div className="font-black text-slate-900 text-xl">Free LinkedIn Audit</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Run the audit and find what is hurting profile visibility, trust, positioning, and conversion.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Run Audit <ArrowRight className="w-4 h-4" /></div>
+          </button>
+
+          <button onClick={() => navigateTo('/sample-report')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for checking output quality</div>
+            <div className="font-black text-slate-900 text-xl">Sample Report</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Review a realistic audit example with scores, top issues, rewrites, CTA fixes, and message scripts.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">View Example <ArrowRight className="w-4 h-4" /></div>
+          </button>
+
+          <button onClick={() => navigateTo('/pricing')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for comparing plans</div>
+            <div className="font-black text-slate-900 text-xl">Pricing</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Compare the free audit, profile upgrade, and client acquisition upgrade paths before you buy.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">See Plans <ArrowRight className="w-4 h-4" /></div>
+          </button>
+
+          <button onClick={() => navigateTo('/features')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for understanding capabilities</div>
+            <div className="font-black text-slate-900 text-xl">Features</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">See how the product evaluates positioning, trust, CTA strength, rewrites, and client acquisition scripts.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Explore Features <ArrowRight className="w-4 h-4" /></div>
+          </button>
         </div>
       </section>
 
@@ -893,7 +888,7 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Who it’s for</div>
-              <h2 className="text-3xl font-black text-slate-900">Built for people using LinkedIn to win business</h2>
+              <h2 className="text-3xl font-black text-slate-900">Built for professionals using LinkedIn to generate business</h2>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {['Consultants', 'Freelancers', 'Agency owners', 'B2B founders', 'Coaches', 'Service businesses'].map((item) => (
                   <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-700 shadow-sm">{item}</div>
@@ -918,8 +913,8 @@ function App() {
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust this audit</div>
-            <h2 className="text-3xl font-black text-slate-900">Structured like a strategist, not generic AI fluff</h2>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust it</div>
+            <h2 className="text-3xl font-black text-slate-900">Built like a strategist, not a generic AI content tool</h2>
             <div className="mt-6 space-y-4">
               {trustProofItems.map((item) => (
                 <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -930,20 +925,20 @@ function App() {
             </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Popular next steps</div>
-            <h3 className="text-2xl font-black text-slate-900">Recommended journey</h3>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Recommended flow</div>
+            <h3 className="text-2xl font-black text-slate-900">Most users start here</h3>
             <div className="mt-6 space-y-4">
               <button onClick={() => navigateTo('/audit')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
-                <div className="font-bold text-slate-900">1. Start with the free audit</div>
-                <p className="mt-2 text-sm text-slate-600">See your score, top issues, and quick fixes.</p>
+                <div className="font-bold text-slate-900">1. Run the free audit</div>
+                <p className="mt-2 text-sm text-slate-600">Get a quick diagnosis and identify your biggest conversion leaks.</p>
               </button>
               <button onClick={() => navigateTo('/sample-report')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
                 <div className="font-bold text-slate-900">2. Review the sample report</div>
-                <p className="mt-2 text-sm text-slate-600">Understand the quality and depth of the paid output.</p>
+                <p className="mt-2 text-sm text-slate-600">See what a deeper report looks like before upgrading.</p>
               </button>
               <button onClick={() => navigateTo('/pricing')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
-                <div className="font-bold text-slate-900">3. Pick a plan</div>
-                <p className="mt-2 text-sm text-slate-600">Choose diagnosis, profile upgrade, or client acquisition support.</p>
+                <div className="font-bold text-slate-900">3. Compare plans</div>
+                <p className="mt-2 text-sm text-slate-600">Choose the right support level once you know what you need.</p>
               </button>
             </div>
           </div>
@@ -954,11 +949,11 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Light CTA</div>
-            <h2 className="text-3xl font-black text-slate-900">Start with the page that matches your intent</h2>
-            <p className="mt-4 text-slate-600 text-lg">Use the audit if you want immediate feedback. Use the sample report and pricing pages if you are comparing depth and value.</p>
+            <h2 className="text-3xl font-black text-slate-900">Start with the page that matches your goal</h2>
+            <p className="mt-4 text-slate-600 text-lg">Use the audit for immediate feedback, the sample report for proof, and the pricing page for plan comparison.</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Go to Free Audit <ArrowRight className="w-4 h-4" />
+                Start Free Audit <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => navigateTo('/pricing')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
                 View Pricing
