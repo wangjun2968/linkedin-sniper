@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { History, CreditCard, CheckCircle2 } from 'lucide-react';
 
 interface HistoryRecord {
@@ -23,17 +23,18 @@ interface HistoryManagerProps {
   currentStyle: string;
   onSelectHistory: (content: any) => void;
   token?: string;
+  initialTab?: 'history' | 'payments';
 }
 
 const API_BASE = 'https://linkedin-api-sandbox.soundxy9.workers.dev';
 
-const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectHistory, token }) => {
+const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectHistory, token, initialTab = 'history' }) => {
   const [histories, setHistories] = useState<HistoryRecord[]>([]);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<'history' | 'payments'>('history');
+  const [tab, setTab] = useState<'history' | 'payments'>(initialTab);
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     try {
@@ -50,11 +51,15 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
 
   useEffect(() => {
     if (token) fetchAll();
-  }, [token]);
+  }, [token, fetchAll]);
 
   if (!token) {
     return (
@@ -76,7 +81,6 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
             Saved History
           </button>
           <button
-            data-tab="payments"
             onClick={() => setTab('payments')}
             className={`text-sm font-semibold flex items-center gap-2 px-3 py-1.5 rounded-lg ${tab === 'payments' ? 'bg-white text-slate-800 border border-slate-200' : 'text-slate-500'}`}
           >

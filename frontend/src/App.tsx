@@ -268,6 +268,7 @@ function App() {
     return routes.some((route) => route.path === path) ? path : '/';
   });
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [historyTab, setHistoryTab] = useState<'history' | 'payments'>(() => new URLSearchParams(window.location.search).get('tab') === 'payments' ? 'payments' : 'history');
   const menuRef = useRef<HTMLDivElement>(null);
   const toolRef = useRef<HTMLDivElement>(null);
 
@@ -331,6 +332,7 @@ function App() {
     const handlePopState = () => {
       const path = window.location.pathname as RoutePath;
       setCurrentPath(routes.some((route) => route.path === path) ? path : '/');
+      setHistoryTab(new URLSearchParams(window.location.search).get('tab') === 'payments' ? 'payments' : 'history');
       window.scrollTo({ top: 0, behavior: 'auto' });
     };
 
@@ -356,11 +358,20 @@ function App() {
     }
   };
 
-  const navigateTo = (path: RoutePath, options?: { preserveScroll?: boolean }) => {
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
+  const navigateTo = (path: RoutePath, options?: { preserveScroll?: boolean; query?: Record<string, string | null> }) => {
+    const nextUrl = new URL(window.location.href);
+    nextUrl.pathname = path;
+    if (options?.query) {
+      Object.entries(options.query).forEach(([key, value]) => {
+        if (value === null) nextUrl.searchParams.delete(key);
+        else nextUrl.searchParams.set(key, value);
+      });
+    } else if (path !== currentPath) {
+      nextUrl.search = '';
     }
+    window.history.pushState({}, '', `${nextUrl.pathname}${nextUrl.search}`);
     setCurrentPath(path);
+    setHistoryTab(nextUrl.searchParams.get('tab') === 'payments' ? 'payments' : 'history');
     setMobileNavOpen(false);
     setIsMenuOpen(false);
     if (!options?.preserveScroll) {
@@ -716,7 +727,7 @@ function App() {
         </div>
 
         <div className="lg:col-span-6 space-y-5">
-          <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
+          <HistoryManager token={token || undefined} currentStyle={style} initialTab={historyTab} onSelectHistory={(content) => setResult(content)} />
           {result ? (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -1591,10 +1602,7 @@ function App() {
                         )}
                       </div>
                       <div className="px-2 py-2 border-t border-slate-100">
-                        <button onClick={() => { setIsMenuOpen(false); navigateTo('/audit'); setTimeout(() => {
-                          const paymentsTab = document.querySelector('[data-tab="payments"]') as HTMLButtonElement | null;
-                          paymentsTab?.click();
-                        }, 220); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Payment Records</button>
+                        <button onClick={() => { setIsMenuOpen(false); setHistoryTab('payments'); navigateTo('/audit', { query: { tab: 'payments' } }); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Payment Records</button>
                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> Sign Out</button>
                       </div>
                     </div>
