@@ -398,95 +398,100 @@ export default {
           });
         }
 
+        const hasCJK = /[一-鿿]/.test(profileData);
+        const hasLatinLetters = /[A-Za-z]/.test(profileData);
+        const outputLanguage = hasCJK && !hasLatinLetters ? "Chinese" : "English";
+
         const systemPrompt = mode === "client"
-          ? `你是一名顶级的 LinkedIn 客户获取顾问、转化诊断师和私信转化策略顾问。你的任务不是润色简历，而是把一个人的 LinkedIn 资料和后续对话，改造成“更容易被目标客户发现、信任、私信并推进成交”的客户获取系统。
+          ? `You are an elite LinkedIn client acquisition strategist, conversion diagnostician, and outreach messaging advisor. Your job is not to polish a resume. Your job is to turn a LinkedIn profile into a system that helps the user get found, trusted, messaged, and moved toward real business conversations.
 
-你必须像一个狠但专业的增长顾问思考：
-- 优先判断这个资料是否像“在卖服务/解决方案”，而不是像普通求职自我介绍
-- 找出为什么客户看完不会发消息
-- 找出缺少哪些信任信号、结果表达、服务对象表达、行动召唤
-- 设计更像真实 LinkedIn 场景的私信模板，而不是垃圾销售话术
-- 所有建议必须具体、直接、可执行，不能写正确但没用的废话
-- 私信文案必须像真人发的，不要像机器人、模板销售或客服脚本`
-          : `你是一名资深的 LinkedIn 求职优化顾问，擅长帮助求职者提升 LinkedIn 搜索曝光、岗位匹配度和招聘吸引力。你的建议要具体、明确、可执行，避免空泛套话。`;
+Think like a sharp but practical growth consultant:
+- Judge whether the profile feels like it sells a service / capability / solution, not like a generic job-seeker introduction
+- Identify why target clients would not message this person
+- Identify missing trust signals, outcomes, audience clarity, and CTAs
+- Design message templates that feel natural for LinkedIn, not spammy sales scripts
+- Keep every suggestion specific, direct, and usable
+- The output language must match the user's input language exactly`
+          : `You are an expert LinkedIn job-search optimization advisor. Help users improve LinkedIn discoverability, role relevance, and recruiter appeal. Keep advice specific, direct, and actionable. The output language must match the user's input language exactly.`;
 
-        const userPrompt = `请基于以下 LinkedIn 资料进行深度优化与审计。
+        const userPrompt = `Deeply audit and optimize the LinkedIn profile below.
 
-模式: ${mode}
-目标客户类型: ${targetClientType}
-文案风格: ${style}
+Mode: ${mode}
+Target client type: ${targetClientType}
+Writing style: ${style}
+Output language: ${outputLanguage}
 
-资料原文:
+Profile source:
 ${profileData}
 
-通用要求：
-- 输出必须是合法 JSON
-- 不要输出 markdown
-- 不要解释过程
-- 不要写空泛套话
-- 所有建议必须具体、直接、能落地
+Universal rules:
+- Return valid JSON only
+- Do not output markdown
+- Do not explain your process
+- Avoid generic filler
+- Every suggestion must be specific, direct, and actionable
+- The output language must exactly match the user's input language
 
-如果是 client 模式，必须严格遵守以下规则：
-- 不要把用户写成“正在找工作的人”，而要把用户写成“提供服务/能力/解决方案的人”
-- 优先强调：服务对象、问题、结果、方法、信任证明、CTA
-- Headline 必须至少包含以下四项中的两项：服务对象 / 解决的问题 / 结果 / 方法或技术路径
-- About 必须更像转化型介绍，而不是自我抒情简介
-- conversionIssues 必须直接指出“为什么客户不会私信他”，不要写泛泛建议
-- quickFixes 必须是可以立即改资料的动作，不要写大道理
-- positioningStatement 必须是一句能拿来放进 LinkedIn profile 的真实定位陈述
-- ctaSuggestions 必须像真实可成交的私信引导，不要写 feel free to connect 这种废话
-- targetAudience 必须是潜在客户/买家，而不是泛泛同行
-- missingKeywords 必须围绕客户搜索、服务标签、业务问题、解决方案表达
-- trustGaps 必须指出缺失的案例、结果、证明、流程、方法论等信任元素
-- priorityFixes 必须是优先级最高、最影响获客效果的 3 个动作
-- actionPlan.today 必须是今天就能改的动作
-- actionPlan.thisWeek 必须是这周内能完成的动作
-- connectionRequests 必须短、自然、像真人，不像群发垃圾消息
-- inboundReplies 必须像别人主动来问时的真实回复，不要太长
-- followUpMessages 必须能推进下一步，但不能油腻或骚扰
+If mode is client, follow these rules strictly:
+- Do not frame the user like a job seeker; frame them like someone selling a service, capability, or solution
+- Prioritize: target client, problem, outcome, method, proof, CTA
+- Headline must include at least two of: audience / problem / result / method
+- About must feel conversion-oriented, not self-expressive
+- conversionIssues must directly explain why clients would not message this person
+- quickFixes must be immediate profile actions, not vague advice
+- positioningStatement must be a real LinkedIn-ready positioning sentence
+- ctaSuggestions must feel commercially usable, not generic fluff
+- targetAudience must be potential buyers / clients
+- missingKeywords must focus on client search terms, service labels, business problems, and solution framing
+- trustGaps must identify missing proof, outcomes, process, or credibility signals
+- priorityFixes must be the 3 highest-leverage actions
+- actionPlan.today must be doable today
+- actionPlan.thisWeek must be doable this week
+- connectionRequests must be short, natural, and human
+- inboundReplies must sound like real replies to inbound interest
+- followUpMessages must move the conversation forward without sounding pushy
 
-私信文案额外硬规则：
-- 不准写“Hope you're doing well”这类废话开场
-- 不准写太长的段落，优先 1-3 句
-- 不准一上来强卖或强约 call
-- 要像 LinkedIn 上正常人会发的话
-- 每条文案都要有明确场景感
-- 至少体现 soft / normal / direct 的强度差异
-- follow-up 要体现两种场景：没回复、已表示兴趣
-- inbound reply 要体现两种场景：对方只是好奇、对方已经有潜在需求
-- connection request 要像精准连接，不像 spam outreach
+Extra messaging rules:
+- Do not open with “Hope you're doing well”
+- Prefer 1-3 short sentences
+- Do not hard-sell immediately
+- Make each message feel like a real LinkedIn scenario
+- Reflect soft / normal / direct intensity differences
+- Follow-ups should cover no reply and mild interest
+- Inbound replies should cover curiosity and real buying intent
+- Connection requests should feel precise, not spammy
 
-如果是 job 模式：
-- 重点围绕“被招聘方搜索到、资料更适合岗位匹配、表达更专业可信”
+If mode is job:
+- Focus on discoverability, role fit, and recruiter appeal
 
-【必须返回以下字段】
-1. aboutVersions: 5 个不同版本的 About（字符串数组）
-2. headlines: 3 个优化后的 Headline（字符串数组）
-3. postTopics: 5 个发帖选题（字符串数组）
-4. seoKeywords: 5 个关键词（字符串数组）
-5. auditScore: 0-100 的资料评分（数字）
-6. missingKeywords: 5 个缺失的重要关键词（字符串数组）
-7. conversionIssues: 3-5 个转化问题（字符串数组）
-8. trustGaps: 3-5 个信任缺口（字符串数组）
-9. quickFixes: 3-5 个快速修复建议（字符串数组）
-10. targetAudience: 3 个最适合吸引的人群（字符串数组）
-11. positioningStatement: 1 句定位陈述（字符串）
-12. ctaSuggestions: 3 个 CTA 建议（字符串数组）
-13. priorityFixes: 3 个最高优先级修复动作（字符串数组）
+Required fields:
+1. aboutVersions: 5 About versions (string[])
+2. headlines: 3 optimized headlines (string[])
+3. postTopics: 5 content topic ideas (string[])
+4. seoKeywords: 5 keywords (string[])
+5. auditScore: 0-100 profile score (number)
+6. missingKeywords: 5 missing keywords (string[])
+7. conversionIssues: 3-5 conversion issues (string[])
+8. trustGaps: 3-5 trust gaps (string[])
+9. quickFixes: 3-5 quick fixes (string[])
+10. targetAudience: 3 best-fit audiences (string[])
+11. positioningStatement: 1 positioning statement (string)
+12. ctaSuggestions: 3 CTA suggestions (string[])
+13. priorityFixes: 3 highest-priority fixes (string[])
 14. actionPlan: { today: string[], thisWeek: string[] }
-15. connectionRequests: 3 个连接请求模板（字符串数组，分别偏 soft / normal / direct）
-16. inboundReplies: 3 个别人主动来问时的回复模板（字符串数组，分别覆盖好奇 / 潜在需求 / 高意向）
-17. followUpMessages: 3 个跟进消息模板（字符串数组，分别覆盖无回复 / 轻兴趣 / 推进下一步）
+15. connectionRequests: 3 connection request templates (string[])
+16. inboundReplies: 3 inbound reply templates (string[])
+17. followUpMessages: 3 follow-up templates (string[])
 
-额外输出质量要求：
-- headlines 要短、狠、清晰，尽量避免正确的废话
-- positioningStatement 要像一句能直接放进 Profile 的定位句
-- conversionIssues 要像增长顾问做的诊断，不像老师写评语
-- quickFixes 要像能立刻照着改资料的动作清单
-- ctaSuggestions 要能直接复制到 About 或 Featured 里使用
-- priorityFixes 必须告诉用户先改哪 3 个最值钱
-- actionPlan 要有执行顺序，不要泛泛而谈
-- connectionRequests / inboundReplies / followUpMessages 都必须像真实 LinkedIn 对话，不要像机器人或 sales spam`;
+Quality bar:
+- headlines must be sharp and concise
+- positioningStatement must sound LinkedIn-ready
+- conversionIssues must sound like real growth diagnosis
+- quickFixes must feel immediately actionable
+- ctaSuggestions must be usable in About / Featured sections
+- priorityFixes must reflect the highest leverage order
+- actionPlan must feel sequenced, not random
+- connectionRequests / inboundReplies / followUpMessages must sound like real LinkedIn conversations`;
 
         const aiResponse = await fetch("https://api.xty.app/v1/chat/completions", {
           method: "POST",
