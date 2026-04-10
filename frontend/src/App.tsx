@@ -29,7 +29,7 @@ import {
 import HistoryManager from './HistoryManager.tsx';
 
 const GOOGLE_CLIENT_ID = '717774353715-hup70oee1bvvq0c5g69c327vggro9qp2.apps.googleusercontent.com';
-const API_URL = 'https://linkedin-api.soundxy9.workers.dev';
+const API_URL = 'https://linkedin-api-sandbox.soundxy9.workers.dev';
 
 type PlanType = 'starter' | 'pro' | 'ultra';
 type OptimizationMode = 'job' | 'client';
