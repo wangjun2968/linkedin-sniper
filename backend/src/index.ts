@@ -20,6 +20,28 @@ export default {
       return JSON.parse(atob(base64Url.replace(/-/g, "+").replace(/_/g, "/")));
     };
 
+    const ensureUserRow = async (payload) => {
+      if (!payload?.email) return;
+      await env.DB.prepare(`
+        INSERT INTO users (email, name, picture, plan, expires_at, last_login)
+        VALUES (?, ?, ?, 'free', NULL, ?)
+        ON CONFLICT(email) DO UPDATE SET
+          name=excluded.name,
+          picture=excluded.picture,
+          last_login=excluded.last_login
+      `)
+        .bind(payload.email, payload.name || 'User', payload.picture || '', Date.now())
+        .run();
+    };
+
+    const getUserProfile = async (email) => {
+      const row = await env.DB.prepare(`
+        SELECT email, name, picture, COALESCE(plan, 'free') AS plan, expires_at, last_login
+        FROM users WHERE email = ?
+      `).bind(email).first();
+      return row || null;
+    };
+
     const getPayPalAccessToken = async () => {
       if (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_CLIENT_SECRET) {
         throw new Error("Missing PayPal credentials");
@@ -95,6 +117,8 @@ export default {
         const payload = decodeJwtPayload(token);
         const userEmail = payload.email;
 
+        await ensureUserRow(payload);
+
         const accessToken = await getPayPalAccessToken();
         const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
           method: "POST",
@@ -113,20 +137,68 @@ export default {
             : normalizedDescription.includes("ultra")
               ? "ultra"
               : "pro";
+          const amount = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || pricing[plan] || null;
+          const currency = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.currency_code || 'USD';
           const expiry = plan === "ultra"
             ? 4070908800000
             : Date.now() + 30 * 24 * 60 * 60 * 1000;
 
-          await env.DB.prepare("UPDATE users SET plan = ?, expires_at = ? WHERE email = ?")
-            .bind(plan, expiry, userEmail)
+          await env.DB.prepare("UPDATE users SET plan = ?, expires_at = ?, last_login = ? WHERE email = ?")
+            .bind(plan, expiry, Date.now(), userEmail)
             .run();
 
-          return new Response(JSON.stringify({ status: "success", plan }), {
+          try {
+            await env.DB.prepare(`
+              INSERT INTO payments (user_email, order_id, plan, amount, currency, status, created_at)
+              VALUES (?, ?, ?, ?, ?, 'completed', ?)
+            `)
+              .bind(userEmail, orderID, plan, amount, currency, Date.now())
+              .run();
+          } catch (e) {}
+
+          return new Response(JSON.stringify({ status: "success", plan, amount, currency }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
         return new Response(JSON.stringify(captureData), {
           status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (request.method === "GET" && url.pathname === "/user/me") {
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const token = authHeader.split(" " )[1];
+        const payload = decodeJwtPayload(token);
+        await ensureUserRow(payload);
+        const profile = await getUserProfile(payload.email);
+        return new Response(JSON.stringify(profile || { email: payload.email, name: payload.name, picture: payload.picture, plan: 'free' }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (request.method === "GET" && url.pathname === "/payments") {
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const token = authHeader.split(" " )[1];
+        const payload = decodeJwtPayload(token);
+        const results = await env.DB.prepare(`
+          SELECT id, order_id, plan, amount, currency, status, created_at
+          FROM payments WHERE user_email = ?
+          ORDER BY created_at DESC LIMIT 20
+        `).bind(payload.email).all();
+        return new Response(JSON.stringify(results.results || []), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -166,9 +238,7 @@ export default {
             const payload = decodeJwtPayload(token);
             if (payload.email) {
               userEmail = payload.email;
-              await env.DB.prepare("INSERT INTO users (email, name, picture, last_login) VALUES (?, ?, ?, ?) ON CONFLICT(email) DO UPDATE SET last_login=excluded.last_login")
-                .bind(userEmail, payload.name || "User", payload.picture || "", Date.now())
-                .run();
+await ensureUserRow(payload);
             }
           } catch (e) {}
         }
