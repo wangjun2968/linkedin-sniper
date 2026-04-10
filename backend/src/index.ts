@@ -159,12 +159,16 @@ export default {
             plan = 'pro';
           }
 
-          const expiry = plan === "ultra"
+          const currentProfile = await getUserProfile(userEmail);
+          const currentPlan = String(currentProfile?.plan || 'free').toLowerCase();
+          const planRank = { free: 0, starter: 1, pro: 2, ultra: 3 };
+          const effectivePlan = (planRank[plan] || 0) >= (planRank[currentPlan] || 0) ? plan : currentPlan;
+          const expiry = effectivePlan === "ultra"
             ? 4070908800000
             : Date.now() + 30 * 24 * 60 * 60 * 1000;
 
           await env.DB.prepare("UPDATE users SET plan = ?, expires_at = ?, last_login = ? WHERE email = ?")
-            .bind(plan, expiry, Date.now(), userEmail)
+            .bind(effectivePlan, expiry, Date.now(), userEmail)
             .run();
 
           try {
@@ -176,7 +180,7 @@ export default {
               .run();
           } catch (e) {}
 
-          return new Response(JSON.stringify({ status: "success", plan, amount, currency }), {
+          return new Response(JSON.stringify({ status: "success", plan: effectivePlan, purchasedPlan: plan, amount, currency }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
