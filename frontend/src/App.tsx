@@ -18,7 +18,6 @@ import {
   ListTodo,
   Flag,
   ArrowRight,
-  Search,
   ShieldCheck,
   Menu,
   X as CloseIcon,
@@ -34,10 +33,11 @@ const API_URL = 'https://linkedin-api.soundxy9.workers.dev';
 
 type PlanType = 'starter' | 'pro' | 'ultra';
 type OptimizationMode = 'job' | 'client';
-type RoutePath = '/' | '/pricing' | '/sample-report' | '/faq' | '/how-it-works' | '/features';
+type RoutePath = '/' | '/audit' | '/pricing' | '/sample-report' | '/faq' | '/how-it-works' | '/features';
 
 const routes: { path: RoutePath; label: string }[] = [
   { path: '/', label: 'Home' },
+  { path: '/audit', label: 'Free Audit' },
   { path: '/pricing', label: 'Pricing' },
   { path: '/sample-report', label: 'Sample Report' },
   { path: '/how-it-works', label: 'How It Works' },
@@ -234,11 +234,27 @@ const trustProofItems = [
   },
 ];
 
-const differentiationItems = [
-  'Visibility + positioning + trust + conversion in one report',
-  'Free diagnosis first, paid action second',
-  'Rewrites and scripts instead of generic advice only',
-  'Built to improve client readiness, not just profile aesthetics',
+const portalCards = [
+  {
+    title: 'Free LinkedIn Audit',
+    desc: 'Run the tool and see what is hurting visibility, trust, and conversion.',
+    path: '/audit' as RoutePath,
+  },
+  {
+    title: 'Sample Report',
+    desc: 'See the kind of structured output, rewrites, and fixes users can unlock.',
+    path: '/sample-report' as RoutePath,
+  },
+  {
+    title: 'Pricing',
+    desc: 'Compare free audit, profile upgrade, and client acquisition upgrade.',
+    path: '/pricing' as RoutePath,
+  },
+  {
+    title: 'How It Works',
+    desc: 'Understand the flow from diagnosis to deeper rewrites and scripts.',
+    path: '/how-it-works' as RoutePath,
+  },
 ];
 
 const howItWorksSteps = [
@@ -512,13 +528,7 @@ function App() {
     </div>
   );
 
-  const featureCard = (icon: React.ReactNode, title: string, desc: string) => (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-3 inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600">{icon}</div>
-      <h4 className="text-base font-bold text-slate-900 mb-2">{title}</h4>
-      <p className="text-sm leading-relaxed text-slate-600">{desc}</p>
-    </div>
-  );
+
 
   const planCard = (
     plan: PlanType,
@@ -601,7 +611,7 @@ function App() {
 
   const ctaButtons = (primaryLabel = 'Get Free Audit') => (
     <>
-      <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+      <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
         {primaryLabel} <ArrowRight className="w-4 h-4" />
       </button>
       <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
@@ -836,43 +846,24 @@ function App() {
   const homePage = (
     <>
       <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div>
+        <div className="max-w-7xl mx-auto px-4 py-20">
+          <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
-              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Optimization
+              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Platform
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-              Turn Your LinkedIn Profile Into a <span className="text-indigo-600">Client Acquisition Asset</span>
+              LinkedIn tools and reports built for <span className="text-indigo-600">visibility, trust, and client acquisition</span>
             </h1>
-            <p className="mt-5 text-lg text-slate-600 max-w-xl leading-relaxed">
-              Get a fast LinkedIn profile audit that shows what’s hurting your visibility, trust, and inbound leads — then unlock deeper rewrites and conversion upgrades.
+            <p className="mt-5 text-lg text-slate-600 max-w-3xl leading-relaxed">
+              Explore the free LinkedIn audit, sample report, pricing, and feature pages to find the right starting point for improving profile performance and long-term client acquisition.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">{ctaButtons()}</div>
-            <p className="mt-5 text-sm text-slate-500 max-w-xl">
-              Built for consultants, freelancers, agency owners, coaches, and B2B founders who want clients — not just profile views.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4 max-w-md lg:ml-auto">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                  <div className="text-xs font-bold text-slate-400 mb-1">Visibility</div>
-                  <div className="text-sm font-semibold text-slate-800">See what limits profile appeal</div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                  <div className="text-xs font-bold text-slate-400 mb-1">Positioning</div>
-                  <div className="text-sm font-semibold text-slate-800">Clarify who you help</div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                  <div className="text-xs font-bold text-slate-400 mb-1">Trust</div>
-                  <div className="text-sm font-semibold text-slate-800">Spot credibility gaps</div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                  <div className="text-xs font-bold text-slate-400 mb-1">Conversion</div>
-                  <div className="text-sm font-semibold text-slate-800">Fix weak CTA and follow-up flow</div>
-                </div>
-              </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                Go to Free Audit <ArrowRight className="w-4 h-4" />
+              </button>
+              <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                Explore Sample Report
+              </button>
             </div>
           </div>
         </div>
@@ -880,32 +871,46 @@ function App() {
 
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="max-w-3xl mb-10">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pain Points</div>
-          <h2 className="text-3xl font-black text-slate-900">Why your LinkedIn profile may not be converting</h2>
-          <p className="mt-4 text-slate-600 text-lg">You might be getting views, but that does not mean your profile is turning attention into conversations.</p>
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Start here</div>
+          <h2 className="text-3xl font-black text-slate-900">Choose the page that matches what you need</h2>
+          <p className="mt-4 text-slate-600 text-lg">Homepage now acts as a routing layer: discover the right tool, report, or decision page first, then go deeper.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {featureCard(<Search className="w-5 h-5" />, 'You get views, but no messages', 'Your profile may attract attention but still fail to tell visitors why they should reach out.')}
-          {featureCard(<Users className="w-5 h-5" />, 'Your positioning is too vague', 'People visit your profile and still can’t tell who you help or what problem you solve.')}
-          {featureCard(<MessageSquare className="w-5 h-5" />, 'Your CTA is weak or missing', 'Even interested visitors may leave without taking action if the next step is unclear.')}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {portalCards.map((item) => (
+            <button key={item.title} onClick={() => navigateTo(item.path)} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
+              <div className="font-black text-slate-900 text-xl">{item.title}</div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">
+                Open page <ArrowRight className="w-4 h-4" />
+              </div>
+            </button>
+          ))}
         </div>
       </section>
 
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">How it works</div>
-            <h2 className="text-3xl font-black text-slate-900">Three steps from profile copy to client conversations</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {howItWorksSteps.map((step, index) => (
-              <div key={step.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600 mb-4">{step.icon}</div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Step {index + 1}</div>
-                <h3 className="text-lg font-bold text-slate-900">{step.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{step.desc}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Who it’s for</div>
+              <h2 className="text-3xl font-black text-slate-900">Built for people using LinkedIn to win business</h2>
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {['Consultants', 'Freelancers', 'Agency owners', 'B2B founders', 'Coaches', 'Service businesses'].map((item) => (
+                  <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-700 shadow-sm">{item}</div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What it helps with</div>
+              <h2 className="text-3xl font-black text-slate-900">Core improvement areas</h2>
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {['Visibility', 'Positioning', 'Trust', 'Conversion'].map((item) => (
+                  <div key={item} className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+                    <div className="text-base font-black text-slate-900">{item}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -913,111 +918,80 @@ function App() {
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample Insights</div>
-            <h2 className="text-3xl font-black text-slate-900">See what your audit can uncover</h2>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust this audit</div>
+            <h2 className="text-3xl font-black text-slate-900">Structured like a strategist, not generic AI fluff</h2>
             <div className="mt-6 space-y-4">
-              {sampleInsights.map((item) => (
-                <div key={item.title} className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+              {trustProofItems.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">{item.title}</div>
-                  <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
-            <h3 className="text-2xl font-black text-slate-900 leading-tight">Diagnosis first. Action second.</h3>
-            <div className="grid grid-cols-1 gap-4 mt-6">
-              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                <div className="text-sm font-bold text-slate-900">Free Audit</div>
-                <p className="mt-2 text-sm text-slate-600">Overall profile score, top issues, and quick improvement suggestions.</p>
-              </div>
-              <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-4">
-                <div className="text-sm font-bold text-indigo-900">Paid Upgrade</div>
-                <p className="mt-2 text-sm text-indigo-800">Full report, rewrites, CTA fixes, and DM scripts built to support client acquisition.</p>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                See Sample Report
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Popular next steps</div>
+            <h3 className="text-2xl font-black text-slate-900">Recommended journey</h3>
+            <div className="mt-6 space-y-4">
+              <button onClick={() => navigateTo('/audit')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
+                <div className="font-bold text-slate-900">1. Start with the free audit</div>
+                <p className="mt-2 text-sm text-slate-600">See your score, top issues, and quick fixes.</p>
               </button>
-              <button onClick={() => navigateTo('/pricing')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors">
+              <button onClick={() => navigateTo('/sample-report')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
+                <div className="font-bold text-slate-900">2. Review the sample report</div>
+                <p className="mt-2 text-sm text-slate-600">Understand the quality and depth of the paid output.</p>
+              </button>
+              <button onClick={() => navigateTo('/pricing')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
+                <div className="font-bold text-slate-900">3. Pick a plan</div>
+                <p className="mt-2 text-sm text-slate-600">Choose diagnosis, profile upgrade, or client acquisition support.</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Light CTA</div>
+            <h2 className="text-3xl font-black text-slate-900">Start with the page that matches your intent</h2>
+            <p className="mt-4 text-slate-600 text-lg">Use the audit if you want immediate feedback. Use the sample report and pricing pages if you are comparing depth and value.</p>
+            <div className="mt-8 flex flex-wrap gap-3 justify-center">
+              <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                Go to Free Audit <ArrowRight className="w-4 h-4" />
+              </button>
+              <button onClick={() => navigateTo('/pricing')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
                 View Pricing
               </button>
             </div>
           </div>
         </div>
       </section>
+    </>
+  );
 
-      <section className="bg-white border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust this audit</div>
-            <h2 className="text-3xl font-black text-slate-900">Built to feel more like a strategist than a generic AI tool</h2>
-            <p className="mt-4 text-slate-600 text-lg">The goal is not just better wording. The goal is better positioning, stronger trust, and more chances to start real conversations.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {trustProofItems.map((item) => (
-              <div key={item.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="font-bold text-slate-900">{item.title}</div>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-3">What makes it different</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {differentiationItems.map((item) => (
-                <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-white/85">{item}</div>
-              ))}
-            </div>
-          </div>
+  const auditPage = (
+    <>
+      {pageHero(
+        'Free Audit',
+        'Run your LinkedIn profile audit',
+        'Use the audit tool to check what is hurting your visibility, trust, positioning, and conversion potential.',
+        <>
+          <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+            Start Audit <ArrowRight className="w-4 h-4" />
+          </button>
+          <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+            See Sample Report
+          </button>
+        </>
+      )}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {['Visibility score', 'Positioning issues', 'Trust gaps', 'CTA recommendations'].map((item) => (
+            <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-sm font-bold text-slate-700">{item}</div>
+          ))}
         </div>
       </section>
-
-      <section className="bg-white border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pricing</div>
-            <h2 className="text-3xl font-black text-slate-900">Choose the level of support you need</h2>
-            <p className="mt-4 text-slate-600 text-lg">Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.</p>
-          </div>
-          {renderPricingCards(true)}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">FAQ</div>
-            <h2 className="text-3xl font-black text-slate-900">Questions before you try it?</h2>
-            <div className="mt-8 space-y-4">
-              {faqItems.slice(0, 4).map((item) => (
-                <div key={item.q} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="font-bold text-slate-900">{item.q}</div>
-                  <p className="mt-2 text-sm text-slate-600 leading-relaxed">{item.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
-            <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 mb-4">
-              Final CTA
-            </div>
-            <h2 className="text-3xl font-black leading-tight">Stop guessing what’s holding your LinkedIn profile back</h2>
-            <p className="mt-4 text-white/70 text-lg leading-relaxed">Get your free audit and see what’s hurting your visibility, trust, and inbound lead conversion.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors shadow-lg shadow-slate-950/10">
-                Get Free Audit <ArrowRight className="w-4 h-4" />
-              </button>
-              <button onClick={() => navigateTo('/faq')} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10 transition-colors">
-                Read FAQ
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {toolSection}
     </>
   );
@@ -1317,6 +1291,8 @@ function App() {
 
   const renderPage = () => {
     switch (currentPath) {
+      case '/audit':
+        return auditPage;
       case '/pricing':
         return pricingPage;
       case '/sample-report':
