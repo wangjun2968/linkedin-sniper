@@ -349,7 +349,6 @@ function App() {
       });
       if (response.ok) {
         const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Optimization request failed');
         setFullProfile(data);
       }
     } catch {
@@ -506,9 +505,15 @@ function App() {
 
 
 
+  const formatAccessTime = (value?: number | null) => {
+    if (!value) return '—';
+    return new Date(value).toLocaleString();
+  };
+
   const unlockedFeatures = [
     access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
     access ? `Usage: ${access.generationsUsed ?? 0}/${access.generationLimit ?? 0} (${access.quotaPeriod || 'lifetime'})` : 'Usage: sign in required',
+    access?.quotaResetAt ? `Next quota reset: ${formatAccessTime(access.quotaResetAt)}` : `Current cycle ends: ${formatAccessTime(access.cycleEndsAt)}`,
     access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
     access?.includeDmAssets ? 'DM / follow-up assets unlocked' : 'DM / follow-up assets locked',
   ];
@@ -1565,7 +1570,7 @@ function App() {
                         </div>
                         {access && !access.hasUnlimitedAccess && (
                           <div className="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
-                            <div className="text-xs font-bold text-slate-600">Remaining quota</div>
+                            <div className="text-xs font-bold text-slate-600">Remaining quota / cycle</div>
                             <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">{access.generationsRemaining}</span>
                           </div>
                         )}

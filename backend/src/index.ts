@@ -47,6 +47,10 @@ export default {
       const now = new Date();
       return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
     };
+    const getNextMonthlyResetAt = () => {
+      const now = new Date();
+      return Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0, 0);
+    };
 
     const getUsageCount = async (email, accessPlan, periodKey = null) => {
       if (periodKey) {
@@ -115,6 +119,11 @@ export default {
         quotaPeriod = 'credit';
       }
 
+      const quotaResetAt = quotaPeriod === '30d' ? getNextMonthlyResetAt() : null;
+      const cycleEndsAt = quotaPeriod === '30d'
+        ? Math.min(Number(profile?.expires_at || 0) || getNextMonthlyResetAt(), getNextMonthlyResetAt())
+        : Number(profile?.expires_at || 0) || null;
+
       return {
         storedPlan,
         currentPlan,
@@ -132,6 +141,8 @@ export default {
         includeDmAssets: currentPlan === 'ultra',
         includeFullRewrite: currentPlan === 'pro' || currentPlan === 'ultra',
         monthlyLimit: currentPlan === 'pro' ? 30 : currentPlan === 'ultra' ? 200 : null,
+        quotaResetAt,
+        cycleEndsAt,
       };
     };
 
