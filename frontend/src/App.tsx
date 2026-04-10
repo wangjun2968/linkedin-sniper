@@ -160,21 +160,63 @@ const faqItems = [
 const sampleInsights = [
   {
     title: 'Weak positioning',
-    desc: 'Your profile may not clearly show who you help, what problem you solve, and why you’re different.',
+    desc: 'Your profile talks about skills and experience, but it does not quickly tell buyers who you help, what outcome you deliver, and why you are different.',
   },
   {
     title: 'Low trust signals',
-    desc: 'Your profile may not create enough confidence for visitors to reach out.',
+    desc: 'There are not enough proof elements such as specific outcomes, niche focus, or authority cues to create confidence fast.',
   },
   {
     title: 'Weak CTA',
-    desc: 'Visitors may understand your background but still not know what to do next.',
+    desc: 'Visitors can understand your background but still do not know what action to take next or what kind of conversation to start.',
   },
   {
     title: 'Generic messaging',
-    desc: 'Your headline and About section may sound too broad to attract the right clients.',
+    desc: 'Your headline and About section sound broad, which makes the profile feel credible but not compelling enough to message.',
   },
 ];
+
+const sampleReportIssues = [
+  {
+    title: 'Headline lacks buyer clarity',
+    impact: 'High Impact',
+    why: 'A visitor cannot tell in 3 seconds who you help, what result you deliver, or why they should care.',
+    fix: 'Lead with audience + result + credibility cue instead of generic role labels.',
+  },
+  {
+    title: 'About section builds background, not demand',
+    impact: 'High Impact',
+    why: 'The profile explains experience but does not convert that experience into a clear client-facing promise.',
+    fix: 'Reframe the About section around problems solved, outcomes created, and the next step to contact you.',
+  },
+  {
+    title: 'CTA is too weak or invisible',
+    impact: 'Medium Impact',
+    why: 'Interested profile visitors may leave because the profile does not tell them what to do next.',
+    fix: 'Add a direct CTA for consultation, intro call, or message trigger in the headline/About/featured areas.',
+  },
+];
+
+const sampleReportQuickWins = [
+  'Rewrite the headline to show audience + outcome + authority.',
+  'Add one concrete proof point in the About section.',
+  'Insert a direct CTA telling visitors what to message you about.',
+];
+
+const sampleReportBeforeAfter = {
+  beforeHeadline: 'Frontend Engineer | SaaS Builder | AI Enthusiast',
+  afterHeadline: 'I help SaaS founders turn product ideas into conversion-focused web apps with faster launch cycles and cleaner execution.',
+  beforeAbout:
+    'I am a frontend engineer with experience in React, Node.js, and product development. I enjoy building digital products and solving business problems.',
+  afterAbout:
+    'I help SaaS founders, consultants, and service businesses ship faster, cleaner, conversion-focused products without wasting cycles on bloated builds. My work focuses on fast execution, sharp positioning, and production-ready delivery. If you need a builder who can turn messy product ideas into working assets that sell, send me a message with your current bottleneck.',
+  cta: 'Message me if you want help improving product positioning, shipping faster, or turning your website/profile into a stronger conversion asset.',
+};
+
+const sampleReportScripts = {
+  connection: 'Hey Sarah — your work around B2B SaaS positioning caught my eye. I help founders tighten product messaging and conversion flow. Thought it made sense to connect.',
+  followUp: 'Thanks for connecting. Quick question — are you currently more focused on improving traffic quality, profile conversion, or outbound response rates?',
+};
 
 const howItWorksSteps = [
   {
@@ -958,56 +1000,141 @@ function App() {
     <>
       {pageHero(
         'Sample Report',
-        'See what your LinkedIn profile audit can uncover',
-        'Get a clearer picture of what may be hurting your visibility, trust, and inbound lead conversion — before you invest time rewriting everything.',
+        'See what a real LinkedIn profile audit can look like',
+        'This sample shows how LinkedIn-Sniper turns vague profile feedback into a more actionable client acquisition report.',
         ctaButtons(),
       )}
-      <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Preview</div>
-          <h2 className="text-2xl font-black text-slate-900">Sample audit layout</h2>
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Overall Score</div>
-              <div className="text-4xl font-black text-amber-500">62<span className="text-lg text-slate-400">/100</span></div>
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample summary</div>
+              <h2 className="text-2xl font-black text-slate-900">Client Acquisition Readiness</h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 max-w-lg">
+                Strong technical credibility, but weak buyer clarity and CTA reduce the chance of turning profile views into conversations.
+              </p>
             </div>
-            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Readiness</div>
-              <div className="text-sm font-bold text-slate-800">Client acquisition needs work</div>
+            <div className="rounded-2xl bg-amber-50 border border-amber-100 p-5 min-w-[180px]">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-700 mb-2">Overall Score</div>
+              <div className="text-4xl font-black text-amber-500">62<span className="text-lg text-amber-300">/100</span></div>
+              <div className="mt-2 text-xs font-bold text-amber-800">Needs stronger positioning and CTA</div>
             </div>
           </div>
-          <div className="mt-6 space-y-4">
-            <div className="rounded-2xl bg-amber-50 border border-amber-100 p-5">
-              <div className="font-bold text-amber-900">Top issue</div>
-              <p className="mt-2 text-sm text-amber-800">Your headline does not clearly say who you help, what result you deliver, or why a buyer should care.</p>
+
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Visibility</div>
+              <div className="text-lg font-black text-slate-900">68/100</div>
             </div>
-            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
-              <div className="font-bold text-slate-900">Quick win</div>
-              <p className="mt-2 text-sm text-slate-600">Rewrite headline + improve CTA + add trust signal in About section.</p>
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Trust</div>
+              <div className="text-lg font-black text-slate-900">64/100</div>
+            </div>
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Conversion</div>
+              <div className="text-lg font-black text-slate-900">54/100</div>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Top 3 issues</div>
+            <div className="space-y-4">
+              {sampleReportIssues.map((item, index) => (
+                <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="font-bold text-slate-900">{index + 1}. {item.title}</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.18em] rounded-full bg-amber-100 px-3 py-1 text-amber-700">{item.impact}</div>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600"><span className="font-bold text-slate-800">Why it hurts:</span> {item.why}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600"><span className="font-bold text-slate-800">Suggested fix:</span> {item.fix}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample insights</div>
-          <h2 className="text-3xl font-black text-slate-900">What the audit looks at</h2>
-          <div className="mt-6 space-y-4">
-            {[
-              'Positioning clarity',
-              'Trust and credibility signals',
-              'CTA strength',
-              'Profile conversion issues',
-              'Client acquisition readiness',
-            ].map((item) => (
-              <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm font-semibold text-slate-700">{item}</div>
-            ))}
+
+        <div className="space-y-6">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Fast wins</div>
+            <h2 className="text-3xl font-black text-slate-900">What to fix first</h2>
+            <div className="mt-6 space-y-4">
+              {sampleReportQuickWins.map((item, index) => (
+                <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="text-sm font-bold text-slate-900">Priority {index + 1}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Example positioning</div>
+            <h3 className="text-2xl font-black text-slate-900">Recommended positioning angle</h3>
+            <p className="mt-4 text-sm leading-relaxed text-slate-600">
+              Position this profile around helping founders and service businesses move faster from idea to launch while improving conversion quality, not just shipping code.
+            </p>
+            <div className="mt-5 rounded-2xl bg-indigo-50 border border-indigo-100 p-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-2">Positioning statement</div>
+              <p className="text-sm font-medium leading-relaxed text-indigo-900">
+                I help SaaS founders and service businesses build faster, conversion-focused digital products that make their positioning clearer and their growth assets more effective.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="max-w-3xl mb-10">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample insights</div>
-            <h2 className="text-3xl font-black text-slate-900">Insights you may see</h2>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Before / After</div>
+            <h2 className="text-3xl font-black text-slate-900">How the report becomes usable output</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Headline rewrite</div>
+              <div className="rounded-2xl bg-rose-50 border border-rose-100 p-4">
+                <div className="text-xs font-bold text-rose-700 mb-2">Before</div>
+                <p className="text-sm text-rose-900">{sampleReportBeforeAfter.beforeHeadline}</p>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 border border-emerald-100 p-4 mt-4">
+                <div className="text-xs font-bold text-emerald-700 mb-2">After</div>
+                <p className="text-sm text-emerald-900">{sampleReportBeforeAfter.afterHeadline}</p>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">About rewrite</div>
+              <div className="rounded-2xl bg-rose-50 border border-rose-100 p-4">
+                <div className="text-xs font-bold text-rose-700 mb-2">Before</div>
+                <p className="text-sm leading-relaxed text-rose-900">{sampleReportBeforeAfter.beforeAbout}</p>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 border border-emerald-100 p-4 mt-4">
+                <div className="text-xs font-bold text-emerald-700 mb-2">After</div>
+                <p className="text-sm leading-relaxed text-emerald-900">{sampleReportBeforeAfter.afterAbout}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 mt-6">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">CTA improvement</div>
+            <p className="text-sm leading-relaxed text-slate-700">{sampleReportBeforeAfter.cta}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Sample DM opener</div>
+          <p className="text-sm leading-relaxed text-slate-700">{sampleReportScripts.connection}</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Sample follow-up</div>
+          <p className="text-sm leading-relaxed text-slate-700">{sampleReportScripts.followUp}</p>
+        </div>
+      </section>
+
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="max-w-3xl mb-10">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What this proves</div>
+            <h2 className="text-3xl font-black text-slate-900">This is not generic AI fluff</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {sampleInsights.map((item) => (
@@ -1019,10 +1146,14 @@ function App() {
           </div>
         </div>
       </section>
+
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="rounded-3xl bg-slate-900 p-8 md:p-10 text-white shadow-xl">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Upgrade</div>
-          <h2 className="text-3xl font-black">Want deeper recommendations?</h2>
+          <h2 className="text-3xl font-black">Want your own full report?</h2>
+          <p className="mt-4 text-white/70 max-w-2xl text-sm leading-relaxed">
+            Start with the free audit, then upgrade for the full SEO Sniper Report, rewrites, CTA fixes, and client acquisition scripts.
+          </p>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             {['Full SEO Sniper Report', 'Headline rewrite', 'About rewrite', 'CTA improvements', 'DM opener scripts', 'Follow-up scripts'].map((item) => (
               <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-white/85">{item}</div>
