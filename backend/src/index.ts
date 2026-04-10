@@ -541,13 +541,7 @@ ${profileData}
           content.connectionRequests = [];
           content.inboundReplies = [];
           content.followUpMessages = [];
-        } else if (access.currentPlan === 'starter') {
-          content.aboutVersions = content.aboutVersions.slice(0, 1);
-          content.headlines = content.headlines.slice(0, 1);
-          content.connectionRequests = [];
-          content.inboundReplies = [];
-          content.followUpMessages = [];
-        } else if (access.currentPlan === 'pro') {
+        } else if (access.currentPlan === 'starter' || access.currentPlan === 'pro') {
           content.connectionRequests = [];
           content.inboundReplies = [];
           content.followUpMessages = [];

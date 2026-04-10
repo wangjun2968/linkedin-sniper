@@ -49,9 +49,9 @@ const pricingCards = [
     plan: 'starter' as PlanType,
     badge: 'Starter',
     title: 'Starter',
-    subtitle: 'Low-risk first step with one paid baseline audit credit.',
+    subtitle: 'One paid credit for the same full report depth as Pro.',
     price: '$0.99',
-    bullets: ['Guided audit access', 'Core visibility issues', 'Trust and conversion blockers', 'Quick improvement direction'],
+    bullets: ['Full profile audit', 'SEO Sniper Report', 'Positioning review', 'Trust and credibility review'],
     theme: 'light' as const,
     cta: 'Choose Starter',
     billingLabel: 'one-time',
@@ -531,7 +531,7 @@ function App() {
       : access.currentPlan === 'ultra'
         ? 'Ultra limit: 200 generations every 30 days'
         : access.currentPlan === 'starter'
-          ? 'Starter limit: single-use paid audit credit'
+          ? 'Starter limit: single-use full report credit'
           : 'Free limit: 1 lifetime generation';
 
   const unlockedFeatures = [
@@ -1140,9 +1140,9 @@ function App() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter {access?.currentPlan === 'starter' && <span className="text-indigo-600">• Current</span>}</div>
             <h3 className="text-xl font-black text-slate-900">One low-risk full audit</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Single-use paid credits for users who want one baseline audit at a time.</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Single-use paid credits for users who want one full Pro-level report at a time.</p>
             <ul className="mt-5 space-y-3">
-              {['Single-use paid audit credit', 'Core visibility findings', 'Core trust and conversion blockers', 'Quick wins and action direction', 'No DM or follow-up assets'].map((item) => (
+              {['Single-use full report credit', 'Full profile audit', 'SEO Sniper Report', 'Positioning + trust review', 'No DM or follow-up assets'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
