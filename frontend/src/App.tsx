@@ -528,18 +528,17 @@ function App() {
       : 'Free access stays limited unless you upgrade.';
 
   const planLimitText = !access
-    ? 'Plan limit: sign in required'
+    ? 'Sign in required to load plan limits'
     : access.currentPlan === 'pro'
-      ? 'Plan limit: Pro = 30 generations every 30 days'
+      ? 'Pro limit: 30 generations every 30 days'
       : access.currentPlan === 'ultra'
-        ? 'Plan limit: Ultra = 200 generations every 30 days'
+        ? 'Ultra limit: 200 generations every 30 days'
         : access.currentPlan === 'starter'
-          ? 'Plan limit: Starter = single-use paid audit credit'
-          : 'Plan limit: Free = 1 lifetime generation';
+          ? 'Starter limit: single-use paid audit credit'
+          : 'Free limit: 1 lifetime generation';
 
   const unlockedFeatures = [
     access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
-    planLimitText,
     access ? `Usage: ${Number(access.generationsUsed || 0)}/${Number(access.generationLimit || 0)} (${String(access.quotaPeriod || 'lifetime')})` : 'Usage: sign in required',
     access?.quotaResetAt ? `Next quota reset: ${formatAccessTime(access.quotaResetAt)}` : `Current cycle ends: ${formatAccessTime(access?.cycleEndsAt)}`,
     access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
@@ -754,6 +753,7 @@ function App() {
                 </div>
                 <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-3">Current access status</div>
+                  <div className="rounded-xl border border-indigo-100 bg-white px-3 py-2 text-sm font-bold text-indigo-900 mb-3">{planLimitText}</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {unlockedFeatures.map((item) => (
                       <div key={item} className="rounded-xl border border-indigo-100 bg-white px-3 py-2 text-sm font-medium text-slate-700">{item}</div>
@@ -1079,7 +1079,10 @@ function App() {
               </div>
             )}
           </div>
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-sm font-bold text-indigo-900">
+            {planLimitText}
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {unlockedFeatures.map((item) => (
               <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">{item}</div>
             ))}
