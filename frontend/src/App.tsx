@@ -997,57 +997,67 @@ function App() {
     <>
       {pageHero(
         'Pricing',
-        'Simple pricing for LinkedIn visibility, trust, and conversion upgrades',
-        'Start with a low-friction audit, move into the main conversion offer, or choose the higher-ticket client acquisition package.',
+        'Choose the level of support you need',
+        'Start with a low-friction audit, move into the main offer, or upgrade to a higher-touch client acquisition package.',
         <>
           <button onClick={startPayPalCheckout} disabled={paying} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FFC439] px-6 py-3 text-sm font-black text-[#111] hover:bg-[#f5b931] transition-colors shadow-lg disabled:opacity-60">
             {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
           </button>
         </>
       )}
+
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {renderPricingCards()}
+        {renderPricingCards()}
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="rounded-[28px] border border-slate-200 bg-white shadow-xl p-6 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Unified checkout</div>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900">Selected plan: <span className="text-indigo-600 uppercase">{selectedPlan}</span></h2>
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+                <span className="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-700">Price: {pricingCards.find((card) => card.plan === selectedPlan)?.price}</span>
+                <span className="rounded-full bg-emerald-50 px-3 py-1 font-bold text-emerald-700">Secure checkout with PayPal</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-700">One-time payment</span>
+              </div>
+            </div>
+            <div className="md:min-w-[320px]">
+              {user ? (
+                <button onClick={startPayPalCheckout} disabled={paying} className="w-full h-14 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-base font-black transition-all disabled:opacity-60 shadow-lg">
+                  {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="text-xs font-bold text-slate-500 text-center">Sign in first, then continue to PayPal</div>
+                  <div className="flex justify-center md:justify-end">
+                    <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="large" width="260" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto rounded-[28px] border border-slate-200 bg-slate-50 p-8 md:p-10 shadow-sm text-center mb-14">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Checkout</div>
-            <h2 className="text-3xl font-black text-slate-900">Continue to PayPal</h2>
-            <p className="mt-3 text-sm text-slate-600">Selected plan: <span className="font-bold text-slate-900 uppercase">{selectedPlan}</span></p>
-            <div className="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> Secure checkout with PayPal</div>
-            {user ? (
-              <button onClick={startPayPalCheckout} disabled={paying} className="mt-6 w-full md:w-[440px] max-w-full h-14 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-base font-black transition-all disabled:opacity-60 shadow-lg mx-auto block">
-                {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
-              </button>
-            ) : (
-              <div className="mt-6 space-y-3">
-                <div className="text-xs font-bold text-slate-500 text-center">Sign in first, then continue to PayPal</div>
-                <div className="flex justify-center">
-                  <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="large" width="260" />
-                </div>
-              </div>
-            )}
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Offer structure</div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Which plan is right for you</div>
               <h2 className="text-3xl font-black text-slate-900">Start small. Upgrade when the signal is clear.</h2>
               <div className="mt-6 space-y-4">
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Starter — $0.99</div>
-                  <p className="mt-2 text-sm text-slate-600">Low-friction entry for attracting clicks and giving users a fast diagnosis.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you only want quick diagnosis and a low-friction entry point.</p>
                 </div>
                 <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
                   <div className="font-bold text-indigo-900">Pro — $19</div>
-                  <p className="mt-2 text-sm text-indigo-800">Main offer. Best for users who want rewrites, stronger positioning, and actionable conversion fixes.</p>
+                  <p className="mt-2 text-sm text-indigo-800">Best for most users who want rewrites, stronger positioning, and conversion improvements.</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Ultra — $149+</div>
-                  <p className="mt-2 text-sm text-slate-600">Higher-ticket package for deeper client acquisition support and more complete assets.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you want deeper client acquisition support and higher-touch assets.</p>
                 </div>
               </div>
             </div>
@@ -1071,6 +1081,14 @@ function App() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">One-time payment</div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Secure checkout with PayPal</div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Start small and upgrade later</div>
         </div>
       </section>
     </>
