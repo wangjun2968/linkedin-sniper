@@ -1124,6 +1124,17 @@ function App() {
               <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">{item}</div>
             ))}
           </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <button
+              onClick={() => {
+                setHistoryTab('payments');
+                navigateTo('/audit', { query: { tab: 'payments' } });
+              }}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              <CreditCard className="w-4 h-4" /> Payment Records
+            </button>
+          </div>
         </div>
       </section>
 
@@ -1571,7 +1582,6 @@ function App() {
                         )}
                       </div>
                       <div className="px-2 py-2 border-t border-slate-100">
-                        <button onClick={() => { setIsMenuOpen(false); setHistoryTab('payments'); navigateTo('/audit', { query: { tab: 'payments' } }); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Payment Records</button>
                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> Sign Out</button>
                       </div>
                     </div>
