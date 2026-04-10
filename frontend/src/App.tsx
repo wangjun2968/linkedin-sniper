@@ -1078,10 +1078,61 @@ function App() {
       </section>
 
       <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="max-w-3xl mb-10">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Plan access</div>
+          <h2 className="text-3xl font-black text-slate-900">What each plan actually unlocks</h2>
+          <p className="mt-4 text-slate-600 text-lg">The difference is not just price. Each tier unlocks a different depth of audit access, profile support, and client acquisition assets.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free</div>
+            <h3 className="text-xl font-black text-slate-900">Preview access</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for first-time users who want one guided preview before paying.</p>
+            <ul className="mt-5 space-y-3">
+              {['Login required', '1 free generation', 'Preview visibility / trust / conversion issues', 'Limited output depth', 'No DM or follow-up assets'].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter</div>
+            <h3 className="text-xl font-black text-slate-900">One low-risk full audit</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for users who want a full baseline audit without jumping into the main offer yet.</p>
+            <ul className="mt-5 space-y-3">
+              {['1 full baseline audit', 'Core visibility findings', 'Core trust and conversion blockers', 'Quick wins and action direction', 'No advanced messaging assets'].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-2">Pro</div>
+            <h3 className="text-xl font-black text-indigo-950">Main profile upgrade</h3>
+            <p className="mt-3 text-sm leading-relaxed text-indigo-900/80">Best for users who want stronger positioning, deeper rewrites, and a more conversion-ready LinkedIn profile.</p>
+            <ul className="mt-5 space-y-3">
+              {['Full audit depth', 'Headline rewrite', 'About rewrite', 'Positioning + trust review', 'CTA guidance and action plan'].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm font-medium text-indigo-950"><CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-3xl border border-slate-900 bg-slate-900 p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Ultra</div>
+            <h3 className="text-xl font-black text-white">Full client acquisition assets</h3>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">Best for users who want profile optimization plus messaging assets that help move conversations forward.</p>
+            <ul className="mt-5 space-y-3">
+              {['Everything in Pro', 'DM opener scripts', 'Connection request templates', 'Follow-up message assets', 'Deeper client acquisition support'].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm font-medium text-white/90"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Start with guided diagnosis</div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Secure checkout with PayPal</div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Start small and upgrade later</div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Upgrade when you need deeper support</div>
         </div>
       </section>
     </>
