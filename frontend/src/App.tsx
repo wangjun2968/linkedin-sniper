@@ -49,7 +49,7 @@ const pricingCards = [
     plan: 'starter' as PlanType,
     badge: 'Starter',
     title: 'Starter',
-    subtitle: 'One paid credit for the same full report depth as Pro.',
+    subtitle: 'One single-use credit for the same full report scope as Pro, without DM / follow-up assets.',
     price: '$0.99',
     bullets: [
       'Full profile audit',
@@ -1148,10 +1148,10 @@ function App() {
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter {access?.currentPlan === 'starter' && <span className="text-indigo-600">• Current</span>}</div>
-            <h3 className="text-xl font-black text-slate-900">Single full report credit</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">One paid credit for the same full report depth as Pro, without moving into a monthly plan.</p>
+            <h3 className="text-xl font-black text-slate-900">Starter full report credit</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">One single-use credit for the same full report scope as Pro, without DM / follow-up assets.</p>
             <ul className="mt-5 space-y-3">
-              {['Single-use full report credit', 'Full profile audit', 'SEO Sniper Report', 'CTA recommendations + rewrites', 'No DM or follow-up assets'].map((item) => (
+              {['Single-use full report credit', 'Same report scope as Pro', 'CTA recommendations + rewrites', 'Clear action plan', 'No DM or follow-up assets'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
