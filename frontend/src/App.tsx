@@ -1093,50 +1093,6 @@ function App() {
         </div>
       </section>
 
-      <section className="bg-white border-y border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Which plan is right for you</div>
-              <h2 className="text-3xl font-black text-slate-900">Choose the depth of support that matches your goal</h2>
-              <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="font-bold text-slate-900">Starter — $0.99</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you want a low-risk first step with one paid baseline audit credit.</p>
-                </div>
-                <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
-                  <div className="font-bold text-indigo-900">Pro — $19</div>
-                  <p className="mt-2 text-sm text-indigo-800">Best for users who want a stronger conversion-ready profile with a 30 / 30-day quota.</p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="font-bold text-slate-900">Ultra — $149+</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you want fuller messaging assets and a 200 / 30-day quota.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] bg-slate-900 p-8 text-white shadow-xl">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-3">Why people pay</div>
-              <h3 className="text-2xl font-black">Different plans unlock different depth</h3>
-              <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="font-bold text-white">Starter</div>
-                  <p className="mt-2 text-sm text-white/70">Get one paid baseline audit credit without moving into a monthly plan.</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="font-bold text-white">Pro</div>
-                  <p className="mt-2 text-sm text-white/70">Unlock full rewrites and 30 generations every 30 days.</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="font-bold text-white">Ultra</div>
-                  <p className="mt-2 text-sm text-white/70">Unlock DM / follow-up assets and 200 generations every 30 days.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="max-w-3xl mb-10">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Plan access</div>
