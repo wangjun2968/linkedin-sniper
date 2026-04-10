@@ -121,6 +121,21 @@ export default {
         await ensureUserRow(payload);
 
         const accessToken = await getPayPalAccessToken();
+
+        const orderDetailsRes = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const orderDetails = await orderDetailsRes.json();
+
+        const orderCustomId = String(orderDetails?.purchase_units?.[0]?.custom_id || '').toLowerCase();
+        const orderDescription = String(orderDetails?.purchase_units?.[0]?.description || '').toLowerCase();
+        const orderAmountRaw = orderDetails?.purchase_units?.[0]?.amount?.value || null;
+        const orderAmount = orderAmountRaw ? String(Number(orderAmountRaw)) : null;
+
         const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
           method: "POST",
           headers: {
@@ -131,17 +146,16 @@ export default {
         const captureData = await response.json();
 
         if (captureData.status === "COMPLETED") {
-          const customId = String(captureData.purchase_units?.[0]?.custom_id || '').toLowerCase();
-          const description = String(captureData.purchase_units?.[0]?.description || '').toLowerCase();
-          const amount = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || null;
+          const captureAmountRaw = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || null;
+          const amount = captureAmountRaw ? String(Number(captureAmountRaw)) : orderAmount;
           const currency = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.currency_code || 'USD';
 
           let plan = 'pro';
-          if (customId.includes('starter') || description.includes('starter') || amount === '0.99') {
+          if (orderCustomId.includes('starter') || orderDescription.includes('starter') || amount === '0.99') {
             plan = 'starter';
-          } else if (customId.includes('ultra') || description.includes('ultra') || amount === '149') {
+          } else if (orderCustomId.includes('ultra') || orderDescription.includes('ultra') || amount === '149') {
             plan = 'ultra';
-          } else if (customId.includes('pro') || description.includes('pro') || amount === '19') {
+          } else if (orderCustomId.includes('pro') || orderDescription.includes('pro') || amount === '19') {
             plan = 'pro';
           }
 
