@@ -521,12 +521,6 @@ function App() {
     return new Date(value).toLocaleString();
   };
 
-  const accessFallbackText = access?.currentPlan === 'starter'
-    ? 'After Starter credits are used, access falls back to Free.'
-    : access?.currentPlan === 'pro' || access?.currentPlan === 'ultra'
-      ? 'After this cycle ends, access falls back based on your remaining credits and active plan.'
-      : 'Free access stays limited unless you upgrade.';
-
   const planLimitText = !access
     ? 'Sign in required to load plan limits'
     : access.currentPlan === 'pro'
