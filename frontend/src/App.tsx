@@ -1581,7 +1581,8 @@ function App() {
                           </div>
                         )}
                       </div>
-                      <div className="px-2 py-2 border-t border-slate-100">
+                      <div className="px-2 py-2 border-t border-slate-100 space-y-1">
+                        <button onClick={() => { setIsMenuOpen(false); setHistoryTab('payments'); navigateTo('/audit', { query: { tab: 'payments' } }); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Payment Records</button>
                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> Sign Out</button>
                       </div>
                     </div>
