@@ -218,6 +218,29 @@ const sampleReportScripts = {
   followUp: 'Thanks for connecting. Quick question — are you currently more focused on improving traffic quality, profile conversion, or outbound response rates?',
 };
 
+
+const trustProofItems = [
+  {
+    title: 'Built for client acquisition, not generic profile polishing',
+    desc: 'The audit focuses on visibility, trust, positioning, CTA strength, and inbound lead potential — not just making your profile sound nicer.',
+  },
+  {
+    title: 'Structured output, not vague AI advice',
+    desc: 'Users get scores, top issues, priority fixes, example rewrites, and message scripts they can actually use.',
+  },
+  {
+    title: 'Designed for consultants, founders, and service businesses',
+    desc: 'The messaging and recommendations are aimed at people who want LinkedIn to support offers, conversations, and client acquisition.',
+  },
+];
+
+const differentiationItems = [
+  'Visibility + positioning + trust + conversion in one report',
+  'Free diagnosis first, paid action second',
+  'Rewrites and scripts instead of generic advice only',
+  'Built to improve client readiness, not just profile aesthetics',
+];
+
 const howItWorksSteps = [
   {
     title: 'Paste your LinkedIn profile details',
@@ -927,6 +950,32 @@ function App() {
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust this audit</div>
+            <h2 className="text-3xl font-black text-slate-900">Built to feel more like a strategist than a generic AI tool</h2>
+            <p className="mt-4 text-slate-600 text-lg">The goal is not just better wording. The goal is better positioning, stronger trust, and more chances to start real conversations.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {trustProofItems.map((item) => (
+              <div key={item.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="font-bold text-slate-900">{item.title}</div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-3">What makes it different</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {differentiationItems.map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-white/85">{item}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pricing</div>
             <h2 className="text-3xl font-black text-slate-900">Choose the level of support you need</h2>
             <p className="mt-4 text-slate-600 text-lg">Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.</p>
@@ -1148,6 +1197,18 @@ function App() {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="max-w-3xl mb-10">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Trust proof</div>
+          <h2 className="text-3xl font-black text-slate-900">Why this sample feels more credible</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          {trustProofItems.map((item) => (
+            <div key={item.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="font-bold text-slate-900">{item.title}</div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
         <div className="rounded-3xl bg-slate-900 p-8 md:p-10 text-white shadow-xl">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Upgrade</div>
           <h2 className="text-3xl font-black">Want your own full report?</h2>
