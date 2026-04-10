@@ -258,6 +258,7 @@ function App() {
   const [result, setResult] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [fullProfile, setFullProfile] = useState<any>(null);
+  const access = fullProfile?.access || null;
   const [token, setToken] = useState<string | null>(localStorage.getItem('gh_token'));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
@@ -348,6 +349,7 @@ function App() {
       });
       if (response.ok) {
         const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Optimization request failed');
         setFullProfile(data);
       }
     } catch {
@@ -414,8 +416,8 @@ function App() {
 
   const handleOptimize = async () => {
     if (!profileData) return;
-    if (!token && style !== 'Story') {
-      setShowPricing(true);
+    if (!token) {
+      alert('Please sign in first. Free access is login-gated.');
       return;
     }
     setLoading(true);
@@ -433,6 +435,7 @@ function App() {
         }),
       });
       const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Optimization request failed');
       const formattedData = {
         aboutVersions: Array.isArray(data.aboutVersions) ? data.aboutVersions : [],
         headlines: Array.isArray(data.headlines) ? data.headlines : [],
@@ -658,6 +661,16 @@ function App() {
                 {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Client Audit' : 'Start Job Optimization'}</span></>}
               </button>
             </div>
+            {!token && (
+              <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                Sign in first. Free access is login-gated and includes 1 generation per account.
+              </div>
+            )}
+            {token && access && !access.hasUnlimitedAccess && (
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining generations: <span className="font-bold">{access.generationsRemaining}</span>
+              </div>
+            )}
           </section>
 
           {result && (
@@ -676,7 +689,7 @@ function App() {
                 {result.seoKeywords?.map((k: string, i: number) => (
                   <span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>
                 ))}
-                {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
+                {!access?.includeFullRewrite && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
               </div>
             </section>
           )}
@@ -1512,6 +1525,12 @@ function App() {
                           <div className="flex items-center gap-2"><Crown className={`w-4 h-4 ${fullProfile?.plan !== 'free' ? 'text-amber-500' : 'text-slate-300'}`} /><span className="text-xs font-bold text-slate-600">Current Plan</span></div>
                           <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${fullProfile?.plan !== 'free' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-500'}`}>{fullProfile?.plan || 'Free'}</span>
                         </div>
+                        {access && !access.hasUnlimitedAccess && (
+                          <div className="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <div className="text-xs font-bold text-slate-600">Remaining generations</div>
+                            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">{access.generationsRemaining}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="px-2 py-2 border-t border-slate-100">
                         <button onClick={() => { setIsMenuOpen(false); navigateTo('/audit'); setTimeout(() => {

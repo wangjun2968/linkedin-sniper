@@ -44,6 +44,41 @@ export default {
 
     const getPlanRank = (plan) => ({ free: 0, starter: 1, pro: 2, ultra: 3 }[String(plan || 'free').toLowerCase()] || 0);
 
+    const getHistoryCount = async (email) => {
+      const row = await env.DB.prepare(`
+        SELECT COUNT(*) AS count FROM history WHERE user_email = ?
+      `).bind(email).first();
+      return Number(row?.count || 0);
+    };
+
+    const getCompletedPaymentsCount = async (email, plan) => {
+      const row = await env.DB.prepare(`
+        SELECT COUNT(*) AS count FROM payments WHERE user_email = ? AND plan = ? AND status = 'completed'
+      `).bind(email, plan).first();
+      return Number(row?.count || 0);
+    };
+
+    const getAccessSummary = async (email) => {
+      const profile = await getUserProfile(email);
+      const currentPlan = String(profile?.plan || 'free').toLowerCase();
+      const historyCount = await getHistoryCount(email);
+      const starterPurchases = await getCompletedPaymentsCount(email, 'starter');
+      const hasUnlimitedAccess = currentPlan === 'pro' || currentPlan === 'ultra';
+      const totalAllowedGenerations = hasUnlimitedAccess ? null : 1 + starterPurchases;
+      const generationsRemaining = hasUnlimitedAccess ? null : Math.max(totalAllowedGenerations - historyCount, 0);
+      return {
+        currentPlan,
+        historyCount,
+        starterPurchases,
+        hasUnlimitedAccess,
+        totalAllowedGenerations,
+        generationsRemaining,
+        canUse: hasUnlimitedAccess || generationsRemaining > 0,
+        includeDmAssets: currentPlan === 'ultra',
+        includeFullRewrite: currentPlan === 'pro' || currentPlan === 'ultra',
+      };
+    };
+
     const getPayPalAccessToken = async () => {
       if (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_CLIENT_SECRET) {
         throw new Error("Missing PayPal credentials");
@@ -203,7 +238,11 @@ export default {
         const payload = decodeJwtPayload(token);
         await ensureUserRow(payload);
         const profile = await getUserProfile(payload.email);
-        return new Response(JSON.stringify(profile || { email: payload.email, name: payload.name, picture: payload.picture, plan: 'free' }), {
+        const access = await getAccessSummary(payload.email);
+        return new Response(JSON.stringify({
+          ...(profile || { email: payload.email, name: payload.name, picture: payload.picture, plan: 'free' }),
+          access,
+        }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -257,18 +296,32 @@ export default {
         } = body;
 
         let userEmail = null;
+        let access = null;
 
         if (token && typeof token === "string" && token.includes(".")) {
           try {
             const payload = decodeJwtPayload(token);
             if (payload.email) {
               userEmail = payload.email;
-await ensureUserRow(payload);
+              await ensureUserRow(payload);
+              access = await getAccessSummary(payload.email);
             }
           } catch (e) {}
         }
 
         if (!profileData) throw new Error("No data provided");
+        if (!userEmail || !access) {
+          return new Response(JSON.stringify({ error: "Please sign in first. Free access is login-gated." }), {
+            status: 401,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (!access.canUse) {
+          return new Response(JSON.stringify({ error: "Your current plan has no generations remaining. Upgrade to continue.", code: "GENERATION_LIMIT_REACHED", access }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
 
         const systemPrompt = mode === "client"
           ? `你是一名顶级的 LinkedIn 客户获取顾问、转化诊断师和私信转化策略顾问。你的任务不是润色简历，而是把一个人的 LinkedIn 资料和后续对话，改造成“更容易被目标客户发现、信任、私信并推进成交”的客户获取系统。
@@ -398,15 +451,40 @@ ${profileData}
         content.inboundReplies = Array.isArray(content.inboundReplies) ? content.inboundReplies : [];
         content.followUpMessages = Array.isArray(content.followUpMessages) ? content.followUpMessages : [];
 
-        if (userEmail) {
-          try {
-            await env.DB.prepare("INSERT INTO history (user_email, style, input, result, created_at) VALUES (?, ?, ?, ?, ?)")
-              .bind(userEmail, `${style || "story"}|${mode}`, profileData, JSON.stringify(content), Date.now())
-              .run();
-          } catch (dbErr) {}
+        if (access.currentPlan === 'free') {
+          content.aboutVersions = content.aboutVersions.slice(0, 1);
+          content.headlines = content.headlines.slice(0, 1);
+          content.seoKeywords = content.seoKeywords.slice(0, 2);
+          content.missingKeywords = content.missingKeywords.slice(0, 2);
+          content.conversionIssues = content.conversionIssues.slice(0, 2);
+          content.trustGaps = content.trustGaps.slice(0, 1);
+          content.quickFixes = content.quickFixes.slice(0, 1);
+          content.ctaSuggestions = content.ctaSuggestions.slice(0, 1);
+          content.priorityFixes = content.priorityFixes.slice(0, 1);
+          content.actionPlan.today = content.actionPlan.today.slice(0, 1);
+          content.actionPlan.thisWeek = content.actionPlan.thisWeek.slice(0, 1);
+          content.connectionRequests = [];
+          content.inboundReplies = [];
+          content.followUpMessages = [];
+        } else if (access.currentPlan === 'starter') {
+          content.aboutVersions = content.aboutVersions.slice(0, 1);
+          content.headlines = content.headlines.slice(0, 1);
+          content.connectionRequests = [];
+          content.inboundReplies = [];
+          content.followUpMessages = [];
+        } else if (access.currentPlan === 'pro') {
+          content.connectionRequests = [];
+          content.inboundReplies = [];
+          content.followUpMessages = [];
         }
 
-        return new Response(JSON.stringify(content), {
+        try {
+          await env.DB.prepare("INSERT INTO history (user_email, style, input, result, created_at) VALUES (?, ?, ?, ?, ?)")
+            .bind(userEmail, `${style || "story"}|${mode}`, profileData, JSON.stringify(content), Date.now())
+            .run();
+        } catch (dbErr) {}
+
+        return new Response(JSON.stringify({ ...content, access }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
