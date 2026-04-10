@@ -22,7 +22,6 @@ import {
   Menu,
   X as CloseIcon,
   Sparkles,
-  FileText,
   HelpCircle,
   Layers,
 } from 'lucide-react';
@@ -50,9 +49,9 @@ const pricingCards = [
     plan: 'starter' as PlanType,
     badge: 'Starter',
     title: 'Starter',
-    subtitle: 'Low-friction entry for quick diagnosis and top issues.',
+    subtitle: 'Low-risk first step with clear audit feedback and quick improvement direction.',
     price: '$0.99',
-    bullets: ['Instant profile audit', 'Overall score', 'Top conversion issues', 'Quick improvement tips'],
+    bullets: ['Guided audit access', 'Core visibility issues', 'Trust and conversion blockers', 'Quick improvement direction'],
     theme: 'light' as const,
     cta: 'Choose Starter',
   },
@@ -60,10 +59,10 @@ const pricingCards = [
     plan: 'pro' as PlanType,
     badge: 'Pro',
     title: 'Pro',
-    subtitle: 'Main offer for stronger positioning, rewrites, and conversion fixes.',
+    subtitle: 'Stronger profile support for trust, positioning, and conversion readiness.',
     price: '$19',
     bullets: [
-      'Full profile analysis',
+      'Full profile audit',
       'SEO Sniper Report',
       'Positioning review',
       'Trust and credibility review',
@@ -79,14 +78,14 @@ const pricingCards = [
     plan: 'ultra' as PlanType,
     badge: 'Ultra',
     title: 'Ultra',
-    subtitle: 'High-ticket upgrade for deeper client acquisition assets and support.',
+    subtitle: 'Fuller messaging assets and deeper client acquisition support.',
     price: '$149+',
     bullets: [
       'Everything in Pro',
       'DM opener scripts',
       'Connection request scripts',
       'Follow-up scripts',
-      'Conversion-focused recommendations',
+      'Outreach-ready messaging assets',
       'Higher-touch client acquisition support',
     ],
     theme: 'dark' as const,
@@ -96,40 +95,34 @@ const pricingCards = [
 
 const featureItems = [
   {
-    title: 'Profile Audit',
-    desc: 'Get a fast review of your LinkedIn profile to uncover the biggest issues affecting visibility and conversion.',
-    bullets: ['Overall score', 'Top problem areas', 'Quick recommendations'],
+    title: 'Visibility',
+    desc: 'Improve how quickly the right people can find you and understand what you do.',
+    bullets: ['Keyword coverage', 'Headline clarity', 'Search visibility signals'],
     icon: <Radar className="w-5 h-5" />,
   },
   {
-    title: 'Positioning Analysis',
-    desc: 'See whether your profile clearly shows who you help, what you do, and why the right clients should care.',
-    bullets: ['Clarity review', 'Offer framing', 'Buyer relevance'],
-    icon: <Target className="w-5 h-5" />,
-  },
-  {
-    title: 'Trust & Credibility Review',
-    desc: 'Find missing trust signals that may reduce confidence and stop visitors from reaching out.',
-    bullets: ['Credibility gaps', 'Authority signals', 'Trust-building improvements'],
+    title: 'Trust',
+    desc: 'Strengthen credibility so your profile feels more convincing to buyers.',
+    bullets: ['Trust gaps', 'Authority cues', 'Credibility improvements'],
     icon: <ShieldCheck className="w-5 h-5" />,
   },
   {
-    title: 'CTA & Conversion Review',
-    desc: 'Identify weak or missing calls to action that make your profile harder to convert.',
-    bullets: ['CTA clarity', 'Conversion friction', 'Action-oriented improvements'],
+    title: 'Conversion',
+    desc: 'Turn more profile visits into clear next steps instead of passive browsing.',
+    bullets: ['CTA review', 'Conversion blockers', 'Action-oriented improvements'],
     icon: <ArrowRight className="w-5 h-5" />,
   },
   {
-    title: 'Rewrite Upgrades',
-    desc: 'Go beyond diagnosis with stronger rewrites that improve how your profile communicates value.',
-    bullets: ['Headline rewrite', 'About rewrite', 'Messaging improvements'],
-    icon: <FileText className="w-5 h-5" />,
+    title: 'DM / Follow-up',
+    desc: 'Know what to say after the profile works, with message assets built for real conversations.',
+    bullets: ['DM openers', 'Inbound replies', 'Follow-up messages'],
+    icon: <MessageSquare className="w-5 h-5" />,
   },
   {
-    title: 'Client Acquisition Scripts',
-    desc: 'Upgrade with scripts designed to help you move from profile traffic to conversations.',
-    bullets: ['DM opener scripts', 'Connection request scripts', 'Follow-up scripts'],
-    icon: <MessageSquare className="w-5 h-5" />,
+    title: 'Client Acquisition',
+    desc: 'Connect profile quality, trust, conversion, and messaging into a stronger client acquisition system.',
+    bullets: ['Profile-to-conversation flow', 'Outreach readiness', 'Higher-value acquisition support'],
+    icon: <Target className="w-5 h-5" />,
   },
 ];
 
@@ -605,9 +598,9 @@ function App() {
   const toolSection = (
     <section ref={toolRef} className="max-w-7xl mx-auto px-4 pb-16">
       <div className="mb-8">
-        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Audit Tool</div>
-        <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client audit</h2>
-        <p className="mt-3 text-slate-600 max-w-2xl">Run the audit below and see what is blocking your profile from turning views into conversations.</p>
+        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Client Audit</div>
+        <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client acquisition audit</h2>
+        <p className="mt-3 text-slate-600 max-w-2xl">Paste your profile and see what is stopping it from attracting trust, driving replies, and turning profile views into real conversations.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -618,8 +611,8 @@ function App() {
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Data Input</h2>
-                <p className="text-xs text-slate-500">Paste your LinkedIn profile content</p>
+                <h2 className="text-lg font-bold text-slate-900">Profile Input</h2>
+                <p className="text-xs text-slate-500">Paste your LinkedIn profile content to audit visibility, trust, and conversion quality</p>
               </div>
             </div>
             <textarea
@@ -662,7 +655,7 @@ function App() {
             )}
             <div className="mt-5 flex flex-wrap items-center gap-4">
               <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
-                {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Audit' : 'Start Job Optimization'}</span></>}
+                {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Client Audit' : 'Start Job Optimization'}</span></>}
               </button>
             </div>
           </section>
@@ -672,7 +665,7 @@ function App() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
-                  <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
+                  <h3 className="text-base font-bold text-slate-900">Search visibility snapshot</h3>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
@@ -694,7 +687,7 @@ function App() {
           {result ? (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
+                {sectionTitle('Conversion Audit', 'Profile performance snapshot', <Radar className="w-3.5 h-3.5" />)}
                 <div className="mb-5 grid grid-cols-2 gap-3">
                   <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
@@ -720,14 +713,14 @@ function App() {
                   </div>
                   {!user && (
                     <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
-                      <p className="text-xs text-slate-500 font-bold">Unlock full audit and conversion strategy</p>
+                      <p className="text-xs text-slate-500 font-bold">Unlock deeper conversion guidance and messaging assets</p>
                     </div>
                   )}
                 </div>
               </section>
 
               <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
+                {sectionTitle('Priority Fixes', 'Highest-impact changes first', <Flag className="w-3.5 h-3.5" />)}
                 <div className="space-y-3">
                   {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
                 </div>
@@ -752,7 +745,7 @@ function App() {
               </section>
 
               <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
+                {sectionTitle('Positioning', 'Offer clarity and target audience', <Users className="w-3.5 h-3.5" />)}
                 <div className="space-y-4">
                   <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
@@ -776,7 +769,7 @@ function App() {
               </section>
 
               <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
+                {sectionTitle('DM / Follow-up', 'Messages that help move conversations forward', <MessageSquare className="w-3.5 h-3.5" />)}
                 <div className="space-y-5">
                   <div>
                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
@@ -831,20 +824,20 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
-              <Target className="w-3.5 h-3.5" /> LinkedIn SEO Portal + Conversion Tools
+              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Framework
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
               LinkedIn tools for <span className="text-indigo-600">visibility, trust, and client acquisition</span>
             </h1>
             <p className="mt-5 text-lg text-slate-600 max-w-3xl leading-relaxed">
-              Start with the free audit, explore the sample report, and choose the right page for profile optimization, pricing, and conversion support.
+              Improve visibility, trust, conversion, and outreach readiness — so more profile views can turn into real business conversations.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Start Free Audit <ArrowRight className="w-4 h-4" />
+                Get Free Audit <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                See Sample Report
+                View Sample Report
               </button>
             </div>
           </div>
@@ -854,36 +847,36 @@ function App() {
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="max-w-3xl mb-10">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Popular paths</div>
-          <h2 className="text-3xl font-black text-slate-900">Pick the page that matches your intent</h2>
-          <p className="mt-4 text-slate-600 text-lg">Use the homepage as a routing layer. Go to the tool page for instant diagnosis, the sample report page for proof, or the pricing page to compare plans.</p>
+          <h2 className="text-3xl font-black text-slate-900">Start with the path that matches your goal</h2>
+          <p className="mt-4 text-slate-600 text-lg">Use the audit to find what is hurting performance, the sample report to see what stronger output looks like, and pricing to choose the right depth of support.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <button onClick={() => navigateTo('/audit')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for quick diagnosis</div>
-            <div className="font-black text-slate-900 text-xl">Free LinkedIn Audit</div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Run the audit and find what is hurting profile visibility, trust, positioning, and conversion.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Run Audit <ArrowRight className="w-4 h-4" /></div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for finding your biggest blockers</div>
+            <div className="font-black text-slate-900 text-xl">Free Client Acquisition Audit</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">See what is weakening your visibility, trust, and conversion potential — before you pay for deeper support.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Run Free Audit <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/sample-report')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for checking output quality</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for seeing output quality</div>
             <div className="font-black text-slate-900 text-xl">Sample Report</div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Review a realistic audit example with scores, top issues, rewrites, CTA fixes, and message scripts.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">View Example <ArrowRight className="w-4 h-4" /></div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">See how weak positioning becomes clearer messaging, stronger trust signals, and more conversion-ready profile assets.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">View Sample Report <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/pricing')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for comparing plans</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for choosing your support level</div>
             <div className="font-black text-slate-900 text-xl">Pricing</div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Compare the free audit, profile upgrade, and client acquisition upgrade paths before you buy.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">See Plans <ArrowRight className="w-4 h-4" /></div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Compare audit access, profile upgrade depth, and client acquisition support before you buy.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Compare Plans <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/features')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for understanding capabilities</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for understanding the framework</div>
             <div className="font-black text-slate-900 text-xl">Features</div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">See how the product evaluates positioning, trust, CTA strength, rewrites, and client acquisition scripts.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Explore Features <ArrowRight className="w-4 h-4" /></div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Explore the 5 layers behind the product: visibility, trust, conversion, messaging, and client acquisition readiness.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Explore Framework <ArrowRight className="w-4 h-4" /></div>
           </button>
         </div>
       </section>
@@ -893,7 +886,7 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Who it’s for</div>
-              <h2 className="text-3xl font-black text-slate-900">Built for professionals using LinkedIn to generate business</h2>
+              <h2 className="text-3xl font-black text-slate-900">Built for professionals who use LinkedIn to win business</h2>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {['Consultants', 'Freelancers', 'Agency owners', 'B2B founders', 'Coaches', 'Service businesses'].map((item) => (
                   <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-700 shadow-sm">{item}</div>
@@ -902,9 +895,9 @@ function App() {
             </div>
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What it helps with</div>
-              <h2 className="text-3xl font-black text-slate-900">Core improvement areas</h2>
+              <h2 className="text-3xl font-black text-slate-900">The 5 layers of client acquisition improvement</h2>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {['Visibility', 'Positioning', 'Trust', 'Conversion'].map((item) => (
+                {['Visibility', 'Trust', 'Conversion', 'DM / Follow-up', 'Client Acquisition'].map((item) => (
                   <div key={item} className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
                     <div className="text-base font-black text-slate-900">{item}</div>
                   </div>
@@ -919,7 +912,7 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div>
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why trust it</div>
-            <h2 className="text-3xl font-black text-slate-900">Built like a strategist, not a generic AI content tool</h2>
+            <h2 className="text-3xl font-black text-slate-900">Built like a strategist, not a generic AI rewrite tool</h2>
             <div className="mt-6 space-y-4">
               {trustProofItems.map((item) => (
                 <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -931,19 +924,19 @@ function App() {
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Recommended flow</div>
-            <h3 className="text-2xl font-black text-slate-900">Most users start here</h3>
+            <h3 className="text-2xl font-black text-slate-900">Recommended starting path</h3>
             <div className="mt-6 space-y-4">
               <button onClick={() => navigateTo('/audit')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
                 <div className="font-bold text-slate-900">1. Run the free audit</div>
-                <p className="mt-2 text-sm text-slate-600">Get a quick diagnosis and identify your biggest conversion leaks.</p>
+                <p className="mt-2 text-sm text-slate-600">Find the biggest visibility, trust, and conversion issues holding your profile back.</p>
               </button>
               <button onClick={() => navigateTo('/sample-report')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
                 <div className="font-bold text-slate-900">2. Review the sample report</div>
-                <p className="mt-2 text-sm text-slate-600">See what a deeper report looks like before upgrading.</p>
+                <p className="mt-2 text-sm text-slate-600">See what stronger positioning, rewrites, and messaging assets actually look like.</p>
               </button>
               <button onClick={() => navigateTo('/pricing')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
                 <div className="font-bold text-slate-900">3. Compare plans</div>
-                <p className="mt-2 text-sm text-slate-600">Choose the right support level once you know what you need.</p>
+                <p className="mt-2 text-sm text-slate-600">Choose the level of audit, profile support, and client acquisition depth you need.</p>
               </button>
             </div>
           </div>
@@ -954,11 +947,11 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Light CTA</div>
-            <h2 className="text-3xl font-black text-slate-900">Start with the page that matches your goal</h2>
-            <p className="mt-4 text-slate-600 text-lg">Use the audit for immediate feedback, the sample report for proof, and the pricing page for plan comparison.</p>
+            <h2 className="text-3xl font-black text-slate-900">Start with a free audit. Upgrade when you need deeper client acquisition support.</h2>
+            <p className="mt-4 text-slate-600 text-lg">Begin with a guided audit, understand your biggest blockers, and upgrade when you want stronger rewrites, conversion support, and outreach assets.</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Start Free Audit <ArrowRight className="w-4 h-4" />
+                Get Free Audit <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -971,20 +964,20 @@ function App() {
     <>
       {pageHero(
         'Free Audit',
-        'Run your LinkedIn profile audit',
-        'Use the audit tool to check what is hurting your visibility, trust, positioning, and conversion potential.',
+        'Run your LinkedIn client acquisition audit',
+        'Check what is weakening your visibility, trust, conversion, and profile-to-conversation readiness.',
         <>
           <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
             Start Audit <ArrowRight className="w-4 h-4" />
           </button>
           <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-            See Sample Report
+            View Sample Report
           </button>
         </>
       )}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {['Visibility score', 'Positioning issues', 'Trust gaps', 'CTA recommendations'].map((item) => (
+          {['Visibility blockers', 'Trust gaps', 'Conversion issues', 'Action priorities'].map((item) => (
             <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-sm font-bold text-slate-700">{item}</div>
           ))}
         </div>
@@ -997,8 +990,8 @@ function App() {
     <>
       {pageHero(
         'Pricing',
-        'Choose the level of support you need',
-        'Start with a low-friction audit, move into the main offer, or upgrade to a higher-touch client acquisition package.',
+        'Choose how deeply you want to optimize LinkedIn for client acquisition',
+        'Start with a guided audit, move into a stronger conversion-ready profile, or unlock fuller client acquisition assets and messaging support.',
         <>
           <button onClick={startPayPalCheckout} disabled={paying} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FFC439] px-6 py-3 text-sm font-black text-[#111] hover:bg-[#f5b931] transition-colors shadow-lg disabled:opacity-60">
             {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
@@ -1019,7 +1012,7 @@ function App() {
               <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
                 <span className="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-700">Price: {pricingCards.find((card) => card.plan === selectedPlan)?.price}</span>
                 <span className="rounded-full bg-emerald-50 px-3 py-1 font-bold text-emerald-700">Secure checkout with PayPal</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-700">One-time payment</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-700">Start with guided diagnosis</span>
               </div>
             </div>
             <div className="md:min-w-[320px]">
@@ -1045,38 +1038,38 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Which plan is right for you</div>
-              <h2 className="text-3xl font-black text-slate-900">Start small. Upgrade when the signal is clear.</h2>
+              <h2 className="text-3xl font-black text-slate-900">Choose the depth of support that matches your goal</h2>
               <div className="mt-6 space-y-4">
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Starter — $0.99</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you only want quick diagnosis and a low-friction entry point.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you want a low-risk first step with clear audit feedback and quick improvement direction.</p>
                 </div>
                 <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
                   <div className="font-bold text-indigo-900">Pro — $19</div>
-                  <p className="mt-2 text-sm text-indigo-800">Best for most users who want rewrites, stronger positioning, and conversion improvements.</p>
+                  <p className="mt-2 text-sm text-indigo-800">Best for users who want a stronger, more trusted, more conversion-ready LinkedIn profile.</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Ultra — $149+</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you want deeper client acquisition support and higher-touch assets.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you want fuller messaging assets, stronger outreach support, and a deeper client acquisition setup.</p>
                 </div>
               </div>
             </div>
 
             <div className="rounded-[28px] bg-slate-900 p-8 text-white shadow-xl">
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-3">Why people pay</div>
-              <h3 className="text-2xl font-black">Diagnosis first. Action second.</h3>
+              <h3 className="text-2xl font-black">Different plans unlock different depth</h3>
               <div className="mt-6 space-y-4">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Starter</div>
-                  <p className="mt-2 text-sm text-white/70">Find the problems.</p>
+                  <p className="mt-2 text-sm text-white/70">See what is hurting visibility, trust, and conversion.</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Pro</div>
-                  <p className="mt-2 text-sm text-white/70">Fix the profile and improve conversion quality.</p>
+                  <p className="mt-2 text-sm text-white/70">Improve positioning, profile structure, and conversion readiness.</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Ultra</div>
-                  <p className="mt-2 text-sm text-white/70">Turn the profile into a stronger client acquisition asset.</p>
+                  <p className="mt-2 text-sm text-white/70">Add messaging assets and stronger support for outreach and client acquisition.</p>
                 </div>
               </div>
             </div>
@@ -1086,7 +1079,7 @@ function App() {
 
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">One-time payment</div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Start with guided diagnosis</div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Secure checkout with PayPal</div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm font-bold text-slate-700 shadow-sm">Start small and upgrade later</div>
         </div>
@@ -1098,8 +1091,8 @@ function App() {
     <>
       {pageHero(
         'Sample Report',
-        'See what a real LinkedIn profile audit can look like',
-        'This sample shows how LinkedIn-Sniper turns vague profile feedback into a more actionable client acquisition report.',
+        'See what a real LinkedIn client acquisition audit looks like',
+        'This sample shows how vague profile feedback becomes clearer positioning, stronger trust signals, better conversion structure, and more usable messaging assets.',
         ctaButtons(),
       )}
       <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -1184,7 +1177,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="max-w-3xl mb-10">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Before / After</div>
-            <h2 className="text-3xl font-black text-slate-900">How the report becomes usable output</h2>
+            <h2 className="text-3xl font-black text-slate-900">How audit insight becomes usable profile assets</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -1232,7 +1225,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="max-w-3xl mb-10">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What this proves</div>
-            <h2 className="text-3xl font-black text-slate-900">This is not generic AI fluff</h2>
+            <h2 className="text-3xl font-black text-slate-900">Why this goes beyond generic AI rewrites</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {sampleInsights.map((item) => (
@@ -1260,9 +1253,9 @@ function App() {
         </div>
         <div className="rounded-3xl bg-slate-900 p-8 md:p-10 text-white shadow-xl">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Upgrade</div>
-          <h2 className="text-3xl font-black">Want your own full report?</h2>
+          <h2 className="text-3xl font-black">Want your own full client acquisition report?</h2>
           <p className="mt-4 text-white/70 max-w-2xl text-sm leading-relaxed">
-            Start with the free audit, then upgrade for the full SEO Sniper Report, rewrites, CTA fixes, and client acquisition scripts.
+            Start with the free audit, then upgrade for deeper rewrites, stronger conversion guidance, and messaging assets built for real outreach.
           </p>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             {['Full SEO Sniper Report', 'Headline rewrite', 'About rewrite', 'CTA improvements', 'DM opener scripts', 'Follow-up scripts'].map((item) => (
@@ -1299,7 +1292,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="max-w-3xl mb-10">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What the audit helps you spot</div>
-            <h2 className="text-3xl font-black text-slate-900">The main blockers behind low profile conversion</h2>
+            <h2 className="text-3xl font-black text-slate-900">The main blockers behind weak LinkedIn client acquisition</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {['Unclear positioning', 'Weak trust signals', 'Missing or weak CTA', 'Generic profile messaging', 'Low client acquisition readiness'].map((item) => (
@@ -1315,8 +1308,8 @@ function App() {
     <>
       {pageHero(
         'Features',
-        'Features built for LinkedIn visibility, trust, and conversion',
-        'LinkedIn-Sniper helps you find what’s weakening your profile — and upgrade it with clearer positioning, stronger credibility, and better client acquisition support.',
+        'A 5-layer framework for LinkedIn client acquisition',
+        'Explore how LinkedIn-Sniper improves visibility, trust, conversion, DM / Follow-up readiness, and overall client acquisition performance.',
         ctaButtons(),
       )}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -1392,7 +1385,7 @@ function App() {
               <button onClick={() => setShowPricing(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 z-10"><X className="w-5 h-5" /></button>
               <div className="p-8 md:p-12">
                 <div className="text-center mb-10 max-w-2xl mx-auto">
-                  <h2 className="text-3xl font-black text-slate-900 mb-4">Choose the level of support you need</h2>
+                  <h2 className="text-3xl font-black text-slate-900 mb-4">Choose how deeply you want to optimize LinkedIn for client acquisition</h2>
                   <p className="text-slate-500 font-medium">Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.</p>
                 </div>
 
