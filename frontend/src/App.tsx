@@ -366,20 +366,22 @@ function App() {
     }
   };
 
-  const navigateTo = (path: RoutePath) => {
+  const navigateTo = (path: RoutePath, options?: { preserveScroll?: boolean }) => {
     if (window.location.pathname !== path) {
       window.history.pushState({}, '', path);
     }
     setCurrentPath(path);
     setMobileNavOpen(false);
     setIsMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!options?.preserveScroll) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const scrollToTool = () => {
     if (currentPath !== '/') {
-      navigateTo('/');
-      setTimeout(() => toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+      navigateTo('/', { preserveScroll: true });
+      setTimeout(() => toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 260);
       return;
     }
     toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
