@@ -1372,8 +1372,6 @@ function App() {
               <button onClick={() => setMobileNavOpen((prev) => !prev)} className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-700">
                 {mobileNavOpen ? <CloseIcon className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 bg-amber-100 px-4 py-2 rounded-full border border-amber-200 hover:bg-amber-200 transition-colors shadow-sm">View Pricing</button>
-              <button onClick={scrollToTool} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-white bg-indigo-600 px-4 py-2 rounded-full border border-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">Get Free Audit</button>
               {user ? (
                 <>
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-1 pr-3 rounded-full border border-slate-200 transition-all active:scale-95">
