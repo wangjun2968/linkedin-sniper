@@ -49,17 +49,18 @@ const pricingCards = [
     plan: 'starter' as PlanType,
     badge: 'Starter',
     title: 'Starter',
-    subtitle: 'Low-risk first step with clear audit feedback and quick improvement direction.',
+    subtitle: 'Low-risk first step with one paid baseline audit credit.',
     price: '$0.99',
     bullets: ['Guided audit access', 'Core visibility issues', 'Trust and conversion blockers', 'Quick improvement direction'],
     theme: 'light' as const,
     cta: 'Choose Starter',
+    billingLabel: 'one-time',
   },
   {
     plan: 'pro' as PlanType,
     badge: 'Pro',
     title: 'Pro',
-    subtitle: 'Stronger profile support for trust, positioning, and conversion readiness.',
+    subtitle: 'Monthly profile upgrade with full rewrites and 30 generations every 30 days.',
     price: '$19',
     bullets: [
       'Full profile audit',
@@ -73,12 +74,13 @@ const pricingCards = [
     ],
     theme: 'blue' as const,
     cta: 'Choose Pro',
+    billingLabel: '30 generations / 30 days',
   },
   {
     plan: 'ultra' as PlanType,
     badge: 'Ultra',
     title: 'Ultra',
-    subtitle: 'Fuller messaging assets and deeper client acquisition support.',
+    subtitle: 'High-access monthly plan with DM / follow-up assets and 200 generations every 30 days.',
     price: '$149+',
     bullets: [
       'Everything in Pro',
@@ -90,6 +92,7 @@ const pricingCards = [
     ],
     theme: 'dark' as const,
     cta: 'Choose Ultra',
+    billingLabel: '200 generations / 30 days',
   },
 ];
 
@@ -548,6 +551,7 @@ function App() {
     items: string[],
     theme: 'light' | 'blue' | 'dark',
     cta: string,
+    billingLabel: string,
     compact?: boolean,
   ) => {
     const cardClass =
@@ -582,7 +586,7 @@ function App() {
           <h3 className={`mt-2 ${compact ? 'text-2xl font-black' : 'text-3xl font-black'}`}>{title}</h3>
           <div className={`mt-3 ${theme === 'blue' ? 'text-white' : theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
             <span className={`${compact ? 'text-3xl' : 'text-4xl'} font-black tracking-tight`}>{price}</span>
-            <span className={`ml-2 text-sm font-bold ${subClass}`}>one-time</span>
+            <span className={`ml-2 text-sm font-bold ${subClass}`}>{billingLabel}</span>
           </div>
           <p className={`text-sm mt-3 font-medium leading-relaxed ${subClass}`}>{subtitle}</p>
         </div>
@@ -604,7 +608,7 @@ function App() {
   const renderPricingCards = (compact?: boolean) => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {pricingCards.map((card) =>
-        planCard(card.plan, card.title, card.subtitle, card.price, card.bullets, card.theme, card.cta, compact),
+        planCard(card.plan, card.title, card.subtitle, card.price, card.bullets, card.theme, card.cta, card.billingLabel, compact),
       )}
     </div>
   );
