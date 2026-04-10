@@ -698,7 +698,7 @@ function App() {
             )}
             {token && access && access.currentPlan !== 'free' && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining quota: <span className="font-bold">{access.generationsRemaining} / {access.generationLimit}</span> ({access.quotaPeriod})
+                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining quota: <span className="font-bold">{access.generationsRemaining} / {access.generationLimit}</span> ({access.quotaPeriod}) · {access.quotaResetAt ? `Resets ${formatAccessTime(access.quotaResetAt)}` : `Cycle ends ${formatAccessTime(access.cycleEndsAt)}`}
               </div>
             )}
           </section>
@@ -1060,7 +1060,7 @@ function App() {
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Your current access</div>
               <h2 className="text-2xl font-black text-slate-900">{token ? 'Your unlocked permissions right now' : 'Sign in to see your unlocked permissions'}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600 max-w-2xl">Pricing is clearer when users can compare plans against what is already unlocked on their account.</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 max-w-2xl">Compare your current unlocked access against the real quota model: Free = 1 lifetime, Starter = single-use credits, Pro = 30 / 30 days, Ultra = 200 / 30 days.</p>
             </div>
             {token && access && (
               <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-indigo-700 border border-indigo-100">
@@ -1115,15 +1115,15 @@ function App() {
               <div className="mt-6 space-y-4">
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Starter — $0.99</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you want a low-risk first step with clear audit feedback and quick improvement direction.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you want a low-risk first step with one paid baseline audit credit.</p>
                 </div>
                 <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
                   <div className="font-bold text-indigo-900">Pro — $19</div>
-                  <p className="mt-2 text-sm text-indigo-800">Best for users who want a stronger, more trusted, more conversion-ready LinkedIn profile.</p>
+                  <p className="mt-2 text-sm text-indigo-800">Best for users who want a stronger conversion-ready profile with a 30 / 30-day quota.</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="font-bold text-slate-900">Ultra — $149+</div>
-                  <p className="mt-2 text-sm text-slate-600">Best if you want fuller messaging assets, stronger outreach support, and a deeper client acquisition setup.</p>
+                  <p className="mt-2 text-sm text-slate-600">Best if you want fuller messaging assets and a 200 / 30-day quota.</p>
                 </div>
               </div>
             </div>
@@ -1134,15 +1134,15 @@ function App() {
               <div className="mt-6 space-y-4">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Starter</div>
-                  <p className="mt-2 text-sm text-white/70">See what is hurting visibility, trust, and conversion.</p>
+                  <p className="mt-2 text-sm text-white/70">Get one paid baseline audit credit without moving into a monthly plan.</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Pro</div>
-                  <p className="mt-2 text-sm text-white/70">Improve positioning, profile structure, and conversion readiness.</p>
+                  <p className="mt-2 text-sm text-white/70">Unlock full rewrites and 30 generations every 30 days.</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="font-bold text-white">Ultra</div>
-                  <p className="mt-2 text-sm text-white/70">Add messaging assets and stronger support for outreach and client acquisition.</p>
+                  <p className="mt-2 text-sm text-white/70">Unlock DM / follow-up assets and 200 generations every 30 days.</p>
                 </div>
               </div>
             </div>
@@ -1154,15 +1154,15 @@ function App() {
         <div className="max-w-3xl mb-10">
           <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Plan access</div>
           <h2 className="text-3xl font-black text-slate-900">What each plan actually unlocks</h2>
-          <p className="mt-4 text-slate-600 text-lg">The difference is not just price. Each tier unlocks a different depth of audit access, profile support, and client acquisition assets.</p>
+          <p className="mt-4 text-slate-600 text-lg">The difference is not just price. Each tier maps to a real access model already enforced by the backend.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free {access?.currentPlan === 'free' && <span className="text-indigo-600">• Current</span>}</div>
             <h3 className="text-xl font-black text-slate-900">Preview access</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for first-time users who want one guided preview before paying.</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Login-gated preview with 1 lifetime generation.</p>
             <ul className="mt-5 space-y-3">
-              {['Login required', '1 free generation', 'Preview visibility / trust / conversion issues', 'Limited output depth', 'No DM or follow-up assets'].map((item) => (
+              {['Login required', '1 lifetime generation', 'Preview visibility / trust / conversion issues', 'Limited output depth', 'No DM or follow-up assets'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
@@ -1171,9 +1171,9 @@ function App() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter {access?.currentPlan === 'starter' && <span className="text-indigo-600">• Current</span>}</div>
             <h3 className="text-xl font-black text-slate-900">One low-risk full audit</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for users who want a full baseline audit without jumping into the main offer yet.</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">Single-use paid credits for users who want one baseline audit at a time.</p>
             <ul className="mt-5 space-y-3">
-              {['1 full baseline audit', 'Core visibility findings', 'Core trust and conversion blockers', 'Quick wins and action direction', 'No advanced messaging assets'].map((item) => (
+              {['Single-use paid audit credit', 'Core visibility findings', 'Core trust and conversion blockers', 'Quick wins and action direction', 'No DM or follow-up assets'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-slate-700"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
@@ -1182,9 +1182,9 @@ function App() {
           <div className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-2">Pro {access?.currentPlan === 'pro' && <span className="text-indigo-800">• Current</span>}</div>
             <h3 className="text-xl font-black text-indigo-950">Main profile upgrade</h3>
-            <p className="mt-3 text-sm leading-relaxed text-indigo-900/80">Best for users who want stronger positioning, deeper rewrites, and a more conversion-ready LinkedIn profile.</p>
+            <p className="mt-3 text-sm leading-relaxed text-indigo-900/80">Monthly profile upgrade plan with full rewrites and 30 generations every 30 days.</p>
             <ul className="mt-5 space-y-3">
-              {['Full audit depth', 'Headline rewrite', 'About rewrite', 'Positioning + trust review', 'CTA guidance and action plan'].map((item) => (
+              {['30 generations every 30 days', 'Full rewrites unlocked', 'Headline rewrite', 'About rewrite', 'Positioning + trust review'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-indigo-950"><CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
@@ -1193,9 +1193,9 @@ function App() {
           <div className="rounded-3xl border border-slate-900 bg-slate-900 p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Ultra {access?.currentPlan === 'ultra' && <span className="text-emerald-300">• Current</span>}</div>
             <h3 className="text-xl font-black text-white">Full client acquisition assets</h3>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">Best for users who want profile optimization plus messaging assets that help move conversations forward.</p>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">Monthly high-access plan with DM / follow-up assets and 200 generations every 30 days.</p>
             <ul className="mt-5 space-y-3">
-              {['Everything in Pro', 'DM opener scripts', 'Connection request templates', 'Follow-up message assets', 'Deeper client acquisition support'].map((item) => (
+              {['200 generations every 30 days', 'Everything in Pro', 'DM opener scripts', 'Connection request templates', 'Follow-up message assets'].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm font-medium text-white/90"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />{item}</li>
               ))}
             </ul>
