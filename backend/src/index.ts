@@ -42,6 +42,8 @@ export default {
       return row || null;
     };
 
+    const getPlanRank = (plan) => ({ free: 0, starter: 1, pro: 2, ultra: 3 }[String(plan || 'free').toLowerCase()] || 0);
+
     const getPayPalAccessToken = async () => {
       if (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_CLIENT_SECRET) {
         throw new Error("Missing PayPal credentials");
@@ -161,8 +163,7 @@ export default {
 
           const currentProfile = await getUserProfile(userEmail);
           const currentPlan = String(currentProfile?.plan || 'free').toLowerCase();
-          const planRank = { free: 0, starter: 1, pro: 2, ultra: 3 };
-          const effectivePlan = (planRank[plan] || 0) >= (planRank[currentPlan] || 0) ? plan : currentPlan;
+          const effectivePlan = getPlanRank(plan) >= getPlanRank(currentPlan) ? plan : currentPlan;
           const expiry = effectivePlan === "ultra"
             ? 4070908800000
             : Date.now() + 30 * 24 * 60 * 60 * 1000;
