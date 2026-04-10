@@ -1063,31 +1063,6 @@ function App() {
         {renderPricingCards()}
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 pb-4">
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Your current access</div>
-              <h2 className="text-2xl font-black text-slate-900">{token ? 'Your unlocked permissions right now' : 'Sign in to see your unlocked permissions'}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600 max-w-2xl">Compare your current unlocked access against the real quota model: Free = 1 lifetime, Starter = single-use credits, Pro = 30 / 30 days, Ultra = 200 / 30 days.</p>
-            </div>
-            {token && access && (
-              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-indigo-700 border border-indigo-100">
-                Current plan: {access.currentPlan}
-              </div>
-            )}
-          </div>
-          <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-sm font-bold text-indigo-900">
-            {planLimitText}
-          </div>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            {unlockedFeatures.map((item) => (
-              <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">{item}</div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <div className="rounded-[28px] border border-slate-200 bg-white shadow-xl p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
