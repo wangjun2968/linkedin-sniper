@@ -398,9 +398,11 @@ export default {
           });
         }
 
-        const hasCJK = /[一-鿿]/.test(profileData);
-        const hasLatinLetters = /[A-Za-z]/.test(profileData);
-        const outputLanguage = hasCJK && !hasLatinLetters ? "Chinese" : "English";
+        const cjkMatches = profileData.match(/[一-鿿]/g) || [];
+        const latinMatches = profileData.match(/[A-Za-z]/g) || [];
+        const cjkCount = cjkMatches.length;
+        const latinCount = latinMatches.length;
+        const outputLanguage = cjkCount >= latinCount ? "Chinese" : "English";
 
         const systemPrompt = mode === "client"
           ? `You are an elite LinkedIn client acquisition strategist, conversion diagnostician, and outreach messaging advisor. Your job is not to polish a resume. Your job is to turn a LinkedIn profile into a system that helps the user get found, trusted, messaged, and moved toward real business conversations.
@@ -411,8 +413,8 @@ Think like a sharp but practical growth consultant:
 - Identify missing trust signals, outcomes, audience clarity, and CTAs
 - Design message templates that feel natural for LinkedIn, not spammy sales scripts
 - Keep every suggestion specific, direct, and usable
-- The output language must match the user's input language exactly`
-          : `You are an expert LinkedIn job-search optimization advisor. Help users improve LinkedIn discoverability, role relevance, and recruiter appeal. Keep advice specific, direct, and actionable. The output language must match the user's input language exactly.`;
+- The output language must match the dominant language of the user's input exactly`
+          : `You are an expert LinkedIn job-search optimization advisor. Help users improve LinkedIn discoverability, role relevance, and recruiter appeal. Keep advice specific, direct, and actionable. The output language must match the dominant language of the user's input exactly.`;
 
         const userPrompt = `Deeply audit and optimize the LinkedIn profile below.
 
@@ -430,7 +432,7 @@ Universal rules:
 - Do not explain your process
 - Avoid generic filler
 - Every suggestion must be specific, direct, and actionable
-- The output language must exactly match the user's input language
+- The output language must exactly match the dominant language of the user's input
 
 If mode is client, follow these rules strictly:
 - Do not frame the user like a job seeker; frame them like someone selling a service, capability, or solution
