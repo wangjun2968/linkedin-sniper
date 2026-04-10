@@ -76,6 +76,7 @@ const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectH
             Saved History
           </button>
           <button
+            data-tab="payments"
             onClick={() => setTab('payments')}
             className={`text-sm font-semibold flex items-center gap-2 px-3 py-1.5 rounded-lg ${tab === 'payments' ? 'bg-white text-slate-800 border border-slate-200' : 'text-slate-500'}`}
           >
