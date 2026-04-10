@@ -527,8 +527,19 @@ function App() {
       ? 'After this cycle ends, access falls back based on your remaining credits and active plan.'
       : 'Free access stays limited unless you upgrade.';
 
+  const planLimitText = !access
+    ? 'Plan limit: sign in required'
+    : access.currentPlan === 'pro'
+      ? 'Plan limit: Pro = 30 generations every 30 days'
+      : access.currentPlan === 'ultra'
+        ? 'Plan limit: Ultra = 200 generations every 30 days'
+        : access.currentPlan === 'starter'
+          ? 'Plan limit: Starter = single-use paid audit credit'
+          : 'Plan limit: Free = 1 lifetime generation';
+
   const unlockedFeatures = [
     access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
+    planLimitText,
     access ? `Usage: ${Number(access.generationsUsed || 0)}/${Number(access.generationLimit || 0)} (${String(access.quotaPeriod || 'lifetime')})` : 'Usage: sign in required',
     access?.quotaResetAt ? `Next quota reset: ${formatAccessTime(access.quotaResetAt)}` : `Current cycle ends: ${formatAccessTime(access?.cycleEndsAt)}`,
     access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
