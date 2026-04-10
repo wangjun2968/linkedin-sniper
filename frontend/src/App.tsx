@@ -697,9 +697,9 @@ function App() {
                 Sign in first. Free access is login-gated and includes 1 generation per account.
               </div>
             )}
-            {token && access && !access.hasUnlimitedAccess && (
+            {token && access && access.currentPlan !== 'free' && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining quota: <span className="font-bold">{access.generationsRemaining} / {access.generationLimit}</span> / {access.generationLimit} ({access.quotaPeriod})
+                Current access: <span className="font-bold uppercase">{access.currentPlan}</span> · Remaining quota: <span className="font-bold">{access.generationsRemaining} / {access.generationLimit}</span> ({access.quotaPeriod})
               </div>
             )}
           </section>
@@ -1594,10 +1594,10 @@ function App() {
                           <div className="flex items-center gap-2"><Crown className={`w-4 h-4 ${fullProfile?.plan !== 'free' ? 'text-amber-500' : 'text-slate-300'}`} /><span className="text-xs font-bold text-slate-600">Current Plan</span></div>
                           <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${fullProfile?.plan !== 'free' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-500'}`}>{fullProfile?.plan || 'Free'}</span>
                         </div>
-                        {access && !access.hasUnlimitedAccess && (
+                        {access && access.currentPlan !== 'free' && (
                           <div className="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
                             <div className="text-xs font-bold text-slate-600">Remaining quota / cycle</div>
-                            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">{access.generationsRemaining}</span>
+                            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">{access.generationsRemaining} / {access.generationLimit}</span>
                           </div>
                         )}
                       </div>
