@@ -51,6 +51,7 @@ const pricingCards = [
     badge: 'Starter',
     title: 'Free Audit',
     subtitle: 'See what’s hurting your LinkedIn visibility, trust, and conversion.',
+    price: '$0.99',
     bullets: ['Instant profile audit', 'Overall score', 'Top conversion issues', 'Quick improvement tips'],
     theme: 'light' as const,
     cta: 'Get Free Audit',
@@ -60,6 +61,7 @@ const pricingCards = [
     badge: 'Pro',
     title: 'Profile Upgrade',
     subtitle: 'Improve your positioning, credibility, and profile conversion.',
+    price: '$4.90',
     bullets: [
       'Full profile analysis',
       'SEO Sniper Report',
@@ -78,6 +80,7 @@ const pricingCards = [
     badge: 'Ultra',
     title: 'Client Acquisition Upgrade',
     subtitle: 'Turn your LinkedIn profile into a stronger lead generation asset.',
+    price: '$19.90',
     bullets: [
       'Everything in Pro',
       'DM opener scripts',
@@ -511,6 +514,7 @@ function App() {
     plan: PlanType,
     title: string,
     subtitle: string,
+    price: string,
     items: string[],
     theme: 'light' | 'blue' | 'dark',
     cta: string,
@@ -546,6 +550,10 @@ function App() {
             {title}
           </span>
           <h3 className={`mt-2 ${compact ? 'text-2xl font-black' : 'text-3xl font-black'}`}>{title}</h3>
+          <div className={`mt-3 ${theme === 'blue' ? 'text-white' : theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+            <span className={`${compact ? 'text-3xl' : 'text-4xl'} font-black tracking-tight`}>{price}</span>
+            <span className={`ml-2 text-sm font-bold ${subClass}`}>one-time</span>
+          </div>
           <p className={`text-sm mt-3 font-medium leading-relaxed ${subClass}`}>{subtitle}</p>
         </div>
         <ul className={`space-y-3 mb-8 flex-1 ${textClass}`}>
@@ -566,7 +574,7 @@ function App() {
   const renderPricingCards = (compact?: boolean) => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {pricingCards.map((card) =>
-        planCard(card.plan, card.title, card.subtitle, card.bullets, card.theme, card.cta, compact),
+        planCard(card.plan, card.title, card.subtitle, card.price, card.bullets, card.theme, card.cta, compact),
       )}
     </div>
   );
@@ -1001,34 +1009,31 @@ function App() {
       </section>
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-5xl mx-auto px-4 py-16 text-center">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Comparison</div>
-          <h2 className="text-3xl font-black text-slate-900">Start with diagnosis. Upgrade for action.</h2>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Starter</div><p className="mt-2 text-sm text-slate-600">Find the problems.</p></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Pro</div><p className="mt-2 text-sm text-slate-600">Fix your profile.</p></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Ultra</div><p className="mt-2 text-sm text-slate-600">Improve client acquisition.</p></div>
-          </div>
-
-          <div className="mt-10 max-w-xl mx-auto rounded-3xl border border-slate-200 bg-slate-50 p-6 text-left shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="text-sm font-bold text-slate-900">Checkout</div>
-                <div className="text-xs text-slate-500">Selected plan: {selectedPlan}</div>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> PayPal</div>
-            </div>
+          <div className="max-w-2xl mx-auto rounded-3xl border border-slate-200 bg-slate-50 p-8 md:p-10 shadow-sm mb-12">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Checkout</div>
+            <h2 className="text-3xl font-black text-slate-900">Continue to PayPal</h2>
+            <p className="mt-3 text-sm text-slate-600">Selected plan: <span className="font-bold text-slate-900 uppercase">{selectedPlan}</span></p>
+            <div className="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> Secure checkout with PayPal</div>
             {user ? (
-              <button onClick={startPayPalCheckout} disabled={paying} className="w-full h-11 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-sm font-bold transition-all disabled:opacity-60">
+              <button onClick={startPayPalCheckout} disabled={paying} className="mt-6 w-full md:w-[420px] max-w-full h-14 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-base font-black transition-all disabled:opacity-60 shadow-lg mx-auto block">
                 {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
               </button>
             ) : (
-              <div className="space-y-3">
+              <div className="mt-6 space-y-3">
                 <div className="text-xs font-bold text-slate-500 text-center">Sign in first, then continue to PayPal</div>
                 <div className="flex justify-center">
                   <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="large" width="260" />
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Comparison</div>
+          <h2 className="text-3xl font-black text-slate-900">Start with diagnosis. Upgrade for action.</h2>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Starter</div><p className="mt-2 text-sm text-slate-600">Find the problems.</p></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Pro</div><p className="mt-2 text-sm text-slate-600">Fix your profile.</p></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Ultra</div><p className="mt-2 text-sm text-slate-600">Improve client acquisition.</p></div>
           </div>
         </div>
       </section>
