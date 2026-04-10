@@ -506,6 +506,14 @@ function App() {
 
 
 
+  const unlockedFeatures = [
+    access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
+    access?.hasUnlimitedAccess ? 'Generations: unlimited' : `Generations left: ${access?.generationsRemaining ?? 0}`,
+    access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
+    access?.includeDmAssets ? 'DM / follow-up assets unlocked' : 'DM / follow-up assets locked',
+  ];
+
+
   const planCard = (
     plan: PlanType,
     title: string,
@@ -709,6 +717,14 @@ function App() {
                   <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
                     <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
+                  </div>
+                </div>
+                <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-3">Current access status</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {unlockedFeatures.map((item) => (
+                      <div key={item} className="rounded-xl border border-indigo-100 bg-white px-3 py-2 text-sm font-medium text-slate-700">{item}</div>
+                    ))}
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -1016,6 +1032,28 @@ function App() {
         {renderPricingCards()}
       </section>
 
+      <section className="max-w-7xl mx-auto px-4 pb-4">
+        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Your current access</div>
+              <h2 className="text-2xl font-black text-slate-900">{token ? 'Your unlocked permissions right now' : 'Sign in to see your unlocked permissions'}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 max-w-2xl">Pricing is clearer when users can compare plans against what is already unlocked on their account.</p>
+            </div>
+            {token && access && (
+              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-indigo-700 border border-indigo-100">
+                Current plan: {access.currentPlan}
+              </div>
+            )}
+          </div>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {unlockedFeatures.map((item) => (
+              <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">{item}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <div className="rounded-[28px] border border-slate-200 bg-white shadow-xl p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -1098,7 +1136,7 @@ function App() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free {access?.currentPlan === 'free' && <span className="text-indigo-600">• Current</span>}</div>
             <h3 className="text-xl font-black text-slate-900">Preview access</h3>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for first-time users who want one guided preview before paying.</p>
             <ul className="mt-5 space-y-3">
@@ -1109,7 +1147,7 @@ function App() {
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Starter {access?.currentPlan === 'starter' && <span className="text-indigo-600">• Current</span>}</div>
             <h3 className="text-xl font-black text-slate-900">One low-risk full audit</h3>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">Best for users who want a full baseline audit without jumping into the main offer yet.</p>
             <ul className="mt-5 space-y-3">
@@ -1120,7 +1158,7 @@ function App() {
           </div>
 
           <div className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-2">Pro</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600 mb-2">Pro {access?.currentPlan === 'pro' && <span className="text-indigo-800">• Current</span>}</div>
             <h3 className="text-xl font-black text-indigo-950">Main profile upgrade</h3>
             <p className="mt-3 text-sm leading-relaxed text-indigo-900/80">Best for users who want stronger positioning, deeper rewrites, and a more conversion-ready LinkedIn profile.</p>
             <ul className="mt-5 space-y-3">
@@ -1131,7 +1169,7 @@ function App() {
           </div>
 
           <div className="rounded-3xl border border-slate-900 bg-slate-900 p-6 shadow-sm">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Ultra</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Ultra {access?.currentPlan === 'ultra' && <span className="text-emerald-300">• Current</span>}</div>
             <h3 className="text-xl font-black text-white">Full client acquisition assets</h3>
             <p className="mt-3 text-sm leading-relaxed text-white/70">Best for users who want profile optimization plus messaging assets that help move conversations forward.</p>
             <ul className="mt-5 space-y-3">
