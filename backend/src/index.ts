@@ -9,10 +9,24 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     const url = new URL(request.url);
+    const PAYPAL_BASE_URL = env.PAYPAL_BASE_URL || "https://api-m.paypal.com";
+    const pricing = { starter: "0.99", pro: "19", ultra: "149" };
 
-    const getPayPalAccessToken = async (env) => {
+    const decodeJwtPayload = (token) => {
+      if (!token || typeof token !== "string" || !token.includes(".")) {
+        throw new Error("Invalid token");
+      }
+      const base64Url = token.split(".")[1];
+      return JSON.parse(atob(base64Url.replace(/-/g, "+").replace(/_/g, "/")));
+    };
+
+    const getPayPalAccessToken = async () => {
+      if (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_CLIENT_SECRET) {
+        throw new Error("Missing PayPal credentials");
+      }
+
       const auth = btoa(`${env.PAYPAL_CLIENT_ID}:${env.PAYPAL_CLIENT_SECRET}`);
-      const response = await fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
+      const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
         method: "POST",
         body: "grant_type=client_credentials",
         headers: {
@@ -20,18 +34,23 @@ export default {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
+
       const data = await response.json();
+      if (!response.ok || !data.access_token) {
+        const detail = data?.error_description || data?.error || "Unable to fetch PayPal access token";
+        throw new Error(detail);
+      }
       return data.access_token;
     };
 
     try {
       if (request.method === "POST" && url.pathname === "/api/paypal/create-order") {
         const { planType } = await request.json();
-        const pricing = { starter: "0.99", pro: "4.90", ultra: "19.90" };
-        const amount = pricing[planType] || "4.90";
+        const normalizedPlan = pricing[planType] ? planType : "pro";
+        const amount = pricing[normalizedPlan];
 
-        const accessToken = await getPayPalAccessToken(env);
-        const response = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
+        const accessToken = await getPayPalAccessToken();
+        const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,22 +60,43 @@ export default {
             intent: "CAPTURE",
             purchase_units: [{
               amount: { currency_code: "USD", value: amount },
-              description: `LinkedIn-Sniper ${planType} Plan`
+              description: `LinkedIn-Sniper ${normalizedPlan} Plan`,
             }],
+            application_context: {
+              user_action: "PAY_NOW",
+              return_url: "https://linkedin-sniper.pages.dev/pricing?paypal=success",
+              cancel_url: "https://linkedin-sniper.pages.dev/pricing?paypal=cancel",
+            },
           }),
         });
+
         const order = await response.json();
-        return new Response(JSON.stringify(order), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        if (!response.ok) {
+          return new Response(JSON.stringify(order), {
+            status: response.status,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const approveUrl = order?.links?.find((link) => link.rel === "approve")?.href || null;
+        return new Response(JSON.stringify({
+          id: order.id,
+          status: order.status,
+          approveUrl,
+          planType: normalizedPlan,
+          amount,
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       if (request.method === "POST" && url.pathname === "/api/paypal/capture-order") {
         const { orderID, token } = await request.json();
-        const base64Url = token.split('.')[1];
-        const payload = JSON.parse(atob(base64Url.replace(/-/g, '+').replace(/_/g, '/')));
+        const payload = decodeJwtPayload(token);
         const userEmail = payload.email;
 
-        const accessToken = await getPayPalAccessToken(env);
-        const response = await fetch(`https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`, {
+        const accessToken = await getPayPalAccessToken();
+        const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders/${orderID}/capture`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -66,29 +106,47 @@ export default {
         const captureData = await response.json();
 
         if (captureData.status === "COMPLETED") {
-          const description = captureData.purchase_units[0].description;
-          const isUltra = description.includes("ultra");
-          const plan = isUltra ? "ultra" : "pro";
-          const expiry = isUltra ? 4070908800000 : Date.now() + 30 * 24 * 60 * 60 * 1000;
+          const description = captureData.purchase_units?.[0]?.description || "";
+          const normalizedDescription = description.toLowerCase();
+          const plan = normalizedDescription.includes("starter")
+            ? "starter"
+            : normalizedDescription.includes("ultra")
+              ? "ultra"
+              : "pro";
+          const expiry = plan === "ultra"
+            ? 4070908800000
+            : Date.now() + 30 * 24 * 60 * 60 * 1000;
 
           await env.DB.prepare("UPDATE users SET plan = ?, expires_at = ? WHERE email = ?")
             .bind(plan, expiry, userEmail)
             .run();
 
-          return new Response(JSON.stringify({ status: "success", plan }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ status: "success", plan }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
         }
-        return new Response(JSON.stringify(captureData), { status: 400, headers: corsHeaders });
+        return new Response(JSON.stringify(captureData), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       if (request.method === "GET" && url.pathname === "/history") {
         const authHeader = request.headers.get("Authorization");
-        if (!authHeader) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+        if (!authHeader) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
         const token = authHeader.split(" ")[1];
-        if (!token || !token.includes('.')) return new Response(JSON.stringify({ error: "Invalid Token" }), { status: 401, headers: corsHeaders });
-        const base64Url = token.split('.')[1];
-        const payload = JSON.parse(atob(base64Url.replace(/-/g, '+').replace(/_/g, '/')));
-        const results = await env.DB.prepare("SELECT * FROM history WHERE user_email = ? ORDER BY created_at DESC LIMIT 20").bind(payload.email).all();
-        return new Response(JSON.stringify(results.results || []), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const payload = decodeJwtPayload(token);
+        const results = await env.DB.prepare("SELECT * FROM history WHERE user_email = ? ORDER BY created_at DESC LIMIT 20")
+          .bind(payload.email)
+          .all();
+        return new Response(JSON.stringify(results.results || []), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       if (request.method === "POST") {
@@ -96,18 +154,16 @@ export default {
         const {
           profileData,
           style,
-          mode = 'client',
-          targetClientType = 'SaaS Founder',
-          token
+          mode = "client",
+          targetClientType = "SaaS Founder",
+          token,
         } = body;
 
         let userEmail = null;
 
-        if (token && typeof token === 'string' && token.includes('.')) {
+        if (token && typeof token === "string" && token.includes(".")) {
           try {
-            const parts = token.split('.');
-            const base64Url = parts[1];
-            const payload = JSON.parse(atob(base64Url.replace(/-/g, '+').replace(/_/g, '/')));
+            const payload = decodeJwtPayload(token);
             if (payload.email) {
               userEmail = payload.email;
               await env.DB.prepare("INSERT INTO users (email, name, picture, last_login) VALUES (?, ?, ?, ?) ON CONFLICT(email) DO UPDATE SET last_login=excluded.last_login")
@@ -119,7 +175,7 @@ export default {
 
         if (!profileData) throw new Error("No data provided");
 
-        const systemPrompt = mode === 'client'
+        const systemPrompt = mode === "client"
           ? `你是一名顶级的 LinkedIn 客户获取顾问、转化诊断师和私信转化策略顾问。你的任务不是润色简历，而是把一个人的 LinkedIn 资料和后续对话，改造成“更容易被目标客户发现、信任、私信并推进成交”的客户获取系统。
 
 你必须像一个狠但专业的增长顾问思考：
@@ -211,36 +267,36 @@ ${profileData}
 
         const aiResponse = await fetch("https://api.xty.app/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${env.OPENAI_API_KEY}` },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${env.OPENAI_API_KEY}` },
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
               { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt }
+              { role: "user", content: userPrompt },
             ],
-            response_format: { type: "json_object" }
+            response_format: { type: "json_object" },
           }),
         });
 
         const data = await aiResponse.json();
-        let rawContent = data?.choices?.[0]?.message?.content || '{}';
+        let rawContent = data?.choices?.[0]?.message?.content || "{}";
         rawContent = rawContent.replace(/```json/g, "").replace(/```/g, "").trim();
-        const content = JSON.parse(rawContent || '{}');
+        const content = JSON.parse(rawContent || "{}");
 
         content.aboutVersions = Array.isArray(content.aboutVersions) ? content.aboutVersions : [];
         content.headlines = Array.isArray(content.headlines) ? content.headlines : [];
         content.postTopics = Array.isArray(content.postTopics) ? content.postTopics : [];
         content.seoKeywords = Array.isArray(content.seoKeywords) ? content.seoKeywords : ["LinkedIn", "Optimization", "Inbound Leads", "Positioning", "Authority"];
-        content.auditScore = typeof content.auditScore === 'number' ? content.auditScore : 60;
+        content.auditScore = typeof content.auditScore === "number" ? content.auditScore : 60;
         content.missingKeywords = Array.isArray(content.missingKeywords) ? content.missingKeywords : [];
         content.conversionIssues = Array.isArray(content.conversionIssues) ? content.conversionIssues : [];
         content.trustGaps = Array.isArray(content.trustGaps) ? content.trustGaps : [];
         content.quickFixes = Array.isArray(content.quickFixes) ? content.quickFixes : [];
         content.targetAudience = Array.isArray(content.targetAudience) ? content.targetAudience : [];
-        content.positioningStatement = typeof content.positioningStatement === 'string' ? content.positioningStatement : '';
+        content.positioningStatement = typeof content.positioningStatement === "string" ? content.positioningStatement : "";
         content.ctaSuggestions = Array.isArray(content.ctaSuggestions) ? content.ctaSuggestions : [];
         content.priorityFixes = Array.isArray(content.priorityFixes) ? content.priorityFixes : [];
-        content.actionPlan = typeof content.actionPlan === 'object' && content.actionPlan ? content.actionPlan : {};
+        content.actionPlan = typeof content.actionPlan === "object" && content.actionPlan ? content.actionPlan : {};
         content.actionPlan.today = Array.isArray(content.actionPlan.today) ? content.actionPlan.today : [];
         content.actionPlan.thisWeek = Array.isArray(content.actionPlan.thisWeek) ? content.actionPlan.thisWeek : [];
         content.connectionRequests = Array.isArray(content.connectionRequests) ? content.connectionRequests : [];
@@ -250,17 +306,22 @@ ${profileData}
         if (userEmail) {
           try {
             await env.DB.prepare("INSERT INTO history (user_email, style, input, result, created_at) VALUES (?, ?, ?, ?, ?)")
-              .bind(userEmail, `${style || 'story'}|${mode}`, profileData, JSON.stringify(content), Date.now())
+              .bind(userEmail, `${style || "story"}|${mode}`, profileData, JSON.stringify(content), Date.now())
               .run();
           } catch (dbErr) {}
         }
 
-        return new Response(JSON.stringify(content), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        return new Response(JSON.stringify(content), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       return new Response("Not Found", { status: 404 });
     } catch (e) {
-      return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: e.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-  }
+  },
 };
