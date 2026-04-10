@@ -955,9 +955,6 @@ function App() {
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
                 Start Free Audit <ArrowRight className="w-4 h-4" />
               </button>
-              <button onClick={() => navigateTo('/pricing')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                View Pricing
-              </button>
             </div>
           </div>
         </div>
@@ -1010,6 +1007,28 @@ function App() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Starter</div><p className="mt-2 text-sm text-slate-600">Find the problems.</p></div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Pro</div><p className="mt-2 text-sm text-slate-600">Fix your profile.</p></div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Ultra</div><p className="mt-2 text-sm text-slate-600">Improve client acquisition.</p></div>
+          </div>
+
+          <div className="mt-10 max-w-xl mx-auto rounded-3xl border border-slate-200 bg-slate-50 p-6 text-left shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="text-sm font-bold text-slate-900">Checkout</div>
+                <div className="text-xs text-slate-500">Selected plan: {selectedPlan}</div>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> PayPal</div>
+            </div>
+            {user ? (
+              <button onClick={startPayPalCheckout} disabled={paying} className="w-full h-11 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-sm font-bold transition-all disabled:opacity-60">
+                {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
+              </button>
+            ) : (
+              <div className="space-y-3">
+                <div className="text-xs font-bold text-slate-500 text-center">Sign in first, then continue to PayPal</div>
+                <div className="flex justify-center">
+                  <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="large" width="260" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
