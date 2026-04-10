@@ -83,6 +83,7 @@ export default {
             purchase_units: [{
               amount: { currency_code: "USD", value: amount },
               description: `LinkedIn-Sniper ${normalizedPlan} Plan`,
+              custom_id: normalizedPlan,
             }],
             application_context: {
               user_action: "PAY_NOW",
@@ -130,15 +131,20 @@ export default {
         const captureData = await response.json();
 
         if (captureData.status === "COMPLETED") {
-          const description = captureData.purchase_units?.[0]?.description || "";
-          const normalizedDescription = description.toLowerCase();
-          const plan = normalizedDescription.includes("starter")
-            ? "starter"
-            : normalizedDescription.includes("ultra")
-              ? "ultra"
-              : "pro";
-          const amount = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || pricing[plan] || null;
+          const customId = String(captureData.purchase_units?.[0]?.custom_id || '').toLowerCase();
+          const description = String(captureData.purchase_units?.[0]?.description || '').toLowerCase();
+          const amount = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || null;
           const currency = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.currency_code || 'USD';
+
+          let plan = 'pro';
+          if (customId.includes('starter') || description.includes('starter') || amount === '0.99') {
+            plan = 'starter';
+          } else if (customId.includes('ultra') || description.includes('ultra') || amount === '149') {
+            plan = 'ultra';
+          } else if (customId.includes('pro') || description.includes('pro') || amount === '19') {
+            plan = 'pro';
+          }
+
           const expiry = plan === "ultra"
             ? 4070908800000
             : Date.now() + 30 * 24 * 60 * 60 * 1000;
