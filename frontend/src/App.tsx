@@ -1,18 +1,198 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {
-  Target, Zap, CheckCircle2, Copy,
-  User, LogOut, Lock, CreditCard,
-  Crown, ChevronDown, X, Radar, Users, MessageSquare, ListTodo, Flag,
-  ArrowRight, Search, ShieldCheck
+  Target,
+  Zap,
+  CheckCircle2,
+  Copy,
+  User,
+  LogOut,
+  Lock,
+  CreditCard,
+  Crown,
+  ChevronDown,
+  X,
+  Radar,
+  Users,
+  MessageSquare,
+  ListTodo,
+  Flag,
+  ArrowRight,
+  Search,
+  ShieldCheck,
+  Menu,
+  X as CloseIcon,
+  Sparkles,
+  FileText,
+  HelpCircle,
+  Layers,
 } from 'lucide-react';
 import HistoryManager from './HistoryManager.tsx';
 
-const GOOGLE_CLIENT_ID = "717774353715-hup70oee1bvvq0c5g69c327vggro9qp2.apps.googleusercontent.com";
-const API_URL = "https://linkedin-api.soundxy9.workers.dev";
+const GOOGLE_CLIENT_ID = '717774353715-hup70oee1bvvq0c5g69c327vggro9qp2.apps.googleusercontent.com';
+const API_URL = 'https://linkedin-api.soundxy9.workers.dev';
 
 type PlanType = 'starter' | 'pro' | 'ultra';
 type OptimizationMode = 'job' | 'client';
+type RoutePath = '/' | '/pricing' | '/sample-report' | '/faq' | '/how-it-works' | '/features';
+
+const routes: { path: RoutePath; label: string }[] = [
+  { path: '/', label: 'Home' },
+  { path: '/pricing', label: 'Pricing' },
+  { path: '/sample-report', label: 'Sample Report' },
+  { path: '/how-it-works', label: 'How It Works' },
+  { path: '/features', label: 'Features' },
+  { path: '/faq', label: 'FAQ' },
+];
+
+const pricingCards = [
+  {
+    plan: 'starter' as PlanType,
+    badge: 'Starter',
+    title: 'Free Audit',
+    subtitle: 'See what’s hurting your LinkedIn visibility, trust, and conversion.',
+    bullets: ['Instant profile audit', 'Overall score', 'Top conversion issues', 'Quick improvement tips'],
+    theme: 'light' as const,
+    cta: 'Get Free Audit',
+  },
+  {
+    plan: 'pro' as PlanType,
+    badge: 'Pro',
+    title: 'Profile Upgrade',
+    subtitle: 'Improve your positioning, credibility, and profile conversion.',
+    bullets: [
+      'Full profile analysis',
+      'SEO Sniper Report',
+      'Positioning review',
+      'Trust and credibility review',
+      'CTA recommendations',
+      'Headline rewrite',
+      'About rewrite',
+      'Clear action plan',
+    ],
+    theme: 'blue' as const,
+    cta: 'Get Pro',
+  },
+  {
+    plan: 'ultra' as PlanType,
+    badge: 'Ultra',
+    title: 'Client Acquisition Upgrade',
+    subtitle: 'Turn your LinkedIn profile into a stronger lead generation asset.',
+    bullets: [
+      'Everything in Pro',
+      'DM opener scripts',
+      'Connection request scripts',
+      'Follow-up scripts',
+      'Conversion-focused recommendations',
+      'Stronger inbound and outbound support',
+    ],
+    theme: 'dark' as const,
+    cta: 'Get Ultra',
+  },
+];
+
+const featureItems = [
+  {
+    title: 'Profile Audit',
+    desc: 'Get a fast review of your LinkedIn profile to uncover the biggest issues affecting visibility and conversion.',
+    bullets: ['Overall score', 'Top problem areas', 'Quick recommendations'],
+    icon: <Radar className="w-5 h-5" />,
+  },
+  {
+    title: 'Positioning Analysis',
+    desc: 'See whether your profile clearly shows who you help, what you do, and why the right clients should care.',
+    bullets: ['Clarity review', 'Offer framing', 'Buyer relevance'],
+    icon: <Target className="w-5 h-5" />,
+  },
+  {
+    title: 'Trust & Credibility Review',
+    desc: 'Find missing trust signals that may reduce confidence and stop visitors from reaching out.',
+    bullets: ['Credibility gaps', 'Authority signals', 'Trust-building improvements'],
+    icon: <ShieldCheck className="w-5 h-5" />,
+  },
+  {
+    title: 'CTA & Conversion Review',
+    desc: 'Identify weak or missing calls to action that make your profile harder to convert.',
+    bullets: ['CTA clarity', 'Conversion friction', 'Action-oriented improvements'],
+    icon: <ArrowRight className="w-5 h-5" />,
+  },
+  {
+    title: 'Rewrite Upgrades',
+    desc: 'Go beyond diagnosis with stronger rewrites that improve how your profile communicates value.',
+    bullets: ['Headline rewrite', 'About rewrite', 'Messaging improvements'],
+    icon: <FileText className="w-5 h-5" />,
+  },
+  {
+    title: 'Client Acquisition Scripts',
+    desc: 'Upgrade with scripts designed to help you move from profile traffic to conversations.',
+    bullets: ['DM opener scripts', 'Connection request scripts', 'Follow-up scripts'],
+    icon: <MessageSquare className="w-5 h-5" />,
+  },
+];
+
+const faqItems = [
+  {
+    q: 'Who is LinkedIn-Sniper for?',
+    a: 'LinkedIn-Sniper is built for consultants, freelancers, agency owners, coaches, and B2B founders who want stronger visibility, trust, and client acquisition from LinkedIn.',
+  },
+  {
+    q: 'Is this for job seekers or client acquisition?',
+    a: 'The product is positioned primarily for client acquisition, not just job search optimization. It helps users improve how their LinkedIn profiles attract attention, build trust, and support more inbound opportunities.',
+  },
+  {
+    q: 'What do I get in the free audit?',
+    a: 'The free audit gives you a quick review of your LinkedIn profile, including an overall score, top issues affecting performance, and fast suggestions to improve visibility, positioning, trust, and conversion.',
+  },
+  {
+    q: 'What do I get in the paid plans?',
+    a: 'Paid plans unlock deeper support such as the full SEO Sniper Report, headline rewrite, About rewrite, CTA recommendations, and client acquisition scripts like DM openers, connection requests, and follow-up messages.',
+  },
+  {
+    q: 'Do I need a LinkedIn URL?',
+    a: 'You can provide the profile details required by the tool. If your workflow uses a LinkedIn URL, you can position that as the easiest input method.',
+  },
+  {
+    q: 'Is this generic AI feedback?',
+    a: 'No. The goal is to provide structured, conversion-focused feedback around positioning, trust, CTA strength, and client acquisition readiness — not just generic writing advice.',
+  },
+];
+
+const sampleInsights = [
+  {
+    title: 'Weak positioning',
+    desc: 'Your profile may not clearly show who you help, what problem you solve, and why you’re different.',
+  },
+  {
+    title: 'Low trust signals',
+    desc: 'Your profile may not create enough confidence for visitors to reach out.',
+  },
+  {
+    title: 'Weak CTA',
+    desc: 'Visitors may understand your background but still not know what to do next.',
+  },
+  {
+    title: 'Generic messaging',
+    desc: 'Your headline and About section may sound too broad to attract the right clients.',
+  },
+];
+
+const howItWorksSteps = [
+  {
+    title: 'Paste your LinkedIn profile details',
+    desc: 'Add your LinkedIn profile content so the system can review how your profile presents your offer, credibility, and conversion potential.',
+    icon: <Copy className="w-5 h-5" />,
+  },
+  {
+    title: 'Get your audit results',
+    desc: 'See your overall score, top conversion issues, and quick recommendations to improve visibility, trust, and positioning.',
+    icon: <Radar className="w-5 h-5" />,
+  },
+  {
+    title: 'Upgrade for deeper fixes',
+    desc: 'Unlock a full report, stronger rewrites, CTA improvements, and client acquisition scripts when you want more than diagnosis.',
+    icon: <Sparkles className="w-5 h-5" />,
+  },
+];
 
 function App() {
   const [profileData, setProfileData] = useState('');
@@ -28,6 +208,11 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('pro');
+  const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
+    const path = window.location.pathname as RoutePath;
+    return routes.some((route) => route.path === path) ? path : '/';
+  });
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toolRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +238,7 @@ function App() {
 
     if (paypal === 'cancel') {
       alert('PayPal payment was cancelled');
-      window.history.replaceState({}, '', '/');
+      window.history.replaceState({}, '', currentPath);
       return;
     }
 
@@ -63,7 +248,7 @@ function App() {
           const res = await fetch(`${API_URL}/api/paypal/capture-order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderID, token })
+            body: JSON.stringify({ orderID, token }),
           });
           const data = await res.json();
           if (data.status === 'success') {
@@ -75,16 +260,37 @@ function App() {
         } catch (e: any) {
           alert(e.message || 'Payment capture failed');
         } finally {
-          window.history.replaceState({}, '', '/');
+          window.history.replaceState({}, '', currentPath);
         }
       })();
     }
-  }, [token]);
+  }, [token, currentPath]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handlePopState = () => {
+      const path = window.location.pathname as RoutePath;
+      setCurrentPath(routes.some((route) => route.path === path) ? path : '/');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   const fetchFullProfile = async (jwt: string) => {
     try {
       const response = await fetch(`${API_URL}/user/me`, {
-        headers: { Authorization: `Bearer ${jwt}` }
+        headers: { Authorization: `Bearer ${jwt}` },
       });
       if (response.ok) {
         const data = await response.json();
@@ -95,17 +301,24 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const navigateTo = (path: RoutePath) => {
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+    setCurrentPath(path);
+    setMobileNavOpen(false);
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-  const scrollToTool = () => toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToTool = () => {
+    if (currentPath !== '/') {
+      navigateTo('/');
+      setTimeout(() => toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+      return;
+    }
+    toolRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const handleLoginSuccess = (credentialResponse: any) => {
     const jwt = credentialResponse.credential;
@@ -131,7 +344,7 @@ function App() {
       const res = await fetch(`${API_URL}/api/paypal/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planType: selectedPlan, token })
+        body: JSON.stringify({ planType: selectedPlan, token }),
       });
       const data = await res.json();
       if (!data.approveUrl) throw new Error(data.error || 'Unable to create PayPal order');
@@ -160,7 +373,7 @@ function App() {
           style,
           mode,
           targetClientType,
-          token: token || undefined
+          token: token || undefined,
         }),
       });
       const data = await response.json();
@@ -181,7 +394,7 @@ function App() {
         actionPlan: typeof data.actionPlan === 'object' && data.actionPlan ? data.actionPlan : { today: [], thisWeek: [] },
         connectionRequests: Array.isArray(data.connectionRequests) ? data.connectionRequests : [],
         inboundReplies: Array.isArray(data.inboundReplies) ? data.inboundReplies : [],
-        followUpMessages: Array.isArray(data.followUpMessages) ? data.followUpMessages : []
+        followUpMessages: Array.isArray(data.followUpMessages) ? data.followUpMessages : [],
       };
       formattedData.actionPlan.today = Array.isArray(formattedData.actionPlan.today) ? formattedData.actionPlan.today : [];
       formattedData.actionPlan.thisWeek = Array.isArray(formattedData.actionPlan.thisWeek) ? formattedData.actionPlan.thisWeek : [];
@@ -240,43 +453,690 @@ function App() {
     </div>
   );
 
-  const planCard = (plan: PlanType, title: string, price: string, sub: string, items: string[], theme: 'light' | 'blue' | 'dark') => {
-    const cardClass = theme === 'blue'
-      ? 'p-8 rounded-3xl bg-indigo-600 border-4 border-indigo-100 flex flex-col shadow-xl shadow-indigo-100 relative md:-translate-y-4'
-      : theme === 'dark'
-      ? 'p-8 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col hover:border-slate-700 transition-all'
-      : 'p-8 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col hover:border-slate-300 transition-all';
+  const planCard = (
+    plan: PlanType,
+    title: string,
+    subtitle: string,
+    items: string[],
+    theme: 'light' | 'blue' | 'dark',
+    cta: string,
+    compact?: boolean,
+  ) => {
+    const cardClass =
+      theme === 'blue'
+        ? 'p-8 rounded-3xl bg-indigo-600 border-4 border-indigo-100 flex flex-col shadow-xl shadow-indigo-100 relative'
+        : theme === 'dark'
+          ? 'p-8 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col hover:border-slate-700 transition-all'
+          : 'p-8 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col hover:border-slate-300 transition-all';
 
     const textClass = theme === 'blue' || theme === 'dark' ? 'text-white' : 'text-slate-800';
-    const subClass = theme === 'blue' ? 'text-white/70' : theme === 'dark' ? 'text-slate-500' : 'text-slate-400';
-    const btnClass = selectedPlan === plan
-      ? (theme === 'blue' ? 'bg-white text-indigo-700' : 'bg-indigo-600 text-white')
-      : (theme === 'blue' ? 'bg-white/15 text-white border border-white/20' : 'bg-slate-100 text-slate-700 border border-slate-200');
+    const subClass = theme === 'blue' ? 'text-white/75' : theme === 'dark' ? 'text-slate-400' : 'text-slate-500';
+    const btnClass =
+      selectedPlan === plan
+        ? theme === 'blue'
+          ? 'bg-white text-indigo-700'
+          : 'bg-indigo-600 text-white'
+        : theme === 'blue'
+          ? 'bg-white/15 text-white border border-white/20'
+          : 'bg-white text-slate-700 border border-slate-200';
 
     return (
       <div className={cardClass}>
         {plan === 'pro' && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-amber-900 text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 border-2 border-white">
-            <Crown className="w-3 h-3 fill-current"/> POPULAR
+            <Crown className="w-3 h-3 fill-current" /> MOST POPULAR
           </div>
         )}
         <div className={`mb-6 ${textClass}`}>
-          <span className={`text-[10px] font-black uppercase tracking-widest ${theme === 'blue' ? 'opacity-70' : theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>{title}</span>
-          <h3 className={`mt-1 ${plan === 'pro' ? 'text-3xl font-black' : 'text-2xl font-bold'}`}>{price}</h3>
-          <p className={`text-xs mt-2 font-medium ${subClass}`}>{sub}</p>
+          <span className={`text-[10px] font-black uppercase tracking-widest ${theme === 'blue' ? 'opacity-70' : theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+            {title}
+          </span>
+          <h3 className={`mt-2 ${compact ? 'text-2xl font-black' : 'text-3xl font-black'}`}>{title}</h3>
+          <p className={`text-sm mt-3 font-medium leading-relaxed ${subClass}`}>{subtitle}</p>
         </div>
-        <ul className={`space-y-4 mb-8 flex-1 ${textClass}`}>
+        <ul className={`space-y-3 mb-8 flex-1 ${textClass}`}>
           {items.map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-xs font-bold opacity-90">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0"/>{item}
+            <li key={i} className="flex items-start gap-3 text-sm font-medium opacity-95">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+              {item}
             </li>
           ))}
         </ul>
-        <button onClick={() => setSelectedPlan(plan)} className={`mt-4 h-10 rounded-full text-xs font-bold transition-all ${btnClass}`}>
-          {selectedPlan === plan ? 'Selected' : 'Choose Plan'}
+        <button onClick={() => setSelectedPlan(plan)} className={`mt-4 h-11 rounded-full text-sm font-bold transition-all ${btnClass}`}>
+          {selectedPlan === plan ? 'Selected' : cta}
         </button>
       </div>
     );
+  };
+
+  const renderPricingCards = (compact?: boolean) => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {pricingCards.map((card) =>
+        planCard(card.plan, card.title, card.subtitle, card.bullets, card.theme, card.cta, compact),
+      )}
+    </div>
+  );
+
+  const pageHero = (eyebrow: string, title: string, subtitle: string, actions?: React.ReactNode) => (
+    <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 py-16 md:py-20">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-700 mb-5">
+            <Layers className="w-3.5 h-3.5" /> {eyebrow}
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">{title}</h1>
+          <p className="mt-5 text-lg leading-relaxed text-slate-600 max-w-2xl">{subtitle}</p>
+          {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+        </div>
+      </div>
+    </section>
+  );
+
+  const ctaButtons = (primaryLabel = 'Get Free Audit') => (
+    <>
+      <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+        {primaryLabel} <ArrowRight className="w-4 h-4" />
+      </button>
+      <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+        View Pricing
+      </button>
+    </>
+  );
+
+  const toolSection = (
+    <section ref={toolRef} className="max-w-7xl mx-auto px-4 pb-16">
+      <div className="mb-8">
+        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Audit Tool</div>
+        <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client audit</h2>
+        <p className="mt-3 text-slate-600 max-w-2xl">Run the audit below and see what is blocking your profile from turning views into conversations.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-6 space-y-5">
+          <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                <User className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Data Input</h2>
+                <p className="text-xs text-slate-500">Paste your LinkedIn profile content</p>
+              </div>
+            </div>
+            <textarea
+              className="w-full h-64 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none placeholder:text-slate-400 font-medium"
+              placeholder="Copy your LinkedIn profile and paste it here..."
+              value={profileData}
+              onChange={(e) => setProfileData(e.target.value)}
+            />
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="min-w-[200px] relative">
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Tone</label>
+                <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
+                  <option>Story</option>
+                  <option value="Sniper">Sniper 🔒</option>
+                  <option value="Tech">Tech 🔒</option>
+                  <option value="Values">Values 🔒</option>
+                  <option value="Future">Future 🔒</option>
+                </select>
+                <div className="absolute right-4 bottom-3 pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="min-w-[200px]">
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Optimization Goal</label>
+                <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={mode} onChange={(e) => setMode(e.target.value as OptimizationMode)}>
+                  <option value="client">Get Clients</option>
+                  <option value="job">Job Hunt</option>
+                </select>
+              </div>
+            </div>
+            {mode === 'client' && (
+              <div className="mt-4">
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Target Client Type</label>
+                <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={targetClientType} onChange={(e) => setTargetClientType(e.target.value)}>
+                  <option>SaaS Founder</option>
+                  <option>Freelancer / Consultant</option>
+                  <option>Agency / Service Provider</option>
+                </select>
+              </div>
+            )}
+            <div className="mt-5 flex flex-wrap items-center gap-4">
+              <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
+                {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Audit' : 'Start Job Optimization'}</span></>}
+              </button>
+            </div>
+          </section>
+
+          {result && (
+            <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
+                  <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
+                  <div className="text-xl font-black text-emerald-500">{user ? '+42.8%' : '+12.5%'}</div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {result.seoKeywords?.map((k: string, i: number) => (
+                  <span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>
+                ))}
+                {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <div className="lg:col-span-6 space-y-5">
+          <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
+          {result ? (
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
+                <div className="mb-5 grid grid-cols-2 gap-3">
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
+                    <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
+                  </div>
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
+                    <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Missing Keywords</div>
+                    <div className="flex flex-wrap gap-2">
+                      {result.missingKeywords?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">{item}</span>)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Conversion Issues</div>
+                    <div className="space-y-2">
+                      {result.conversionIssues?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                    </div>
+                  </div>
+                  {!user && (
+                    <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
+                      <p className="text-xs text-slate-500 font-bold">Unlock full audit and conversion strategy</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
+                <div className="space-y-3">
+                  {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
+                </div>
+              </section>
+
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                {sectionTitle('Do Next', 'Action plan', <ListTodo className="w-3.5 h-3.5" />)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
+                    <div className="space-y-2">
+                      {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
+                    </div>
+                  </div>
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
+                    <div className="space-y-2">
+                      {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
+                <div className="space-y-4">
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
+                    <p className="text-sm font-medium text-slate-700 leading-relaxed">{result.positioningStatement || 'No positioning generated yet.'}</p>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Target Audience</div>
+                    <div className="flex flex-wrap gap-2">
+                      {result.targetAudience?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">{item}</span>)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                      <MessageSquare className="w-3.5 h-3.5" /> CTA Suggestions
+                    </div>
+                    <div className="space-y-2">
+                      {result.ctaSuggestions?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
+                <div className="space-y-5">
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
+                    <div className="space-y-3">
+                      {result.connectionRequests?.map((item: string, i: number) => (
+                        <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                          <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                          <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Inbound Replies</div>
+                    <div className="space-y-3">
+                      {result.inboundReplies?.map((item: string, i: number) => (
+                        <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                          <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                          <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Follow-up Messages</div>
+                    <div className="space-y-3">
+                      {result.followUpMessages?.map((item: string, i: number) => (
+                        <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
+                          <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
+                          <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          ) : (
+            <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-white/50 border border-dashed border-slate-300 rounded-3xl">
+              <ShieldCheck className="w-8 h-8 text-slate-300 mb-4" />
+              <h3 className="text-lg font-bold text-slate-400">Run your first audit to see results here</h3>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
+  const homePage = (
+    <>
+      <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
+              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Optimization
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+              Turn Your LinkedIn Profile Into a <span className="text-indigo-600">Client Acquisition Asset</span>
+            </h1>
+            <p className="mt-5 text-lg text-slate-600 max-w-xl leading-relaxed">
+              Get a fast LinkedIn profile audit that shows what’s hurting your visibility, trust, and inbound leads — then unlock deeper rewrites and conversion upgrades.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">{ctaButtons()}</div>
+            <p className="mt-5 text-sm text-slate-500 max-w-xl">
+              Built for consultants, freelancers, agency owners, coaches, and B2B founders who want clients — not just profile views.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 max-w-md lg:ml-auto">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                  <div className="text-xs font-bold text-slate-400 mb-1">Visibility</div>
+                  <div className="text-sm font-semibold text-slate-800">See what limits profile appeal</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                  <div className="text-xs font-bold text-slate-400 mb-1">Positioning</div>
+                  <div className="text-sm font-semibold text-slate-800">Clarify who you help</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                  <div className="text-xs font-bold text-slate-400 mb-1">Trust</div>
+                  <div className="text-sm font-semibold text-slate-800">Spot credibility gaps</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                  <div className="text-xs font-bold text-slate-400 mb-1">Conversion</div>
+                  <div className="text-sm font-semibold text-slate-800">Fix weak CTA and follow-up flow</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-20">
+        <div className="max-w-3xl mb-10">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pain Points</div>
+          <h2 className="text-3xl font-black text-slate-900">Why your LinkedIn profile may not be converting</h2>
+          <p className="mt-4 text-slate-600 text-lg">You might be getting views, but that does not mean your profile is turning attention into conversations.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {featureCard(<Search className="w-5 h-5" />, 'You get views, but no messages', 'Your profile may attract attention but still fail to tell visitors why they should reach out.')}
+          {featureCard(<Users className="w-5 h-5" />, 'Your positioning is too vague', 'People visit your profile and still can’t tell who you help or what problem you solve.')}
+          {featureCard(<MessageSquare className="w-5 h-5" />, 'Your CTA is weak or missing', 'Even interested visitors may leave without taking action if the next step is unclear.')}
+        </div>
+      </section>
+
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">How it works</div>
+            <h2 className="text-3xl font-black text-slate-900">Three steps from profile copy to client conversations</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {howItWorksSteps.map((step, index) => (
+              <div key={step.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600 mb-4">{step.icon}</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Step {index + 1}</div>
+                <h3 className="text-lg font-bold text-slate-900">{step.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample Insights</div>
+            <h2 className="text-3xl font-black text-slate-900">See what your audit can uncover</h2>
+            <div className="mt-6 space-y-4">
+              {sampleInsights.map((item) => (
+                <div key={item.title} className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+                  <div className="font-bold text-slate-900">{item.title}</div>
+                  <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
+            <h3 className="text-2xl font-black text-slate-900 leading-tight">Diagnosis first. Action second.</h3>
+            <div className="grid grid-cols-1 gap-4 mt-6">
+              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                <div className="text-sm font-bold text-slate-900">Free Audit</div>
+                <p className="mt-2 text-sm text-slate-600">Overall profile score, top issues, and quick improvement suggestions.</p>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-4">
+                <div className="text-sm font-bold text-indigo-900">Paid Upgrade</div>
+                <p className="mt-2 text-sm text-indigo-800">Full report, rewrites, CTA fixes, and DM scripts built to support client acquisition.</p>
+              </div>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                See Sample Report
+              </button>
+              <button onClick={() => navigateTo('/pricing')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors">
+                View Pricing
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pricing</div>
+            <h2 className="text-3xl font-black text-slate-900">Choose the level of support you need</h2>
+            <p className="mt-4 text-slate-600 text-lg">Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.</p>
+          </div>
+          {renderPricingCards(true)}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">FAQ</div>
+            <h2 className="text-3xl font-black text-slate-900">Questions before you try it?</h2>
+            <div className="mt-8 space-y-4">
+              {faqItems.slice(0, 4).map((item) => (
+                <div key={item.q} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="font-bold text-slate-900">{item.q}</div>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+            <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 mb-4">
+              Final CTA
+            </div>
+            <h2 className="text-3xl font-black leading-tight">Stop guessing what’s holding your LinkedIn profile back</h2>
+            <p className="mt-4 text-white/70 text-lg leading-relaxed">Get your free audit and see what’s hurting your visibility, trust, and inbound lead conversion.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors shadow-lg shadow-slate-950/10">
+                Get Free Audit <ArrowRight className="w-4 h-4" />
+              </button>
+              <button onClick={() => navigateTo('/faq')} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10 transition-colors">
+                Read FAQ
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {toolSection}
+    </>
+  );
+
+  const pricingPage = (
+    <>
+      {pageHero(
+        'Pricing',
+        'Choose the level of support you need',
+        'Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.',
+        ctaButtons('Start Free'),
+      )}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        {renderPricingCards()}
+      </section>
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 py-16 text-center">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Comparison</div>
+          <h2 className="text-3xl font-black text-slate-900">Start with diagnosis. Upgrade for action.</h2>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Starter</div><p className="mt-2 text-sm text-slate-600">Find the problems.</p></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Pro</div><p className="mt-2 text-sm text-slate-600">Fix your profile.</p></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Ultra</div><p className="mt-2 text-sm text-slate-600">Improve client acquisition.</p></div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+
+  const sampleReportPage = (
+    <>
+      {pageHero(
+        'Sample Report',
+        'See what your LinkedIn profile audit can uncover',
+        'Get a clearer picture of what may be hurting your visibility, trust, and inbound lead conversion — before you invest time rewriting everything.',
+        ctaButtons(),
+      )}
+      <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Preview</div>
+          <h2 className="text-2xl font-black text-slate-900">Sample audit layout</h2>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Overall Score</div>
+              <div className="text-4xl font-black text-amber-500">62<span className="text-lg text-slate-400">/100</span></div>
+            </div>
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Readiness</div>
+              <div className="text-sm font-bold text-slate-800">Client acquisition needs work</div>
+            </div>
+          </div>
+          <div className="mt-6 space-y-4">
+            <div className="rounded-2xl bg-amber-50 border border-amber-100 p-5">
+              <div className="font-bold text-amber-900">Top issue</div>
+              <p className="mt-2 text-sm text-amber-800">Your headline does not clearly say who you help, what result you deliver, or why a buyer should care.</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+              <div className="font-bold text-slate-900">Quick win</div>
+              <p className="mt-2 text-sm text-slate-600">Rewrite headline + improve CTA + add trust signal in About section.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample insights</div>
+          <h2 className="text-3xl font-black text-slate-900">What the audit looks at</h2>
+          <div className="mt-6 space-y-4">
+            {[
+              'Positioning clarity',
+              'Trust and credibility signals',
+              'CTA strength',
+              'Profile conversion issues',
+              'Client acquisition readiness',
+            ].map((item) => (
+              <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm font-semibold text-slate-700">{item}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="max-w-3xl mb-10">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Sample insights</div>
+            <h2 className="text-3xl font-black text-slate-900">Insights you may see</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {sampleInsights.map((item) => (
+              <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="font-bold text-slate-900">{item.title}</div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="rounded-3xl bg-slate-900 p-8 md:p-10 text-white shadow-xl">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-2">Upgrade</div>
+          <h2 className="text-3xl font-black">Want deeper recommendations?</h2>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {['Full SEO Sniper Report', 'Headline rewrite', 'About rewrite', 'CTA improvements', 'DM opener scripts', 'Follow-up scripts'].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-white/85">{item}</div>
+            ))}
+          </div>
+          <div className="mt-8">{ctaButtons('Unlock Full Report')}</div>
+        </div>
+      </section>
+    </>
+  );
+
+  const howItWorksPage = (
+    <>
+      {pageHero(
+        'How It Works',
+        'From quick diagnosis to deeper rewrites and client acquisition support',
+        'Here’s how LinkedIn-Sniper moves users from a free audit into deeper profile improvements and conversation assets.',
+        ctaButtons(),
+      )}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {howItWorksSteps.map((step, index) => (
+            <div key={step.title} className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600 mb-4">{step.icon}</div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Step {index + 1}</div>
+              <h3 className="text-xl font-black text-slate-900">{step.title}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-slate-600">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="max-w-3xl mb-10">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What the audit helps you spot</div>
+            <h2 className="text-3xl font-black text-slate-900">The main blockers behind low profile conversion</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {['Unclear positioning', 'Weak trust signals', 'Missing or weak CTA', 'Generic profile messaging', 'Low client acquisition readiness'].map((item) => (
+              <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-sm font-semibold text-slate-700">{item}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+
+  const featuresPage = (
+    <>
+      {pageHero(
+        'Features',
+        'Features built for LinkedIn visibility, trust, and conversion',
+        'LinkedIn-Sniper helps you find what’s weakening your profile — and upgrade it with clearer positioning, stronger credibility, and better client acquisition support.',
+        ctaButtons(),
+      )}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {featureItems.map((item) => (
+            <div key={item.title} className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600 mb-4">{item.icon}</div>
+              <h3 className="text-xl font-black text-slate-900">{item.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+              <ul className="mt-5 space-y-3">
+                {item.bullets.map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-3 text-sm text-slate-700 font-medium"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />{bullet}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+
+  const faqPage = (
+    <>
+      {pageHero(
+        'FAQ',
+        'Frequently asked questions',
+        'Everything you need to know before running your LinkedIn profile audit.',
+        ctaButtons(),
+      )}
+      <section className="max-w-5xl mx-auto px-4 py-16 space-y-5">
+        {faqItems.map((item) => (
+          <div key={item.q} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 text-indigo-600"><HelpCircle className="w-5 h-5" /></div>
+              <div>
+                <h3 className="text-lg font-black text-slate-900">{item.q}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.a}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+    </>
+  );
+
+  const renderPage = () => {
+    switch (currentPath) {
+      case '/pricing':
+        return pricingPage;
+      case '/sample-report':
+        return sampleReportPage;
+      case '/faq':
+        return faqPage;
+      case '/how-it-works':
+        return howItWorksPage;
+      case '/features':
+        return featuresPage;
+      case '/':
+      default:
+        return homePage;
+    }
   };
 
   return (
@@ -285,12 +1145,12 @@ function App() {
         {showPricing && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowPricing(false)}></div>
-            <div className="bg-white w-full max-w-5xl rounded-3xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 fade-in duration-300 max-h-[92vh] overflow-y-auto">
-              <button onClick={() => setShowPricing(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 z-10"><X className="w-5 h-5"/></button>
+            <div className="bg-white w-full max-w-6xl rounded-3xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 fade-in duration-300 max-h-[92vh] overflow-y-auto">
+              <button onClick={() => setShowPricing(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 z-10"><X className="w-5 h-5" /></button>
               <div className="p-8 md:p-12">
-                <div className="text-center mb-10">
-                  <h2 className="text-3xl font-black text-slate-900 mb-4">Start free. Upgrade when you’re ready.</h2>
-                  <p className="text-slate-500 max-w-lg mx-auto font-medium">Pick the level that matches how serious you are about turning LinkedIn profile views into conversations.</p>
+                <div className="text-center mb-10 max-w-2xl mx-auto">
+                  <h2 className="text-3xl font-black text-slate-900 mb-4">Choose the level of support you need</h2>
+                  <p className="text-slate-500 font-medium">Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.</p>
                 </div>
 
                 {!user ? (
@@ -305,25 +1165,18 @@ function App() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  {planCard('starter', 'Free Profile Audit', '$0.99', 'Quick preview access', ['Basic profile audit', 'Missing keyword detection', '1 CTA suggestion', '1 DM preview'], 'light')}
-                  {planCard('pro', 'Client Acquisition Report', '$19', 'Main conversion offer', ['Full profile audit', 'Priority fixes', 'Action plan', 'Full CTA suggestions', 'Full DM Conversion Kit'], 'blue')}
-                  {planCard('ultra', 'Done-for-You Upgrade', '$149+', 'Hands-on support', ['Manual profile rewrite', 'Custom positioning', 'Personalized DM scripts', 'Conversion-focused optimization'], 'dark')}
-                </div>
+                {renderPricingCards()}
 
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 mt-8">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <div className="text-sm font-bold text-slate-900">Checkout</div>
                       <div className="text-xs text-slate-500">Current plan: {selectedPlan}</div>
                     </div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> PayPal</div>
                   </div>
                   {user ? (
-                    <button
-                      onClick={startPayPalCheckout}
-                      disabled={paying}
-                      className="w-full h-11 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-sm font-bold transition-all disabled:opacity-60"
-                    >
+                    <button onClick={startPayPalCheckout} disabled={paying} className="w-full h-11 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-sm font-bold transition-all disabled:opacity-60">
                       {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
                     </button>
                   ) : (
@@ -336,12 +1189,24 @@ function App() {
         )}
 
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm shadow-slate-100">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+            <button className="flex items-center gap-2" onClick={() => navigateTo('/')}>
               <div className="bg-indigo-600 p-1.5 rounded-lg shadow-sm shadow-indigo-200"><Target className="w-5 h-5 text-white" /></div>
               <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Sniper</span></span>
-            </div>
-            <div className="flex items-center gap-4 relative" ref={menuRef}>
+            </button>
+
+            <nav className="hidden lg:flex items-center gap-1">
+              {routes.map((route) => (
+                <button key={route.path} onClick={() => navigateTo(route.path)} className={`px-3 py-2 rounded-xl text-sm font-bold transition-colors ${currentPath === route.path ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}>
+                  {route.label}
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3 relative" ref={menuRef}>
+              <button onClick={() => setMobileNavOpen((prev) => !prev)} className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-700">
+                {mobileNavOpen ? <CloseIcon className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
               <button onClick={() => setShowPricing(true)} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 bg-amber-100 px-4 py-2 rounded-full border border-amber-200 hover:bg-amber-200 transition-colors shadow-sm">View Pricing</button>
               <button onClick={scrollToTool} className="hidden sm:flex items-center gap-1.5 text-xs font-black text-white bg-indigo-600 px-4 py-2 rounded-full border border-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">Get Free Audit</button>
               {user ? (
@@ -364,390 +1229,45 @@ function App() {
                         </div>
                       </div>
                       <div className="px-2 py-2 border-t border-slate-100">
-                        <button onClick={() => { setIsMenuOpen(false); setShowPricing(true); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Pricing</button>
+                        <button onClick={() => { setIsMenuOpen(false); navigateTo('/pricing'); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"><CreditCard className="w-4 h-4" /> Pricing</button>
                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-xl transition-colors"><LogOut className="w-4 h-4" /> Sign Out</button>
                       </div>
                     </div>
                   )}
                 </>
               ) : (
-                <GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="medium" />
+                <div className="hidden sm:block"><GoogleLogin onSuccess={handleLoginSuccess} onError={() => console.log('Login Failed')} theme="outline" shape="pill" size="medium" /></div>
               )}
             </div>
           </div>
+          {mobileNavOpen && (
+            <div className="lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2">
+              {routes.map((route) => (
+                <button key={route.path} onClick={() => navigateTo(route.path)} className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold ${currentPath === route.path ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100'}`}>
+                  {route.label}
+                </button>
+              ))}
+            </div>
+          )}
         </header>
 
-        <main>
-          <section className="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200">
-            <div className="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
-                  <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Optimization
-                </div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                  Turn Your LinkedIn Profile Into a <span className="text-indigo-600">Client-Generating Asset</span>
-                </h1>
-                <p className="mt-5 text-lg text-slate-600 max-w-xl leading-relaxed">
-                  Get a profile audit, sharper positioning, better CTA, and DM scripts that help turn profile views into client conversations.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                    Get Free Audit <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                    View Pricing
-                  </button>
-                </div>
-                <p className="mt-5 text-sm text-slate-500 max-w-xl">
-                  Built for founders, freelancers, consultants, and service operators who want LinkedIn to bring opportunities — not just impressions.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 gap-4 max-w-md lg:ml-auto">
-                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">What you get</div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                      <div className="text-xs font-bold text-slate-400 mb-1">Audit</div>
-                      <div className="text-sm font-semibold text-slate-800">See what hurts conversion</div>
-                    </div>
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                      <div className="text-xs font-bold text-slate-400 mb-1">Positioning</div>
-                      <div className="text-sm font-semibold text-slate-800">Clarify who you help</div>
-                    </div>
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 sm:col-span-2">
-                      <div className="text-xs font-bold text-slate-400 mb-1">DM Kit</div>
-                      <div className="text-sm font-semibold text-slate-800">Start better conversations without sounding robotic</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <main>{renderPage()}</main>
+
+        <footer className="border-t border-slate-200 bg-white">
+          <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
+            <div>
+              <div className="font-black text-slate-900">LinkedIn Sniper</div>
+              <p className="mt-2 text-sm text-slate-500 max-w-xl">Built to improve visibility, trust, positioning, and client acquisition readiness on LinkedIn.</p>
             </div>
-          </section>
-
-          <section className="max-w-7xl mx-auto px-4 py-20">
-            <div className="max-w-3xl mb-10">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pain + Solution</div>
-              <h2 className="text-3xl font-black text-slate-900">Why your LinkedIn profile isn’t bringing clients — and how to fix it</h2>
-              <p className="mt-4 text-slate-600 text-lg">LinkedIn-Sniper helps you audit your profile, fix your positioning, improve your CTA, and generate message scripts that feel human.</p>
+            <div className="flex flex-wrap gap-3">
+              {routes.map((route) => (
+                <button key={route.path} onClick={() => navigateTo(route.path)} className="text-sm font-bold text-slate-500 hover:text-slate-900">
+                  {route.label}
+                </button>
+              ))}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {featureCard(<Search className="w-5 h-5" />, 'You look skilled, but not buyable', 'Your profile says what you do, but not why someone should message you.')}
-              {featureCard(<Users className="w-5 h-5" />, 'Your positioning is too vague', 'People visit your profile and still can’t tell who you help or what problem you solve.')}
-              {featureCard(<MessageSquare className="w-5 h-5" />, 'Views don’t turn into conversations', 'No CTA, no trust signals, no messaging flow — so profile traffic dies on the page.')}
-            </div>
-          </section>
-
-          <section className="bg-white border-y border-slate-200">
-            <div className="max-w-7xl mx-auto px-4 py-20">
-              <div className="text-center max-w-3xl mx-auto mb-12">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">How it works</div>
-                <h2 className="text-3xl font-black text-slate-900">Three steps from profile copy to client conversations</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {featureCard(<Copy className="w-5 h-5" />, 'Paste your LinkedIn profile', 'Drop in your current profile content.')}
-                {featureCard(<Radar className="w-5 h-5" />, 'Get your client acquisition audit', 'See conversion issues, missing trust signals, and priority fixes.')}
-                {featureCard(<ArrowRight className="w-5 h-5" />, 'Upgrade your profile and conversations', 'Use optimized copy and DM scripts to turn more views into opportunities.')}
-              </div>
-            </div>
-          </section>
-
-          <section className="max-w-7xl mx-auto px-4 py-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Output Preview</div>
-                <h2 className="text-3xl font-black text-slate-900">What you’ll get</h2>
-                <div className="mt-6 space-y-4">
-                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Profile Audit</div><p className="mt-2 text-sm text-slate-600">See what is hurting your profile-to-message conversion.</p></div>
-                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Priority Fixes</div><p className="mt-2 text-sm text-slate-600">Know exactly what to fix first.</p></div>
-                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">Positioning + CTA</div><p className="mt-2 text-sm text-slate-600">Turn vague skills into a clear, client-facing offer.</p></div>
-                  <div className="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm"><div className="font-bold text-slate-900">DM Conversion Kit</div><p className="mt-2 text-sm text-slate-600">Get connection requests, replies, and follow-ups that sound natural.</p></div>
-                </div>
-                <p className="mt-6 text-slate-600">This is not just profile polishing. It is built to help move people from profile views to conversations.</p>
-              </div>
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why it’s different</div>
-                <h3 className="text-2xl font-black text-slate-900 leading-tight">Most LinkedIn tools help you write better. LinkedIn-Sniper helps you get messaged.</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                    <div className="text-sm font-bold text-slate-900 mb-3">Most LinkedIn tools</div>
-                    <ul className="space-y-2 text-sm text-slate-600">
-                      <li>• Rewrite your headline</li>
-                      <li>• Rewrite your about section</li>
-                      <li>• Suggest keywords</li>
-                    </ul>
-                  </div>
-                  <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-4">
-                    <div className="text-sm font-bold text-indigo-900 mb-3">LinkedIn-Sniper</div>
-                    <ul className="space-y-2 text-sm text-indigo-800">
-                      <li>• Audit why your profile doesn’t convert</li>
-                      <li>• Sharpen your positioning</li>
-                      <li>• Improve CTA</li>
-                      <li>• Generate DM scripts</li>
-                      <li>• Move views into conversations</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-white border-y border-slate-200">
-            <div className="max-w-7xl mx-auto px-4 py-20">
-              <div className="text-center max-w-3xl mx-auto mb-12">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Pricing</div>
-                <h2 className="text-3xl font-black text-slate-900">Start free. Upgrade when you’re ready.</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {planCard('starter', 'Free Profile Audit', '$0.99', 'Quick preview access', ['Basic profile audit', 'Missing keyword detection', '1 CTA suggestion', '1 DM preview'], 'light')}
-                {planCard('pro', 'Client Acquisition Report', '$19', 'Main conversion offer', ['Full profile audit', 'Priority fixes', 'Action plan', 'Full CTA suggestions', 'Full DM Conversion Kit'], 'blue')}
-                {planCard('ultra', 'Done-for-You Upgrade', '$149+', 'Hands-on support', ['Manual profile rewrite', 'Custom positioning', 'Personalized DM scripts', 'Conversion-focused optimization'], 'dark')}
-              </div>
-            </div>
-          </section>
-
-          <section className="max-w-7xl mx-auto px-4 py-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">FAQ</div>
-                <h2 className="text-3xl font-black text-slate-900">Questions before you try it?</h2>
-                <div className="mt-8 space-y-4">
-                  {[
-                    ['Is this for job seekers or client acquisition?', 'It supports both, but it is optimized for client acquisition, positioning, and inbound conversations.'],
-                    ['Do I need LinkedIn Premium?', 'No. This focuses on profile positioning, conversion copy, CTA, and message flow.'],
-                    ['Is this another AI writing tool?', 'No. It helps diagnose why your profile doesn’t convert, improve positioning, and generate message scripts for better client conversations.'],
-                    ['Can I try it for free?', 'Yes. Start with a free audit and upgrade only if you want the full report and message kit.']
-                  ].map(([q, a], i) => (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                      <div className="font-bold text-slate-900">{q}</div>
-                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">{a}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
-                <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 mb-4">
-                  Final CTA
-                </div>
-                <h2 className="text-3xl font-black leading-tight">Your LinkedIn profile should bring clients — not just look polished</h2>
-                <p className="mt-4 text-white/70 text-lg leading-relaxed">Start with a free audit and see what is stopping your profile from turning views into conversations.</p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <button onClick={scrollToTool} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-slate-100 transition-colors shadow-lg shadow-slate-950/10">
-                    Get Free Audit <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10 transition-colors">
-                    View Pricing
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section ref={toolRef} className="max-w-7xl mx-auto px-4 pb-16">
-            <div className="mb-8">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Free Audit Tool</div>
-              <h2 className="text-3xl font-black text-slate-900">Run your LinkedIn client audit</h2>
-              <p className="mt-3 text-slate-600 max-w-2xl">Run the audit below and see what is blocking your profile from turning views into conversations.</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-6 space-y-5">
-                <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><User className="w-5 h-5" /></div>
-                    <div><h2 className="text-lg font-bold text-slate-900">Data Input</h2><p className="text-xs text-slate-500">Paste your LinkedIn profile content</p></div>
-                  </div>
-                  <textarea className="w-full h-64 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none placeholder:text-slate-400 font-medium" placeholder="Copy your LinkedIn profile and paste it here..." value={profileData} onChange={(e) => setProfileData(e.target.value)} />
-                  <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="min-w-[200px] relative">
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Tone</label>
-                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={style} onChange={(e) => setStyle(e.target.value)}>
-                        <option>Story</option>
-                        <option value="Sniper">Sniper 🔒</option>
-                        <option value="Tech">Tech 🔒</option>
-                        <option value="Values">Values 🔒</option>
-                        <option value="Future">Future 🔒</option>
-                      </select>
-                      <div className="absolute right-4 bottom-3 pointer-events-none text-slate-400"><Lock className="w-4 h-4" /></div>
-                    </div>
-                    <div className="min-w-[200px]">
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Optimization Goal</label>
-                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={mode} onChange={(e) => setMode(e.target.value as OptimizationMode)}>
-                        <option value="client">Get Clients</option>
-                        <option value="job">Job Hunt</option>
-                      </select>
-                    </div>
-                  </div>
-                  {mode === 'client' && (
-                    <div className="mt-4">
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Target Client Type</label>
-                      <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all appearance-none" value={targetClientType} onChange={(e) => setTargetClientType(e.target.value)}>
-                        <option>SaaS Founder</option>
-                        <option>Freelancer / Consultant</option>
-                        <option>Agency / Service Provider</option>
-                      </select>
-                    </div>
-                  )}
-                  <div className="mt-5 flex flex-wrap items-center gap-4">
-                    <button onClick={handleOptimize} disabled={loading || !profileData} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
-                      {loading ? <Zap className="w-5 h-5 animate-spin" /> : <><Target className="w-5 h-5" /><span>{mode === 'client' ? 'Run Free Audit' : 'Start Job Optimization'}</span></>}
-                    </button>
-                  </div>
-                </section>
-
-                {result && (
-                  <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Search Signals</div>
-                        <h3 className="text-base font-bold text-slate-900">SEO keywords snapshot</h3>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Visibility lift</div>
-                        <div className="text-xl font-black text-emerald-500">{user ? '+42.8%' : '+12.5%'}</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {result.seoKeywords?.map((k: string, i: number) => (<span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-50 border-slate-200 text-slate-700">#{k}</span>))}
-                      {!user && <span className="px-3 py-1 rounded-lg text-xs font-bold border border-dashed bg-slate-50 text-slate-400">more locked</span>}
-                    </div>
-                  </section>
-                )}
-              </div>
-
-              <div className="lg:col-span-6 space-y-5">
-                <HistoryManager token={token || undefined} currentStyle={style} onSelectHistory={(content) => setResult(content)} />
-                {result ? (
-                  <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                      {sectionTitle('Audit', 'Profile health check', <Radar className="w-3.5 h-3.5" />)}
-                      <div className="mb-5 grid grid-cols-2 gap-3">
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Audit Score</div>
-                          <div className={`text-3xl font-black ${scoreTone(result.auditScore)}`}>{result.auditScore ?? '--'}<span className="text-base text-slate-400">/100</span></div>
-                        </div>
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mode</div>
-                          <div className="text-sm font-bold text-slate-700">{mode === 'client' ? 'Client Acquisition' : 'Job Hunt'}</div>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Missing Keywords</div>
-                          <div className="flex flex-wrap gap-2">
-                            {result.missingKeywords?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">{item}</span>)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Conversion Issues</div>
-                          <div className="space-y-2">
-                            {result.conversionIssues?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
-                          </div>
-                        </div>
-                        {!user && (
-                          <div className="p-4 border-2 border-dashed border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setShowPricing(true)}>
-                            <p className="text-xs text-slate-500 font-bold">Unlock full audit and conversion strategy</p>
-                          </div>
-                        )}
-                      </div>
-                    </section>
-
-                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                      {sectionTitle('Fix First', 'Highest-impact changes', <Flag className="w-3.5 h-3.5" />)}
-                      <div className="space-y-3">
-                        {result.priorityFixes?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">{i + 1}. {item}</div>)}
-                      </div>
-                    </section>
-
-                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                      {sectionTitle('Do Next', 'Action plan', <ListTodo className="w-3.5 h-3.5" />)}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Today</div>
-                          <div className="space-y-2">
-                            {result.actionPlan?.today?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
-                          </div>
-                        </div>
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">This Week</div>
-                          <div className="space-y-2">
-                            {result.actionPlan?.thisWeek?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700">• {item}</div>)}
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                      {sectionTitle('Positioning', 'Offer and audience', <Users className="w-3.5 h-3.5" />)}
-                      <div className="space-y-4">
-                        <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Positioning Statement</div>
-                          <p className="text-sm font-medium text-slate-700 leading-relaxed">{result.positioningStatement || 'No positioning generated yet.'}</p>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Target Audience</div>
-                          <div className="flex flex-wrap gap-2">
-                            {result.targetAudience?.map((item: string, i: number) => <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">{item}</span>)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                            <MessageSquare className="w-3.5 h-3.5" /> CTA Suggestions
-                          </div>
-                          <div className="space-y-2">
-                            {result.ctaSuggestions?.map((item: string, i: number) => <div key={i} className="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">{item}</div>)}
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                      {sectionTitle('DM Conversion Kit', 'Messages that move the conversation', <MessageSquare className="w-3.5 h-3.5" />)}
-                      <div className="space-y-5">
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Connection Requests</div>
-                          <div className="space-y-3">
-                            {result.connectionRequests?.map((item: string, i: number) => (
-                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Inbound Replies</div>
-                          <div className="space-y-3">
-                            {result.inboundReplies?.map((item: string, i: number) => (
-                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Follow-up Messages</div>
-                          <div className="space-y-3">
-                            {result.followUpMessages?.map((item: string, i: number) => (
-                              <div key={i} className="group p-4 bg-slate-50 border border-slate-100 rounded-xl hover:border-indigo-200 transition-all cursor-pointer relative" onClick={() => copyToClipboard(item)}>
-                                <p className="text-sm font-medium leading-relaxed text-slate-800 pr-8">{item}</p>
-                                <Copy className="w-4 h-4 absolute top-4 right-4 text-slate-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                ) : (
-                  <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-white/50 border border-dashed border-slate-300 rounded-3xl">
-                    <ShieldCheck className="w-8 h-8 text-slate-300 mb-4" /><h3 className="text-lg font-bold text-slate-400">Run your first audit to see results here</h3>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-        </main>
+          </div>
+        </footer>
       </div>
     </GoogleOAuthProvider>
   );
