@@ -522,16 +522,15 @@ function App() {
   };
 
   const accessFallbackText = access?.currentPlan === 'starter'
-    ? 'After your Starter credits are used, access falls back to Free.'
+    ? 'After Starter credits are used, access falls back to Free.'
     : access?.currentPlan === 'pro' || access?.currentPlan === 'ultra'
-      ? `After this cycle ends, access falls back to ${access?.starterCreditsRemaining > 0 ? 'Starter credits' : 'Free'}.`
-      : 'Free access stays limited to 1 lifetime generation unless you upgrade.';
+      ? 'After this cycle ends, access falls back based on your remaining credits and active plan.'
+      : 'Free access stays limited unless you upgrade.';
 
   const unlockedFeatures = [
     access ? `Plan: ${String(access.currentPlan || 'free').toUpperCase()}` : 'Plan: GUEST',
-    access ? `Usage: ${access.generationsUsed ?? 0}/${access.generationLimit ?? 0} (${access.quotaPeriod || 'lifetime'})` : 'Usage: sign in required',
-    access?.quotaResetAt ? `Next quota reset: ${formatAccessTime(access.quotaResetAt)}` : `Current cycle ends: ${formatAccessTime(access.cycleEndsAt)}`,
-    accessFallbackText,
+    access ? `Usage: ${Number(access.generationsUsed || 0)}/${Number(access.generationLimit || 0)} (${String(access.quotaPeriod || 'lifetime')})` : 'Usage: sign in required',
+    access?.quotaResetAt ? `Next quota reset: ${formatAccessTime(access.quotaResetAt)}` : `Current cycle ends: ${formatAccessTime(access?.cycleEndsAt)}`,
     access?.includeFullRewrite ? 'Full rewrites unlocked' : 'Full rewrites locked',
     access?.includeDmAssets ? 'DM / follow-up assets unlocked' : 'DM / follow-up assets locked',
   ];
@@ -748,9 +747,6 @@ function App() {
                     {unlockedFeatures.map((item) => (
                       <div key={item} className="rounded-xl border border-indigo-100 bg-white px-3 py-2 text-sm font-medium text-slate-700">{item}</div>
                     ))}
-                  </div>
-                  <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-900">
-                    <span className="font-bold">What happens when this access ends:</span> {accessFallbackText}
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -1077,11 +1073,6 @@ function App() {
               <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">{item}</div>
             ))}
           </div>
-          {token && access && (
-            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              <span className="font-bold">What happens when this access ends:</span> {accessFallbackText}
-            </div>
-          )}
         </div>
       </section>
 
