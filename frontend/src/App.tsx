@@ -49,19 +49,19 @@ const pricingCards = [
   {
     plan: 'starter' as PlanType,
     badge: 'Starter',
-    title: 'Free Audit',
-    subtitle: 'See what’s hurting your LinkedIn visibility, trust, and conversion.',
+    title: 'Starter',
+    subtitle: 'Low-friction entry for quick diagnosis and top issues.',
     price: '$0.99',
     bullets: ['Instant profile audit', 'Overall score', 'Top conversion issues', 'Quick improvement tips'],
     theme: 'light' as const,
-    cta: 'Get Free Audit',
+    cta: 'Choose Starter',
   },
   {
     plan: 'pro' as PlanType,
     badge: 'Pro',
-    title: 'Profile Upgrade',
-    subtitle: 'Improve your positioning, credibility, and profile conversion.',
-    price: '$4.90',
+    title: 'Pro',
+    subtitle: 'Main offer for stronger positioning, rewrites, and conversion fixes.',
+    price: '$19',
     bullets: [
       'Full profile analysis',
       'SEO Sniper Report',
@@ -73,24 +73,24 @@ const pricingCards = [
       'Clear action plan',
     ],
     theme: 'blue' as const,
-    cta: 'Get Pro',
+    cta: 'Choose Pro',
   },
   {
     plan: 'ultra' as PlanType,
     badge: 'Ultra',
-    title: 'Client Acquisition Upgrade',
-    subtitle: 'Turn your LinkedIn profile into a stronger lead generation asset.',
-    price: '$19.90',
+    title: 'Ultra',
+    subtitle: 'High-ticket upgrade for deeper client acquisition assets and support.',
+    price: '$149+',
     bullets: [
       'Everything in Pro',
       'DM opener scripts',
       'Connection request scripts',
       'Follow-up scripts',
       'Conversion-focused recommendations',
-      'Stronger inbound and outbound support',
+      'Higher-touch client acquisition support',
     ],
     theme: 'dark' as const,
-    cta: 'Get Ultra',
+    cta: 'Choose Ultra',
   },
 ];
 
@@ -599,9 +599,6 @@ function App() {
       <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
         {primaryLabel} <ArrowRight className="w-4 h-4" />
       </button>
-      <button onClick={() => setShowPricing(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-        View Pricing
-      </button>
     </>
   );
 
@@ -1000,22 +997,29 @@ function App() {
     <>
       {pageHero(
         'Pricing',
-        'Choose the level of support you need',
-        'Start with a free audit, then upgrade for deeper fixes, stronger positioning, and client acquisition support.',
-        ctaButtons('Start Free'),
+        'Simple pricing for LinkedIn visibility, trust, and conversion upgrades',
+        'Start with a low-friction audit, move into the main conversion offer, or choose the higher-ticket client acquisition package.',
+        <>
+          <button onClick={startPayPalCheckout} disabled={paying} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FFC439] px-6 py-3 text-sm font-black text-[#111] hover:bg-[#f5b931] transition-colors shadow-lg disabled:opacity-60">
+            {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
+          </button>
+        </>
       )}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        {renderPricingCards()}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          {renderPricingCards()}
+        </div>
       </section>
+
       <section className="bg-white border-y border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 py-16 text-center">
-          <div className="max-w-2xl mx-auto rounded-3xl border border-slate-200 bg-slate-50 p-8 md:p-10 shadow-sm mb-12">
+        <div className="max-w-6xl mx-auto px-4 py-16">
+          <div className="max-w-2xl mx-auto rounded-[28px] border border-slate-200 bg-slate-50 p-8 md:p-10 shadow-sm text-center mb-14">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">Checkout</div>
             <h2 className="text-3xl font-black text-slate-900">Continue to PayPal</h2>
             <p className="mt-3 text-sm text-slate-600">Selected plan: <span className="font-bold text-slate-900 uppercase">{selectedPlan}</span></p>
             <div className="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-slate-500"><CreditCard className="w-4 h-4" /> Secure checkout with PayPal</div>
             {user ? (
-              <button onClick={startPayPalCheckout} disabled={paying} className="mt-6 w-full md:w-[420px] max-w-full h-14 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-base font-black transition-all disabled:opacity-60 shadow-lg mx-auto block">
+              <button onClick={startPayPalCheckout} disabled={paying} className="mt-6 w-full md:w-[440px] max-w-full h-14 rounded-full bg-[#FFC439] hover:bg-[#f5b931] text-[#111] text-base font-black transition-all disabled:opacity-60 shadow-lg mx-auto block">
                 {paying ? 'Redirecting to PayPal...' : 'Continue to PayPal'}
               </button>
             ) : (
@@ -1028,12 +1032,44 @@ function App() {
             )}
           </div>
 
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Comparison</div>
-          <h2 className="text-3xl font-black text-slate-900">Start with diagnosis. Upgrade for action.</h2>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Starter</div><p className="mt-2 text-sm text-slate-600">Find the problems.</p></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Pro</div><p className="mt-2 text-sm text-slate-600">Fix your profile.</p></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="font-bold text-slate-900">Ultra</div><p className="mt-2 text-sm text-slate-600">Improve client acquisition.</p></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Offer structure</div>
+              <h2 className="text-3xl font-black text-slate-900">Start small. Upgrade when the signal is clear.</h2>
+              <div className="mt-6 space-y-4">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="font-bold text-slate-900">Starter — $0.99</div>
+                  <p className="mt-2 text-sm text-slate-600">Low-friction entry for attracting clicks and giving users a fast diagnosis.</p>
+                </div>
+                <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
+                  <div className="font-bold text-indigo-900">Pro — $19</div>
+                  <p className="mt-2 text-sm text-indigo-800">Main offer. Best for users who want rewrites, stronger positioning, and actionable conversion fixes.</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="font-bold text-slate-900">Ultra — $149+</div>
+                  <p className="mt-2 text-sm text-slate-600">Higher-ticket package for deeper client acquisition support and more complete assets.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[28px] bg-slate-900 p-8 text-white shadow-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60 mb-3">Why people pay</div>
+              <h3 className="text-2xl font-black">Diagnosis first. Action second.</h3>
+              <div className="mt-6 space-y-4">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="font-bold text-white">Starter</div>
+                  <p className="mt-2 text-sm text-white/70">Find the problems.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="font-bold text-white">Pro</div>
+                  <p className="mt-2 text-sm text-white/70">Fix the profile and improve conversion quality.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="font-bold text-white">Ultra</div>
+                  <p className="mt-2 text-sm text-white/70">Turn the profile into a stronger client acquisition asset.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
