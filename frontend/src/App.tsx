@@ -52,8 +52,8 @@ const pricingCards = [
     subtitle: 'One single-use credit for the same full report scope as Pro, without DM / follow-up assets.',
     price: '$0.99',
     bullets: [
-      'Full profile audit',
-      'SEO Sniper Report',
+      'Full LinkedIn profile audit',
+      'Client optimization report',
       'Positioning review',
       'Trust and credibility review',
       'CTA recommendations',
@@ -72,8 +72,8 @@ const pricingCards = [
     subtitle: 'Monthly profile upgrade with full rewrites and 30 generations every 30 days.',
     price: '$19',
     bullets: [
-      'Full profile audit',
-      'SEO Sniper Report',
+      'Full LinkedIn profile audit',
+      'Client optimization report',
       'Positioning review',
       'Trust and credibility review',
       'CTA recommendations',
@@ -140,8 +140,8 @@ const featureItems = [
 
 const faqItems = [
   {
-    q: 'Who is LinkedIn-Sniper for?',
-    a: 'LinkedIn-Sniper is built for consultants, freelancers, agency owners, coaches, and B2B founders who want stronger visibility, trust, and client acquisition from LinkedIn.',
+    q: 'What is LinkedIn Client Optimizer?',
+    a: 'LinkedIn Client Optimizer is built for consultants, freelancers, agency owners, coaches, and B2B founders who want stronger visibility, trust, and client acquisition from LinkedIn.',
   },
   {
     q: 'Is this for job seekers or client acquisition?',
@@ -153,7 +153,7 @@ const faqItems = [
   },
   {
     q: 'What do I get in the paid plans?',
-    a: 'Paid plans unlock deeper support such as the full SEO Sniper Report, headline rewrite, About rewrite, CTA recommendations, and client acquisition scripts like DM openers, connection requests, and follow-up messages.',
+    a: 'Paid plans unlock deeper support such as the full client optimization report, headline rewrite, About rewrite, CTA recommendations, and client acquisition scripts like DM openers, connection requests, and follow-up messages.',
   },
   {
     q: 'Do I need a LinkedIn URL?',
@@ -637,7 +637,7 @@ function App() {
     </section>
   );
 
-  const ctaButtons = (primaryLabel = 'Get Free Audit') => (
+  const ctaButtons = (primaryLabel = 'Get My Free Profile Audit') => (
     <>
       <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
         {primaryLabel} <ArrowRight className="w-4 h-4" />
@@ -893,20 +893,20 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 mb-5">
-              <Target className="w-3.5 h-3.5" /> LinkedIn Client Acquisition Framework
+              <Target className="w-3.5 h-3.5" /> LinkedIn Client Optimizer
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-              LinkedIn tools for <span className="text-indigo-600">visibility, trust, and client acquisition</span>
+              Get More Clients from Your <span className="text-indigo-600">LinkedIn Profile</span>
             </h1>
             <p className="mt-5 text-lg text-slate-600 max-w-3xl leading-relaxed">
-              Improve visibility, trust, conversion, and outreach readiness — so more profile views can turn into real business conversations.
+              Optimize your LinkedIn profile to attract qualified leads, build trust faster, and turn more profile views into real client opportunities.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Get Free Audit <ArrowRight className="w-4 h-4" />
+                Get My Free Profile Audit <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                View Sample Report
+                See How It Works
               </button>
             </div>
           </div>
@@ -915,37 +915,37 @@ function App() {
 
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="max-w-3xl mb-10">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Popular paths</div>
-          <h2 className="text-3xl font-black text-slate-900">Start with the path that matches your goal</h2>
-          <p className="mt-4 text-slate-600 text-lg">Use the audit to find what is hurting performance, the sample report to see what stronger output looks like, and pricing to choose the right depth of support.</p>
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Why this works</div>
+          <h2 className="text-3xl font-black text-slate-900">Built to improve more than just copy</h2>
+          <p className="mt-4 text-slate-600 text-lg">Each layer is designed to strengthen the parts of your LinkedIn profile that influence visibility, trust, and client conversion.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <button onClick={() => navigateTo('/audit')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for finding your biggest blockers</div>
-            <div className="font-black text-slate-900 text-xl">Free Client Acquisition Audit</div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">See what is weakening your visibility, trust, and conversion potential — before you pay for deeper support.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Run Free Audit <ArrowRight className="w-4 h-4" /></div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Start here</div>
+            <div className="font-black text-slate-900 text-xl">Free LinkedIn Profile Audit</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">See what is weakening your positioning, trust, and conversion potential before you pay for deeper support.</p>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Get My Free Profile Audit <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/sample-report')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for seeing output quality</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">See the output</div>
             <div className="font-black text-slate-900 text-xl">Sample Report</div>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">See how weak positioning becomes clearer messaging, stronger trust signals, and more conversion-ready profile assets.</p>
             <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">View Sample Report <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/pricing')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for choosing your support level</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Choose your depth</div>
             <div className="font-black text-slate-900 text-xl">Pricing</div>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">Compare audit access, profile upgrade depth, and client acquisition support before you buy.</p>
             <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Compare Plans <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/features')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Best for understanding the framework</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Understand the framework</div>
             <div className="font-black text-slate-900 text-xl">Features</div>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">Explore the 5 layers behind the product: visibility, trust, conversion, messaging, and client acquisition readiness.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Explore Framework <ArrowRight className="w-4 h-4" /></div>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">Explore Features <ArrowRight className="w-4 h-4" /></div>
           </button>
         </div>
       </section>
@@ -993,7 +993,7 @@ function App() {
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Recommended flow</div>
-            <h3 className="text-2xl font-black text-slate-900">Recommended starting path</h3>
+            <h3 className="text-2xl font-black text-slate-900">Start with a free LinkedIn profile audit</h3>
             <div className="mt-6 space-y-4">
               <button onClick={() => navigateTo('/audit')} className="w-full text-left rounded-2xl bg-slate-50 border border-slate-100 p-5 hover:border-indigo-200 transition-all">
                 <div className="font-bold text-slate-900">1. Run the free audit</div>
@@ -1015,12 +1015,12 @@ function App() {
       <section className="bg-white border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <div className="max-w-3xl mx-auto">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Light CTA</div>
-            <h2 className="text-3xl font-black text-slate-900">Start with a free audit. Upgrade when you need deeper client acquisition support.</h2>
-            <p className="mt-4 text-slate-600 text-lg">Begin with a guided audit, understand your biggest blockers, and upgrade when you want stronger rewrites, conversion support, and outreach assets.</p>
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">Final CTA</div>
+            <h2 className="text-3xl font-black text-slate-900">Your LinkedIn profile should do more than look good</h2>
+            <p className="mt-4 text-slate-600 text-lg">Make it easier for the right people to trust you, understand your value, and reach out. Start with a free profile audit today.</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <button onClick={() => navigateTo('/audit')} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                Get Free Audit <ArrowRight className="w-4 h-4" />
+                Get My Free Profile Audit <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -1371,7 +1371,7 @@ function App() {
             Start with the free audit, then upgrade for deeper rewrites, stronger conversion guidance, and messaging assets built for real outreach.
           </p>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {['Full SEO Sniper Report', 'Headline rewrite', 'About rewrite', 'CTA improvements', 'DM opener scripts', 'Follow-up scripts'].map((item) => (
+            {['Full client optimization report', 'Headline rewrite', 'About rewrite', 'CTA improvements', 'DM opener scripts', 'Follow-up scripts'].map((item) => (
               <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-medium text-white/85">{item}</div>
             ))}
           </div>
@@ -1386,7 +1386,7 @@ function App() {
       {pageHero(
         'How It Works',
         'From quick diagnosis to deeper rewrites and client acquisition support',
-        'Here’s how LinkedIn-Sniper moves users from a free audit into deeper profile improvements and conversation assets.',
+        'Here’s how LinkedIn Client Optimizer moves users from a free audit into deeper profile improvements and conversation assets.',
         ctaButtons(),
       )}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -1422,7 +1422,7 @@ function App() {
       {pageHero(
         'Features',
         'A 5-layer framework for LinkedIn client acquisition',
-        'Explore how LinkedIn-Sniper improves visibility, trust, conversion, DM / Follow-up readiness, and overall client acquisition performance.',
+        'Explore how LinkedIn Client Optimizer improves visibility, trust, conversion, DM / Follow-up readiness, and overall client acquisition performance.',
         ctaButtons(),
       )}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -1541,7 +1541,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
             <button className="flex items-center gap-2" onClick={() => navigateTo('/')}>
               <div className="bg-indigo-600 p-1.5 rounded-lg shadow-sm shadow-indigo-200"><Target className="w-5 h-5 text-white" /></div>
-              <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Sniper</span></span>
+              <span className="font-bold text-lg tracking-tight text-slate-900">LinkedIn <span className="text-indigo-600">Client Optimizer</span></span>
             </button>
 
             <nav className="hidden lg:flex items-center gap-1">
@@ -1609,8 +1609,8 @@ function App() {
         <footer className="border-t border-slate-200 bg-white">
           <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
             <div>
-              <div className="font-black text-slate-900">LinkedIn Sniper</div>
-              <p className="mt-2 text-sm text-slate-500 max-w-xl">Built to improve visibility, trust, positioning, and client acquisition readiness on LinkedIn.</p>
+              <div className="font-black text-slate-900">LinkedIn Client Optimizer</div>
+              <p className="mt-2 text-sm text-slate-500 max-w-xl">Optimize your LinkedIn profile to attract qualified leads, build trust faster, and turn more profile views into real client opportunities.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {routes.map((route) => (
