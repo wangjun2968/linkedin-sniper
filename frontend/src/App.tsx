@@ -335,6 +335,7 @@ function App() {
   }, [token, currentPath]);
 
   useEffect(() => {
+    const siteOrigin = window.location.origin;
     const seoByPath: Record<RoutePath, { title: string; description: string }> = {
       '/': {
         title: 'Get More Clients from LinkedIn | LinkedIn Client Optimizer',
@@ -376,6 +377,32 @@ function App() {
       document.head.appendChild(meta);
     }
     meta.setAttribute('content', currentSeo.description);
+
+    const canonicalHref = `${siteOrigin}${currentPath === '/' ? '/' : currentPath}`;
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', canonicalHref);
+
+    const upsertMeta = (attr: 'name' | 'property', key: string, value: string) => {
+      let tag = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(attr, key);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', value);
+    };
+
+    upsertMeta('property', 'og:title', currentSeo.title);
+    upsertMeta('property', 'og:description', currentSeo.description);
+    upsertMeta('property', 'og:url', canonicalHref);
+    upsertMeta('name', 'twitter:title', currentSeo.title);
+    upsertMeta('name', 'twitter:description', currentSeo.description);
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
   }, [currentPath]);
 
   useEffect(() => {
