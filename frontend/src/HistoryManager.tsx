@@ -26,7 +26,7 @@ interface HistoryManagerProps {
   initialTab?: 'history' | 'payments';
 }
 
-const API_BASE = 'https://linkedin-api-sandbox.soundxy9.workers.dev';
+const API_BASE = process.env.REACT_APP_API_URL || 'https://linkedin-api-sandbox.soundxy9.workers.dev';
 
 const HistoryManager: React.FC<HistoryManagerProps> = ({ currentStyle, onSelectHistory, token, initialTab = 'history' }) => {
   const [histories, setHistories] = useState<HistoryRecord[]>([]);
