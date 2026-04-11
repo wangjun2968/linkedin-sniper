@@ -10,6 +10,8 @@ export default {
 
     const url = new URL(request.url);
     const PAYPAL_BASE_URL = env.PAYPAL_BASE_URL || "https://api-m.paypal.com";
+    const SITE_URL = (env.SITE_URL || "https://linkedin-sniper.pages.dev").replace(/\/$/, "");
+    const BRAND_NAME = env.BRAND_NAME || "LinkedIn Client Optimizer";
     const pricing = { starter: "0.99", pro: "19", ultra: "149" };
 
     const decodeJwtPayload = (token) => {
@@ -193,13 +195,13 @@ export default {
             intent: "CAPTURE",
             purchase_units: [{
               amount: { currency_code: "USD", value: amount },
-              description: `LinkedIn-Sniper ${normalizedPlan} Plan`,
+              description: `${BRAND_NAME} ${normalizedPlan} Plan`,
               custom_id: normalizedPlan,
             }],
             application_context: {
               user_action: "PAY_NOW",
-              return_url: "https://linkedin-sniper.pages.dev/pricing?paypal=success",
-              cancel_url: "https://linkedin-sniper.pages.dev/pricing?paypal=cancel",
+              return_url: `${SITE_URL}/pricing?paypal=success`,
+              cancel_url: `${SITE_URL}/pricing?paypal=cancel`,
             },
           }),
         });

@@ -9,3 +9,5 @@ database_id = "c6470afb-c257-4b59-96e7-02ade98e252d"
 
 [vars]
 # OPENAI_API_KEY 应在 Cloudflare Dashboard 设置为 Secret
+# SITE_URL = "https://getlinkedinclients.net"
+# BRAND_NAME = "LinkedIn Client Optimizer"
