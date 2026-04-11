@@ -335,6 +335,50 @@ function App() {
   }, [token, currentPath]);
 
   useEffect(() => {
+    const seoByPath: Record<RoutePath, { title: string; description: string }> = {
+      '/': {
+        title: 'Get More Clients from LinkedIn | LinkedIn Client Optimizer',
+        description: 'Optimize your LinkedIn profile to attract qualified leads, build trust faster, and turn more profile views into real client opportunities. Start with a free profile audit.',
+      },
+      '/audit': {
+        title: 'Free LinkedIn Profile Audit | LinkedIn Client Optimizer',
+        description: 'Run a free LinkedIn profile audit to find visibility blockers, trust gaps, conversion issues, and the highest-priority fixes for better client acquisition.',
+      },
+      '/pricing': {
+        title: 'Pricing | LinkedIn Client Optimizer',
+        description: 'Compare LinkedIn Client Optimizer plans, from a free audit to full profile rewrites, client optimization reports, and outreach-ready messaging assets.',
+      },
+      '/sample-report': {
+        title: 'Sample Report | LinkedIn Client Optimizer',
+        description: 'See a sample LinkedIn client optimization report with positioning fixes, trust improvements, CTA recommendations, and before-and-after rewrites.',
+      },
+      '/faq': {
+        title: 'FAQ | LinkedIn Client Optimizer',
+        description: 'Learn how LinkedIn Client Optimizer helps consultants, freelancers, founders, and service businesses improve visibility, trust, and client conversion.',
+      },
+      '/how-it-works': {
+        title: 'How It Works | LinkedIn Client Optimizer',
+        description: 'See how LinkedIn Client Optimizer moves from free audit to deeper rewrites, conversion fixes, and client acquisition support.',
+      },
+      '/features': {
+        title: 'Features | LinkedIn Client Optimizer',
+        description: 'Explore the visibility, trust, conversion, follow-up, and client acquisition features behind LinkedIn Client Optimizer.',
+      },
+    };
+
+    const currentSeo = seoByPath[currentPath] || seoByPath['/'];
+    document.title = currentSeo.title;
+
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', currentSeo.description);
+  }, [currentPath]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
@@ -931,7 +975,7 @@ function App() {
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-2">See the output</div>
             <div className="font-black text-slate-900 text-xl">Sample Report</div>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">See how weak positioning becomes clearer messaging, stronger trust signals, and more conversion-ready profile assets.</p>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">View Sample Report <ArrowRight className="w-4 h-4" /></div>
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600">See How It Works <ArrowRight className="w-4 h-4" /></div>
           </button>
 
           <button onClick={() => navigateTo('/pricing')} className="text-left rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all">
@@ -1040,7 +1084,7 @@ function App() {
             Start Audit <ArrowRight className="w-4 h-4" />
           </button>
           <button onClick={() => navigateTo('/sample-report')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-            View Sample Report
+            See How It Works
           </button>
         </>
       )}
